@@ -1,4 +1,3 @@
-import React from 'react';
 import SuratPerjanjian from './SuratPerjanjian';
 
 function App() {

@@ -1,16 +1,16 @@
-# React + Vite
+# Sistem Administrasi Surat Perjanjian Sewa (Suncity Residence)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplikasi web responsif berbasis React untuk mempermudah admin dalam membuat, mengedit, dan mengunduh Surat Perjanjian Sewa Apartemen secara dinamis.
 
-Currently, two official plugins are available:
+## Fitur Utama
+- **Pratinjau Real-Time**: Lembar surat (A4) langsung berubah secara otomatis setiap kali admin mengetik data di form.
+- **Mobile-Friendly**: Antarmuka khusus untuk HP menggunakan sistem Tab agar nyaman saat mengisi data maupun melihat surat.
+- **Ekspor Dokumen**: Surat dapat diunduh langsung dalam format **PDF** maupun **Microsoft Word (.doc)** dengan tata letak yang sudah dipadatkan (1 halaman).
+- **Pilihan Huruf Dinamis**: Tersedia opsi kustomisasi jenis huruf profesional (Times New Roman, Arial, Georgia).
+- **Integrasi WhatsApp (Opsional)**: Setelah dokumen diunduh, sistem bisa langsung mengarahkan admin ke WhatsApp penyewa beserta draf pesan otomatis.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+##  Cara Penggunaan
+1. **Buka Aplikasi**: Akses web melalui HP atau Desktop.
+2. **Isi Data**: Masukkan pengaturan surat, data Pemilik (Pihak Pertama), dan data Penyewa (Pihak Kedua) di panel form.
+3. **Cek Pratinjau**: Buka tab **Lihat Surat** (di HP) atau lihat panel kanan (di Desktop) untuk memastikan teks rapi dan tidak terpotong.
+4. **Unduh & Kirim**: Klik tombol **Unduh PDF** atau **Unduh Word**. Jika nomor WA diisi, sistem akan otomatis membuka tab WhatsApp Web/Aplikasi untuk mengirim pesan ke penyewa.

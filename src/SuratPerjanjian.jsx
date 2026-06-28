@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 export default function SuratPerjanjian() {
-  // State Management Terpusat
+  // Manajemen State Terpusat
+  const [activeTab, setActiveTab] = useState('form');
   const [fontPilihan, setFontPilihan] = useState('Times New Roman');
   const [logo, setLogo] = useState(null);
+  const [nomorWa, setNomorWa] = useState(''); // Default kosong
 
   const [pihak1, setPihak1] = useState({
     nama: 'Dr. Mochammad Rizalul Rosyiadi',
@@ -38,10 +40,32 @@ export default function SuratPerjanjian() {
     'Penyelesaian perselisihan dilakukan secara kekeluargaan terlebih dahulu sebelum mengajukannya ke pengadilan negeri.'
   ]);
 
-  // Ref untuk area Pratinjau
+  // Referensi untuk area Pratinjau
   const previewRef = useRef(null);
 
-  // Upload Logo
+  // Fungsi Pembantu untuk Redirect ke WhatsApp
+  const redirectToWhatsApp = () => {
+    if (!nomorWa) return;
+    
+    // Pembersihan format nomor agar hanya angka
+    let cleanedNum = nomorWa.replace(/\D/g, '');
+    if (cleanedNum.startsWith('0')) {
+      cleanedNum = '62' + cleanedNum.slice(1);
+    }
+    
+    const pesan = `Halo, berikut surat perjanjian sewa apartemen yang telah selesai dibuat untuk apartemen Suncity Residence.
+
+Judul: ${konten.judul}
+Nomor Kontrak: ${konten.nomorKontrak}
+Penyewa (Pihak Kedua): ${pihak2.nama}
+
+Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
+    
+    const url = `https://wa.me/${cleanedNum}?text=${encodeURIComponent(pesan)}`;
+    window.open(url, '_blank');
+  };
+
+  // Unggah Logo
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -59,7 +83,7 @@ export default function SuratPerjanjian() {
     if (fileInput) fileInput.value = '';
   };
 
-  // Klausul Sewa Handlers
+  // Penanganan Klausul Sewa
   const handleKetentuanSewaChange = (index, value) => {
     const newArray = [...ketentuanSewa];
     newArray[index] = value;
@@ -74,7 +98,7 @@ export default function SuratPerjanjian() {
     setKetentuanSewa(ketentuanSewa.filter((_, i) => i !== index));
   };
 
-  // Klausul Umum Handlers
+  // Penanganan Klausul Umum
   const handleKetentuanUmumChange = (index, value) => {
     const newArray = [...ketentuanUmum];
     newArray[index] = value;
@@ -110,14 +134,16 @@ export default function SuratPerjanjian() {
 
       const namaAman = pihak2.nama.trim().replace(/\s+/g, '_');
       const opt = {
-        margin: 10, // Diminimalkan sesuai spesifikasi
+        margin: 10,
         filename: `Surat_Perjanjian_Sewa_${namaAman}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdfInstance().from(element).set(opt).save();
+      html2pdfInstance().from(element).set(opt).save().then(() => {
+        redirectToWhatsApp();
+      });
     } catch (error) {
       console.error('Ekspor PDF gagal:', error);
       alert('Gagal mengekspor PDF. Harap periksa koneksi internet Anda untuk memuat pustaka ekspor.');
@@ -197,27 +223,56 @@ export default function SuratPerjanjian() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+
+    redirectToWhatsApp();
   };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       
-      {/* Header Utama Navigasi */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="bg-slate-900 text-amber-400 p-2.5 rounded-xl font-bold shadow-sm">
-            SR
+      {/* Header Utama (Sticky Top) */}
+      <header className="bg-white border-b border-slate-200 px-4 md:px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm gap-3">
+        <div className="flex items-center justify-between w-full lg:w-auto gap-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 text-white p-2.5 rounded-xl font-bold shadow-sm tracking-wider">
+              SR
+            </div>
+            <div>
+              <h1 className="text-base md:text-lg font-bold tracking-tight text-slate-900 leading-tight">Suncity Residence</h1>
+              <p className="text-[10px] md:text-xs text-slate-500 font-medium">Sistem Pembuat Perjanjian Sewa</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-slate-900">Suncity Residence</h1>
-            <p className="text-xs text-slate-500 font-medium">Sistem Pembuat Perjanjian Sewa Apartemen</p>
+
+          {/* Tombol Navigasi Tab Mobile terintegrasi di Header */}
+          <div className="lg:hidden flex bg-slate-100 p-1 rounded-xl gap-1 shrink-0">
+            <button
+              onClick={() => setActiveTab('form')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                activeTab === 'form'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>📝 Isi Data</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('preview')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                activeTab === 'preview'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>📄 Lihat Surat</span>
+            </button>
           </div>
         </div>
 
-        <div className="flex gap-3">
+        {/* Tombol Ekspor Desktop */}
+        <div className="hidden lg:flex gap-3">
           <button
             onClick={handleExportWord}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4.5 py-2.5 rounded-xl transition-all shadow-sm hover:shadow active:scale-95 text-xs md:text-sm"
+            className="flex items-center gap-2 border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-4.5 py-2.5 rounded-xl transition-all shadow-sm active:scale-95 text-sm cursor-pointer"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
               <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M16.5,13.25C16.5,14.65 15.35,15.8 13.95,15.8H10V8.2H13.95C15.35,8.2 16.5,9.35 16.5,10.75V13.25M14,10.7H11.5V11.5H14V10.7M14,12.5H11.5V13.3H14V12.5Z"/>
@@ -226,7 +281,7 @@ export default function SuratPerjanjian() {
           </button>
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4.5 py-2.5 rounded-xl transition-all shadow-sm hover:shadow active:scale-95 text-xs md:text-sm"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4.5 py-2.5 rounded-xl transition-all shadow-sm hover:shadow active:scale-95 text-sm cursor-pointer"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
               <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M12,17V12H9V10H12V5H14V10H17V12H14V17H12Z" transform="rotate(180 12 12)"/>
@@ -237,227 +292,242 @@ export default function SuratPerjanjian() {
       </header>
 
       {/* Konten Utama */}
-      <main className="flex-1 flex flex-col lg:flex-row gap-6 p-6 overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row gap-6 p-4 pb-28 lg:pb-6 lg:p-6 overflow-hidden">
         
-        {/* Panel Form Editor (Kiri) */}
-        <section className="w-full lg:w-1/3 flex flex-col gap-6 max-h-[calc(100vh-120px)] overflow-y-auto pr-1">
+        {/* Panel Form Editor (Kiri) - Lebar Desktop: w-2/5 */}
+        <section className={`w-full lg:w-2/5 flex flex-col gap-6 max-h-[calc(100vh-145px)] lg:max-h-[calc(100vh-120px)] overflow-y-auto pr-1 pb-20 lg:pb-0 ${
+          activeTab === 'form' ? 'block' : 'hidden lg:block'
+        }`}>
           
-          {/* Blok 1: Pengaturan Tampilan */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
-              <span className="w-2 h-4 bg-blue-600 rounded-sm"></span>
-              Pengaturan Tampilan
+          {/* Kartu 1: Pengaturan & Tampilan */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-blue-700 border-b border-slate-100 pb-2.5 flex items-center gap-2">
+              <span className="w-2.5 h-4 bg-blue-600 rounded-sm"></span>
+              Pengaturan & Tampilan
             </h3>
             
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Pilih Jenis Huruf</label>
-              <select
-                value={fontPilihan}
-                onChange={(e) => setFontPilihan(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all"
-              >
-                <option value="Times New Roman">Times New Roman (Formal)</option>
-                <option value="Arial">Arial (Modern)</option>
-                <option value="Calibri">Calibri (Bersih)</option>
-                <option value="Georgia">Georgia (Klasik)</option>
-              </select>
-            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Pilih Jenis Huruf</label>
+                <select
+                  value={fontPilihan}
+                  onChange={(e) => setFontPilihan(e.target.value)}
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
+                >
+                  <option value="Times New Roman">Times New Roman (Formal)</option>
+                  <option value="Arial">Arial (Modern)</option>
+                  <option value="Calibri">Calibri (Bersih)</option>
+                  <option value="Georgia">Georgia (Klasik)</option>
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Unggah Logo Kop</label>
-              {!logo ? (
-                <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-blue-500/40 bg-slate-50 rounded-xl p-4 cursor-pointer group transition-all">
-                  <svg className="w-6 h-6 text-slate-400 group-hover:text-blue-500 mb-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span className="text-xs text-slate-500 group-hover:text-slate-700 transition-all font-semibold">Pilih file logo gambar</span>
-                  <input
-                    id="logo-upload-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="hidden"
-                  />
-                </label>
-              ) : (
-                <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 p-2.5 rounded-xl">
-                  <img src={logo} alt="Logo" className="h-10 w-auto object-contain bg-white p-1 rounded border border-slate-200" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-700 font-semibold truncate">Logo Aktif</p>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nomor WhatsApp Penerima (Opsional)</label>
+                <input
+                  type="text"
+                  placeholder="Masukkan nomor WhatsApp, cth: 628123456789"
+                  value={nomorWa}
+                  onChange={(e) => setNomorWa(e.target.value)}
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Unggah Logo Kop</label>
+                {!logo ? (
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-blue-500/40 hover:bg-blue-50/10 bg-white rounded-xl p-4 cursor-pointer group transition-all shadow-sm">
+                    <svg className="w-6 h-6 text-slate-400 group-hover:text-blue-600 mb-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-xs text-slate-500 group-hover:text-blue-600 transition-all font-semibold">Pilih file logo gambar</span>
+                    <input
+                      id="logo-upload-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleLogoUpload}
+                      className="hidden"
+                    />
+                  </label>
+                ) : (
+                  <div className="flex items-center gap-3 bg-white border border-slate-200 p-2.5 rounded-xl shadow-sm">
+                    <img src={logo} alt="Logo" className="h-10 w-auto object-contain bg-white p-1 rounded border border-slate-200" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-slate-700 font-semibold truncate">Logo Aktif</p>
+                    </div>
+                    <button
+                      onClick={handleClearLogo}
+                      className="text-xs text-red-500 hover:text-red-600 font-bold px-2 py-1 transition-all cursor-pointer"
+                    >
+                      Hapus
+                    </button>
                   </div>
-                  <button
-                    onClick={handleClearLogo}
-                    className="text-xs text-red-500 hover:text-red-600 font-bold px-2 py-1 transition-all"
-                  >
-                    Hapus
-                  </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Blok 2: Data Pihak Pertama */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
-              <span className="w-2 h-4 bg-amber-500 rounded-sm"></span>
+          {/* Kartu 2: Data Pihak Pertama */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-blue-700 border-b border-slate-100 pb-2.5 flex items-center gap-2">
+              <span className="w-2.5 h-4 bg-blue-600 rounded-sm"></span>
               Data Pihak Pertama (Pemilik)
             </h3>
             
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nama Lengkap Pemilik</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nama Lengkap Pemilik</label>
                 <input
                   type="text"
                   value={pihak1.nama}
                   onChange={(e) => setPihak1({ ...pihak1, nama: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">NIK (Nomor Induk Kependudukan)</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">NIK (Nomor Induk Kependudukan)</label>
                 <input
                   type="text"
                   value={pihak1.nik}
                   onChange={(e) => setPihak1({ ...pihak1, nik: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Alamat Domisili Lengkap</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Alamat Domisili Lengkap</label>
                 <textarea
                   rows="2"
                   value={pihak1.alamat}
                   onChange={(e) => setPihak1({ ...pihak1, alamat: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm resize-none focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
             </div>
           </div>
 
-          {/* Blok 3: Data Pihak Kedua */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
-              <span className="w-2 h-4 bg-sky-500 rounded-sm"></span>
+          {/* Kartu 3: Data Pihak Kedua */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-blue-700 border-b border-slate-100 pb-2.5 flex items-center gap-2">
+              <span className="w-2.5 h-4 bg-blue-600 rounded-sm"></span>
               Data Pihak Kedua (Penyewa)
             </h3>
             
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nama Lengkap Penyewa</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nama Lengkap Penyewa</label>
                 <input
                   type="text"
                   value={pihak2.nama}
                   onChange={(e) => setPihak2({ ...pihak2, nama: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">NIK (Nomor Induk Kependudukan)</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">NIK (Nomor Induk Kependudukan)</label>
                 <input
                   type="text"
                   value={pihak2.nik}
                   onChange={(e) => setPihak2({ ...pihak2, nik: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Alamat Lengkap</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Alamat Lengkap</label>
                 <textarea
                   rows="2"
                   value={pihak2.alamat}
                   onChange={(e) => setPihak2({ ...pihak2, alamat: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm resize-none focus:ring-2 focus:ring-sky-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
             </div>
           </div>
 
-          {/* Blok 4: Isi Perjanjian */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
-              <span className="w-2 h-4 bg-emerald-600 rounded-sm"></span>
+          {/* Kartu 4: Isi Perjanjian */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-blue-700 border-b border-slate-100 pb-2.5 flex items-center gap-2">
+              <span className="w-2.5 h-4 bg-blue-600 rounded-sm"></span>
               Isi Surat Perjanjian
             </h3>
             
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Judul Surat Perjanjian</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Judul Surat Perjanjian</label>
                 <input
                   type="text"
                   value={konten.judul}
                   onChange={(e) => setKonten({ ...konten, judul: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nomor Kontrak</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nomor Kontrak</label>
                 <input
                   type="text"
                   value={konten.nomorKontrak}
                   onChange={(e) => setKonten({ ...konten, nomorKontrak: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Paragraf Pembuka Surat</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Paragraf Pembuka Surat</label>
                 <textarea
                   rows="3"
                   value={konten.pembuka}
                   onChange={(e) => setKonten({ ...konten, pembuka: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Pernyataan Kesepakatan Utama</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Pernyataan Kesepakatan Utama</label>
                 <textarea
                   rows="3"
                   value={konten.kesepakatanUtama}
                   onChange={(e) => setKonten({ ...konten, kesepakatanUtama: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Paragraf Penutup Surat</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Paragraf Penutup Surat</label>
                 <textarea
                   rows="3"
                   value={konten.penutup}
                   onChange={(e) => setKonten({ ...konten, penutup: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
             </div>
           </div>
 
-          {/* Blok 5: Klausul Masa Sewa */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-              <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                <span className="w-2 h-4 bg-indigo-500 rounded-sm"></span>
+          {/* Kartu 5: Klausul Masa Sewa */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+              <h3 className="text-sm font-bold text-blue-700 flex items-center gap-2">
+                <span className="w-2.5 h-4 bg-blue-600 rounded-sm"></span>
                 Klausul Masa Sewa & Pembayaran
               </h3>
               <button
                 onClick={handleAddKetentuanSewa}
-                className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg transition-all"
+                className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold px-3 py-1.5 rounded-lg border border-blue-100 transition-all active:scale-95 cursor-pointer"
               >
                 + Tambah
               </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {ketentuanSewa.map((item, index) => (
-                <div key={index} className="flex gap-2 items-start bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                <div key={index} className="flex gap-2 items-start bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <div className="flex-1">
                     <span className="text-[10px] text-slate-400 block mb-1 font-bold">Klausul #{index + 1}</span>
                     <textarea
                       rows="2"
                       value={item}
                       onChange={(e) => handleKetentuanSewaChange(index, e.target.value)}
-                      className="w-full p-2 bg-white border border-slate-200 rounded-lg text-slate-800 text-xs focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                      className="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
                   <button
                     onClick={() => handleRemoveKetentuanSewa(index)}
-                    className="text-red-500 hover:text-red-600 p-1.5 self-center"
+                    className="text-red-500 hover:text-red-600 p-1.5 self-center text-xs font-semibold cursor-pointer"
                   >
                     Hapus
                   </button>
@@ -466,36 +536,36 @@ export default function SuratPerjanjian() {
             </div>
           </div>
 
-          {/* Blok 6: Klausul Ketentuan Umum */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-              <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                <span className="w-2 h-4 bg-teal-500 rounded-sm"></span>
+          {/* Kartu 6: Klausul Ketentuan Umum */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+              <h3 className="text-sm font-bold text-blue-700 flex items-center gap-2">
+                <span className="w-2.5 h-4 bg-blue-600 rounded-sm"></span>
                 Klausul Ketentuan Umum & Aturan
               </h3>
               <button
                 onClick={handleAddKetentuanUmum}
-                className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded-lg transition-all"
+                className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold px-3 py-1.5 rounded-lg border border-blue-100 transition-all active:scale-95 cursor-pointer"
               >
                 + Tambah
               </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {ketentuanUmum.map((item, index) => (
-                <div key={index} className="flex gap-2 items-start bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                <div key={index} className="flex gap-2 items-start bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <div className="flex-1">
                     <span className="text-[10px] text-slate-400 block mb-1 font-bold">Klausul #{index + 1}</span>
                     <textarea
                       rows="2"
                       value={item}
                       onChange={(e) => handleKetentuanUmumChange(index, e.target.value)}
-                      className="w-full p-2 bg-white border border-slate-200 rounded-lg text-slate-800 text-xs focus:ring-1 focus:ring-teal-500 focus:outline-none"
+                      className="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none"
                     />
                   </div>
                   <button
                     onClick={() => handleRemoveKetentuanUmum(index)}
-                    className="text-red-500 hover:text-red-600 p-1.5 self-center"
+                    className="text-red-500 hover:text-red-600 p-1.5 self-center text-xs font-semibold cursor-pointer"
                   >
                     Hapus
                   </button>
@@ -506,8 +576,10 @@ export default function SuratPerjanjian() {
 
         </section>
 
-        {/* Panel Pratinjau Kertas A4 (Kanan) */}
-        <section className="flex-1 flex flex-col bg-slate-200/60 border border-slate-300/40 rounded-3xl overflow-hidden shadow-inner relative min-h-[500px]">
+        {/* Panel Pratinjau Kertas A4 (Kanan) - Lebar Desktop: w-3/5 */}
+        <section className={`w-full lg:w-3/5 flex flex-col bg-slate-200/60 border border-slate-300/40 rounded-3xl overflow-hidden shadow-inner relative min-h-[500px] max-h-[calc(100vh-145px)] lg:max-h-[calc(100vh-120px)] ${
+          activeTab === 'preview' ? 'flex' : 'hidden lg:flex'
+        }`}>
           <div className="bg-white/80 backdrop-blur-md border-b border-slate-200 px-5 py-3.5 flex items-center justify-between z-10 shrink-0">
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -518,20 +590,20 @@ export default function SuratPerjanjian() {
             </span>
           </div>
 
-          {/* Viewer Area */}
-          <div className="flex-1 p-4 md:p-6 overflow-y-auto bg-slate-100/60 flex justify-center items-start">
+          {/* Area Viewer dengan overflow-x-auto agar kertas A4 tidak terpotong & bisa digeser horizontal di HP */}
+          <div className="flex-1 p-4 md:p-6 pb-20 lg:pb-6 overflow-y-auto overflow-x-auto bg-slate-100/60 flex justify-start lg:justify-center items-start">
             
-            {/* Kertas A4 (Sangat Padat) */}
+            {/* Kertas A4 (Format Padat, flex-shrink-0 untuk mencegah penyusutan) */}
             <div
               ref={previewRef}
-              className="bg-white text-black shadow-lg rounded-sm w-full mx-auto print:shadow-none"
+              className="bg-white text-black shadow-lg rounded-sm flex-shrink-0 mx-auto print:shadow-none"
               style={{
-                maxWidth: '210mm',
+                width: '210mm',
                 minHeight: '297mm',
-                padding: '12mm 12mm 12mm 12mm', // Margin dipersempit
+                padding: '12mm 12mm 12mm 12mm',
                 fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`,
-                fontSize: '10pt', // Font dinonaktifkan dari 12pt menjadi 10pt
-                lineHeight: '1.25', // Spasi baris lebih rapat
+                fontSize: '10pt',
+                lineHeight: '1.25',
                 boxSizing: 'border-box'
               }}
             >
@@ -675,6 +747,28 @@ export default function SuratPerjanjian() {
         </section>
 
       </main>
+
+      {/* Tombol Aksi Melayang (Sticky/Fixed) di Mobile */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 pb-safe flex gap-3 z-30 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <button
+          onClick={handleExportWord}
+          className="flex-1 flex items-center justify-center gap-2 border border-blue-600 text-blue-600 font-semibold py-3.5 rounded-xl hover:bg-blue-50 active:scale-95 transition-all text-sm shadow-sm cursor-pointer"
+        >
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M16.5,13.25C16.5,14.65 15.35,15.8 13.95,15.8H10V8.2H13.95C15.35,8.2 16.5,9.35 16.5,10.75V13.25M14,10.7H11.5V11.5H14V10.7M14,12.5H11.5V13.3H14V12.5Z"/>
+          </svg>
+          <span>Unduh Word</span>
+        </button>
+        <button
+          onClick={handleExportPDF}
+          className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-3.5 rounded-xl hover:bg-blue-700 active:scale-95 transition-all text-sm shadow-sm cursor-pointer"
+        >
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M12,17V12H9V10H12V5H14V10H17V12H14V17H12Z" transform="rotate(180 12 12)"/>
+          </svg>
+          <span>Unduh PDF</span>
+        </button>
+      </div>
 
     </div>
   );
