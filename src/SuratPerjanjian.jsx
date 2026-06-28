@@ -113,10 +113,13 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
     setKetentuanUmum(ketentuanUmum.filter((_, i) => i !== index));
   };
 
-  // Ekspor PDF
+  // Ekspor PDF (dengan Temporary Export Sizing)
   const handleExportPDF = async () => {
     const element = previewRef.current;
     if (!element) return;
+
+    // Paksa ukuran kertas ke A4 (210mm) sesaat sebelum rendering ekspor
+    element.style.width = '210mm';
 
     try {
       let html2pdfInstance = window.html2pdf;
@@ -142,18 +145,25 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
       };
 
       html2pdfInstance().from(element).set(opt).save().then(() => {
+        // Kembalikan ke mode responsif HP/Desktop setelah ekspor selesai
+        element.style.width = '';
         redirectToWhatsApp();
       });
     } catch (error) {
       console.error('Ekspor PDF gagal:', error);
+      // Kembalikan ke mode responsif HP/Desktop jika ekspor gagal
+      element.style.width = '';
       alert('Gagal mengekspor PDF. Harap periksa koneksi internet Anda untuk memuat pustaka ekspor.');
     }
   };
 
-  // Ekspor Word
+  // Ekspor Word (dengan Temporary Export Sizing)
   const handleExportWord = () => {
     const element = previewRef.current;
     if (!element) return;
+
+    // Paksa ukuran kertas ke A4 (210mm) sesaat untuk mengambil innerHTML yang terformat A4
+    element.style.width = '210mm';
 
     const htmlContent = element.innerHTML;
     const namaAman = pihak2.nama.trim().replace(/\s+/g, '_');
@@ -224,6 +234,8 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
+    // Kembalikan ke mode responsif HP/Desktop setelah ekspor selesai
+    element.style.width = '';
     redirectToWhatsApp();
   };
 
@@ -292,7 +304,7 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
       </header>
 
       {/* Konten Utama */}
-      <main className="flex-1 flex flex-col lg:flex-row gap-6 p-4 pb-28 lg:pb-6 lg:p-6 overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row gap-6 p-4 pb-28 lg:pb-6 lg:p-6 overflow-hidden items-start">
         
         {/* Panel Form Editor (Kiri) - Lebar Desktop: w-2/5 */}
         <section className={`w-full lg:w-2/5 flex flex-col gap-6 max-h-[calc(100vh-145px)] lg:max-h-[calc(100vh-120px)] overflow-y-auto pr-1 pb-20 lg:pb-0 ${
@@ -577,10 +589,10 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
         </section>
 
         {/* Panel Pratinjau Kertas A4 (Kanan) - Lebar Desktop: w-3/5 */}
-        <section className={`w-full lg:w-3/5 flex flex-col bg-slate-200/60 border border-slate-300/40 rounded-3xl overflow-hidden shadow-inner relative min-h-[500px] max-h-[calc(100vh-145px)] lg:max-h-[calc(100vh-120px)] ${
-          activeTab === 'preview' ? 'flex' : 'hidden lg:flex'
+        <section className={`w-full lg:w-3/5 bg-slate-200 p-4 lg:p-8 rounded-xl overflow-y-auto overflow-x-hidden shadow-inner h-fit max-h-[calc(100vh-145px)] lg:max-h-[calc(100vh-120px)] lg:sticky lg:top-24 ${
+          activeTab === 'preview' ? 'block' : 'hidden lg:block'
         }`}>
-          <div className="bg-white/80 backdrop-blur-md border-b border-slate-200 px-5 py-3.5 flex items-center justify-between z-10 shrink-0">
+          <div className="bg-white/80 backdrop-blur-md border border-slate-200/50 px-5 py-3.5 flex items-center justify-between z-10 shrink-0 mb-4 rounded-xl shadow-sm">
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Pratinjau Surat Perjanjian (A4 - 1 Halaman)
@@ -590,159 +602,149 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
             </span>
           </div>
 
-          {/* Area Viewer dengan overflow-x-auto agar kertas A4 tidak terpotong & bisa digeser horizontal di HP */}
-          <div className="flex-1 p-4 md:p-6 pb-20 lg:pb-6 overflow-y-auto overflow-x-auto bg-slate-100/60 flex justify-start lg:justify-center items-start">
-            
-            {/* Kertas A4 (Format Padat, flex-shrink-0 untuk mencegah penyusutan) */}
-            <div
-              ref={previewRef}
-              className="bg-white text-black shadow-lg rounded-sm flex-shrink-0 mx-auto print:shadow-none"
-              style={{
-                width: '210mm',
-                minHeight: '297mm',
-                padding: '12mm 12mm 12mm 12mm',
-                fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`,
-                fontSize: '10pt',
-                lineHeight: '1.25',
-                boxSizing: 'border-box'
-              }}
-            >
-              {/* Header Kop Surat Dinamis */}
-              <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                {logo ? (
-                  <img src={logo} alt="Logo Apartemen" style={{ maxHeight: '70px', width: 'auto', display: 'inline-block' }} />
-                ) : (
-                  <h2 style={{ margin: '0', fontSize: '15pt', fontWeight: 'bold', letterSpacing: '0.05em' }}>SUNCITY RESIDENCE APARTEMENT</h2>
-                )}
-                <div style={{ borderBottom: '3px solid #000000', marginTop: '10px', marginBottom: '10px' }}></div>
-              </div>
-
-              {/* Judul & Nomor Surat Perjanjian */}
-              <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-                <h3 style={{ textDecoration: 'underline', fontWeight: 'bold', fontSize: '12pt', margin: '0 0 3px 0', textTransform: 'uppercase' }}>
-                  {konten.judul}
-                </h3>
-                <p style={{ margin: '0', fontSize: '9.5pt', fontWeight: 'bold' }}>
-                  Nomor: {konten.nomorKontrak}
-                </p>
-              </div>
-
-              {/* Paragraf Pembuka */}
-              <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-                {konten.pembuka}
-              </p>
-
-              {/* Tabel Info Pihak Pertama */}
-              <table style={{ width: '100%', marginBottom: '6px', borderCollapse: 'collapse', border: 'none' }}>
-                <tbody>
-                  <tr>
-                    <td style={{ width: '5%', padding: '1px 0' }}>I.</td>
-                    <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
-                    <td style={{ width: '3%', padding: '1px 0' }}>:</td>
-                    <td style={{ padding: '1px 0', fontWeight: 'bold' }}>{pihak1.nama}</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td style={{ padding: '1px 0' }}>NIK</td>
-                    <td style={{ padding: '1px 0' }}>:</td>
-                    <td style={{ padding: '1px 0' }}>{pihak1.nik}</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td style={{ padding: '1px 0' }}>Alamat</td>
-                    <td style={{ padding: '1px 0' }}>:</td>
-                    <td style={{ padding: '1px 0', textAlign: 'justify' }}>{pihak1.alamat}</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-                Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
-              </p>
-
-              {/* Tabel Info Pihak Kedua */}
-              <table style={{ width: '100%', marginBottom: '6px', borderCollapse: 'collapse', border: 'none' }}>
-                <tbody>
-                  <tr>
-                    <td style={{ width: '5%', padding: '1px 0' }}>II.</td>
-                    <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
-                    <td style={{ width: '3%', padding: '3px 0' }}>:</td>
-                    <td style={{ padding: '3px 0', fontWeight: 'bold' }}>{pihak2.nama}</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td style={{ padding: '3px 0' }}>NIK</td>
-                    <td style={{ padding: '3px 0' }}>:</td>
-                    <td style={{ padding: '3px 0' }}>{pihak2.nik}</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td style={{ padding: '3px 0' }}>Alamat</td>
-                    <td style={{ padding: '3px 0' }}>:</td>
-                    <td style={{ padding: '3px 0', textAlign: 'justify' }}>{pihak2.alamat}</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-                Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
-              </p>
-
-              {/* Pernyataan Kesepakatan */}
-              <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-                {konten.kesepakatanUtama}
-              </p>
-
-              {/* Klausul-Klausul Perjanjian */}
-              <ol style={{ paddingLeft: '15px', margin: '0 0 10px 0', listStyleType: 'decimal' }}>
-                {ketentuanSewa.map((item, index) => (
-                  <li key={`sewa-${index}`} style={{ marginBottom: '4px', textAlign: 'justify', paddingLeft: '3px' }}>
-                    {item}
-                  </li>
-                ))}
-                {ketentuanUmum.map((item, index) => (
-                  <li key={`umum-${index}`} style={{ marginBottom: '4px', textAlign: 'justify', paddingLeft: '3px' }}>
-                    {item}
-                  </li>
-                ))}
-              </ol>
-
-              {/* Paragraf Penutup */}
-              <p style={{ textAlign: 'justify', marginBottom: '15px', textIndent: '25px' }}>
-                {konten.penutup}
-              </p>
-
-              {/* Tanda Tangan */}
-              <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse', border: 'none' }}>
-                <tbody>
-                  <tr>
-                    <td style={{ width: '50%', textAlign: 'center', paddingBottom: '40px', verticalAlign: 'top' }}>
-                      PIHAK PERTAMA,
-                    </td>
-                    <td style={{ width: '50%', textAlign: 'center', paddingBottom: '40px', verticalAlign: 'top' }}>
-                      PIHAK KEDUA,
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0' }}>
-                      {pihak1.nama}
-                    </td>
-                    <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '2px 0' }}>
-                      {pihak2.nama}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
-                      NIK: {pihak1.nik}
-                    </td>
-                    <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
-                      NIK: {pihak2.nik}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          {/* Kertas A4 responsif yang teksnya membungkus tanpa scrollbar mendatar */}
+          <div
+            ref={previewRef}
+            className="bg-white text-black text-[10pt] leading-[1.25] p-8 md:p-10 shadow-2xl mx-auto w-full max-w-[210mm] break-words transition-all duration-300 print:shadow-none box-border"
+            style={{
+              minHeight: '297mm',
+              fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
+            }}
+          >
+            {/* Header Kop Surat Dinamis */}
+            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+              {logo ? (
+                <img src={logo} alt="Logo Apartemen" style={{ maxHeight: '70px', width: 'auto', display: 'inline-block' }} />
+              ) : (
+                <h2 style={{ margin: '0', fontSize: '15pt', fontWeight: 'bold', letterSpacing: '0.05em' }}>SUNCITY RESIDENCE APARTEMENT</h2>
+              )}
+              <div style={{ borderBottom: '3px solid #000000', marginTop: '10px', marginBottom: '10px' }}></div>
             </div>
 
+            {/* Judul & Nomor Surat Perjanjian */}
+            <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+              <h3 style={{ textDecoration: 'underline', fontWeight: 'bold', fontSize: '12pt', margin: '0 0 3px 0', textTransform: 'uppercase' }}>
+                {konten.judul}
+              </h3>
+              <p style={{ margin: '0', fontSize: '9.5pt', fontWeight: 'bold' }}>
+                Nomor: {konten.nomorKontrak}
+              </p>
+            </div>
+
+            {/* Paragraf Pembuka */}
+            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
+              {konten.pembuka}
+            </p>
+
+            {/* Tabel Info Pihak Pertama */}
+            <table style={{ width: '100%', marginBottom: '6px', borderCollapse: 'collapse', border: 'none' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '5%', padding: '1px 0' }}>I.</td>
+                  <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
+                  <td style={{ width: '3%', padding: '1px 0' }}>:</td>
+                  <td style={{ padding: '1px 0', fontWeight: 'bold' }}>{pihak1.nama}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td style={{ padding: '1px 0' }}>NIK</td>
+                  <td style={{ padding: '1px 0' }}>:</td>
+                  <td style={{ padding: '1px 0' }}>{pihak1.nik}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td style={{ padding: '1px 0' }}>Alamat</td>
+                  <td style={{ padding: '1px 0' }}>:</td>
+                  <td style={{ padding: '1px 0', textAlign: 'justify' }}>{pihak1.alamat}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
+              Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
+            </p>
+
+            {/* Tabel Info Pihak Kedua */}
+            <table style={{ width: '100%', marginBottom: '6px', borderCollapse: 'collapse', border: 'none' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '5%', padding: '1px 0' }}>II.</td>
+                  <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
+                  <td style={{ width: '3%', padding: '3px 0' }}>:</td>
+                  <td style={{ padding: '3px 0', fontWeight: 'bold' }}>{pihak2.nama}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td style={{ padding: '3px 0' }}>NIK</td>
+                  <td style={{ padding: '3px 0' }}>:</td>
+                  <td style={{ padding: '3px 0' }}>{pihak2.nik}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td style={{ padding: '3px 0' }}>Alamat</td>
+                  <td style={{ padding: '3px 0' }}>:</td>
+                  <td style={{ padding: '3px 0', textAlign: 'justify' }}>{pihak2.alamat}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
+              Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
+            </p>
+
+            {/* Pernyataan Kesepakatan */}
+            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
+              {konten.kesepakatanUtama}
+            </p>
+
+            {/* Klausul-Klausul Perjanjian */}
+            <ol style={{ paddingLeft: '15px', margin: '0 0 10px 0', listStyleType: 'decimal' }}>
+              {ketentuanSewa.map((item, index) => (
+                <li key={`sewa-${index}`} style={{ marginBottom: '4px', textAlign: 'justify', paddingLeft: '3px' }}>
+                  {item}
+                </li>
+              ))}
+              {ketentuanUmum.map((item, index) => (
+                <li key={`umum-${index}`} style={{ marginBottom: '4px', textAlign: 'justify', paddingLeft: '3px' }}>
+                  {item}
+                </li>
+              ))}
+            </ol>
+
+            {/* Paragraf Penutup */}
+            <p style={{ textAlign: 'justify', marginBottom: '15px', textIndent: '25px' }}>
+              {konten.penutup}
+            </p>
+
+            {/* Tanda Tangan */}
+            <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse', border: 'none' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '40px', verticalAlign: 'top' }}>
+                    PIHAK PERTAMA,
+                  </td>
+                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '40px', verticalAlign: 'top' }}>
+                    PIHAK KEDUA,
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0' }}>
+                    {pihak1.nama}
+                  </td>
+                  <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '2px 0' }}>
+                    {pihak2.nama}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
+                    NIK: {pihak1.nik}
+                  </td>
+                  <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
+                    NIK: {pihak2.nik}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </section>
 
