@@ -28,17 +28,13 @@ export default function SuratPerjanjian() {
   });
 
   const [ketentuanSewa, setKetentuanSewa] = useState([
-    'PASAL 1 - OBJEK SEWA: Pihak Pertama menyewakan kepada Pihak Kedua unit apartemen Suncity Residence Jl. Pahlawan No. 1 Sidoarjo Lt.16 unit no 25 tipe 2BR untuk tujuan tempat tinggal.',
-    'PASAL 2 - JANGKA WAKTU: Sewa berlaku selama 1 TAHUN terhitung dari tanggal Rabu, 20 MEI 2026 sampai dengan Kamis, 20 MEI 2027.',
-    'PASAL 3 - BIAYA & PEMBAYARAN: Masa penagihan pembayaran sewa apartemen dimulai sejak Rabu, 22 Mei 2026 hingga Kamis, 22 Mei 2027.'
+    '1. OBJEK & JANGKA WAKTU: Pihak Pertama menyewakan unit apartemen Suncity Residence tipe 2BR kepada Pihak Kedua selama 1 TAHUN (20 Mei 2026 - 20 Mei 2027) untuk tujuan tempat tinggal. Masa penagihan dimulai sejak 22 Mei 2026.',
+    '2. LARANGAN: Pihak Kedua dilarang keras mengubah struktur bangunan fisik atau memindahtangankan hak sewa kepada Pihak Ketiga tanpa izin tertulis.',
+    '3. TATA TERTIB & TANGGUNG JAWAB: Pihak Kedua wajib mematuhi regulasi gedung. Segala kerusakan fasilitas internal akibat kelalaian pemakaian sepenuhnya menjadi tanggung jawab Pihak Kedua.',
+    '4. PERSELISIHAN: Penyelesaian perselisihan dilakukan secara kekeluargaan terlebih dahulu sebelum mengajukannya ke pengadilan negeri.'
   ]);
 
-  const [ketentuanUmum, setKetentuanUmum] = useState([
-    'Pihak Kedua dilarang keras mengubah struktur bangunan fisik atau memindahtangankan sewa kepada Pihak Ketiga tanpa izin tertulis dari Pihak Pertama.',
-    'Pihak Kedua wajib menjaga tata tertib, kebersihan lingkungan, serta mematuhi segala regulasi pengelola gedung apartemen.',
-    'Segala kerusakan fasilitas internal unit apartemen akibat kelalaian pemakaian sepenuhnya menjadi tanggung jawab Pihak Kedua.',
-    'Penyelesaian perselisihan dilakukan secara kekeluargaan terlebih dahulu sebelum mengajukannya ke pengadilan negeri.'
-  ]);
+  const [ketentuanUmum, setKetentuanUmum] = useState([]);
 
   // Referensi untuk area Pratinjau
   const suratRef = useRef(null);
@@ -119,18 +115,19 @@ export default function SuratPerjanjian() {
       }
 
       const opt = {
-        margin:       [10, 10, 10, 10], // Atas, Kiri, Bawah, Kanan
+        margin:       5, // Margin tipis
         filename:     `Surat_Sewa_${pihak2.nama.replace(/\s+/g, '_')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
+        image:        { type: 'jpeg', quality: 1 },
         html2canvas:  { 
           scale: 2, 
-          useCORS: true, 
-          windowWidth: 800, // windowWidth penting untuk mobile
+          useCORS: true,
+          windowWidth: 1024, // PAKSA RENDER SEBAGAI LAYAR DESKTOP
           onclone: (clonedDoc) => {
             const el = clonedDoc.getElementById('dokumen-surat');
             if (el) {
-              el.style.width = '210mm';
+              el.style.width = '210mm'; // Kunci ukuran A4
               el.style.maxWidth = '210mm';
+              el.style.padding = '15mm'; // Beri ruang margin dalam
             }
           }
         },
@@ -591,7 +588,7 @@ export default function SuratPerjanjian() {
           <div
             ref={suratRef}
             id="dokumen-surat"
-            className="bg-white p-6 md:p-8 shadow-2xl mx-auto w-full break-words"
+            className="bg-white text-[9.5pt] leading-snug p-6 md:p-8 shadow-2xl mx-auto w-full break-words"
             style={{
               minHeight: '297mm',
               fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
@@ -684,14 +681,14 @@ export default function SuratPerjanjian() {
             </p>
 
             {/* Klausul-Klausul Perjanjian */}
-            <ol style={{ paddingLeft: '15px', margin: '0 0 10px 0', listStyleType: 'decimal' }}>
+            <ol style={{ paddingLeft: '0', margin: '0 0 10px 0', listStyleType: 'none' }}>
               {ketentuanSewa.map((item, index) => (
-                <li key={`sewa-${index}`} style={{ marginBottom: '4px', textAlign: 'justify', paddingLeft: '3px' }}>
+                <li key={`sewa-${index}`} style={{ marginBottom: '4px', textAlign: 'justify' }}>
                   {item}
                 </li>
               ))}
               {ketentuanUmum.map((item, index) => (
-                <li key={`umum-${index}`} style={{ marginBottom: '4px', textAlign: 'justify', paddingLeft: '3px' }}>
+                <li key={`umum-${index}`} style={{ marginBottom: '4px', textAlign: 'justify' }}>
                   {item}
                 </li>
               ))}
@@ -706,11 +703,11 @@ export default function SuratPerjanjian() {
             <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse', border: 'none' }}>
               <tbody>
                 <tr>
-                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '20px', verticalAlign: 'top' }}>
-                    PIHAK PERTAMA,
+                  <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
+                    <p className="mb-12">PIHAK PERTAMA,</p>
                   </td>
-                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '20px', verticalAlign: 'top' }}>
-                    PIHAK KEDUA,
+                  <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
+                    <p className="mb-12">PIHAK KEDUA,</p>
                   </td>
                 </tr>
                 <tr>
