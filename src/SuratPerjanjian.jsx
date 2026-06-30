@@ -41,7 +41,7 @@ export default function SuratPerjanjian() {
   ]);
 
   // Referensi untuk area Pratinjau
-  const previewRef = useRef(null);
+  const suratRef = useRef(null);
 
   // Fungsi Pembantu untuk Redirect ke WhatsApp
   const redirectToWhatsApp = () => {
@@ -100,12 +100,23 @@ export default function SuratPerjanjian() {
   };
 
   // Ekspor PDF (dengan Temporary Export Sizing)
-  const handleExportPDF = async () => {
-    const element = previewRef.current;
+  const downloadPDF = async () => {
+    const element = suratRef.current;
     if (!element) return;
 
-    // Paksa ukuran kertas ke A4 (210mm) sesaat sebelum rendering ekspor
+    // Simpan style bawaan
+    const oldWidth = element.style.width;
+    const oldMaxW = element.style.maxWidth;
+    const oldPos = element.style.position;
+    const oldLeft = element.style.left;
+    const oldTop = element.style.top;
+    
+    // Paksa ke A4 absolut agar terlepas dari jepitan layar HP
+    element.style.position = 'absolute';
+    element.style.left = '0';
+    element.style.top = '0';
     element.style.width = '210mm';
+    element.style.maxWidth = '210mm';
 
     try {
       let html2pdfInstance = window.html2pdf;
@@ -121,31 +132,39 @@ export default function SuratPerjanjian() {
         html2pdfInstance = window.html2pdf;
       }
 
-      const namaAman = pihak2.nama.trim().replace(/\s+/g, '_');
       const opt = {
-        margin: 10,
-        filename: `Surat_Perjanjian_Sewa_${namaAman}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin:       [10, 10, 10, 10], // Atas, Kiri, Bawah, Kanan
+        filename:     `Surat_Sewa_${pihak2.nama.replace(/\s+/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 }, // windowWidth penting untuk mobile
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      html2pdfInstance().from(element).set(opt).save().then(() => {
-        // Kembalikan ke mode responsif HP/Desktop setelah ekspor selesai
-        element.style.width = '';
+      html2pdfInstance().set(opt).from(element).save().then(() => {
+        // Kembalikan ke posisi semula
+        element.style.position = oldPos;
+        element.style.left = oldLeft;
+        element.style.top = oldTop;
+        element.style.width = oldWidth;
+        element.style.maxWidth = oldMaxW;
+        
         redirectToWhatsApp();
       });
     } catch (error) {
       console.error('Ekspor PDF gagal:', error);
-      // Kembalikan ke mode responsif HP/Desktop jika ekspor gagal
-      element.style.width = '';
+      // Kembalikan ke posisi semula jika gagal
+      element.style.position = oldPos;
+      element.style.left = oldLeft;
+      element.style.top = oldTop;
+      element.style.width = oldWidth;
+      element.style.maxWidth = oldMaxW;
       alert('Gagal mengekspor PDF. Harap periksa koneksi internet Anda untuk memuat pustaka ekspor.');
     }
   };
 
   // Ekspor Word (dengan Temporary Export Sizing)
   const handleExportWord = () => {
-    const element = previewRef.current;
+    const element = suratRef.current;
     if (!element) return;
 
     // Paksa ukuran kertas ke A4 (210mm) sesaat untuk mengambil innerHTML yang terformat A4
@@ -278,7 +297,7 @@ export default function SuratPerjanjian() {
             <span>Unduh Word</span>
           </button>
           <button
-            onClick={handleExportPDF}
+            onClick={downloadPDF}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4.5 py-2.5 rounded-xl transition-all shadow-sm hover:shadow active:scale-95 text-sm cursor-pointer"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -591,8 +610,8 @@ export default function SuratPerjanjian() {
 
           {/* Kertas A4 responsif yang teksnya membungkus tanpa scrollbar mendatar */}
           <div
-            ref={previewRef}
-            className="bg-white text-black text-[10pt] leading-[1.25] p-8 md:p-10 shadow-2xl mx-auto w-full max-w-[210mm] break-words transition-all duration-300 print:shadow-none box-border"
+            ref={suratRef}
+            className="bg-white text-black text-[10pt] leading-[1.25] p-6 md:p-8 shadow-2xl mx-auto w-full max-w-[210mm] break-words transition-all duration-300 print:shadow-none box-border"
             style={{
               minHeight: '297mm',
               fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
@@ -707,10 +726,10 @@ export default function SuratPerjanjian() {
             <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse', border: 'none' }}>
               <tbody>
                 <tr>
-                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '40px', verticalAlign: 'top' }}>
+                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '20px', verticalAlign: 'top' }}>
                     PIHAK PERTAMA,
                   </td>
-                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '40px', verticalAlign: 'top' }}>
+                  <td style={{ width: '50%', textAlign: 'center', paddingBottom: '20px', verticalAlign: 'top' }}>
                     PIHAK KEDUA,
                   </td>
                 </tr>
@@ -749,7 +768,7 @@ export default function SuratPerjanjian() {
           <span>Unduh Word</span>
         </button>
         <button
-          onClick={handleExportPDF}
+          onClick={downloadPDF}
           className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-3.5 rounded-xl hover:bg-blue-700 active:scale-95 transition-all text-sm shadow-sm cursor-pointer"
         >
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
