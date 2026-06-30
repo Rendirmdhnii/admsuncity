@@ -104,20 +104,6 @@ export default function SuratPerjanjian() {
     const element = suratRef.current;
     if (!element) return;
 
-    // Simpan style bawaan
-    const oldWidth = element.style.width;
-    const oldMaxW = element.style.maxWidth;
-    const oldPos = element.style.position;
-    const oldLeft = element.style.left;
-    const oldTop = element.style.top;
-    
-    // Paksa ke A4 absolut agar terlepas dari jepitan layar HP
-    element.style.position = 'absolute';
-    element.style.left = '0';
-    element.style.top = '0';
-    element.style.width = '210mm';
-    element.style.maxWidth = '210mm';
-
     try {
       let html2pdfInstance = window.html2pdf;
       if (!html2pdfInstance) {
@@ -136,28 +122,26 @@ export default function SuratPerjanjian() {
         margin:       [10, 10, 10, 10], // Atas, Kiri, Bawah, Kanan
         filename:     `Surat_Sewa_${pihak2.nama.replace(/\s+/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 }, // windowWidth penting untuk mobile
+        html2canvas:  { 
+          scale: 2, 
+          useCORS: true, 
+          windowWidth: 800, // windowWidth penting untuk mobile
+          onclone: (clonedDoc) => {
+            const el = clonedDoc.getElementById('dokumen-surat');
+            if (el) {
+              el.style.width = '210mm';
+              el.style.maxWidth = '210mm';
+            }
+          }
+        },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       html2pdfInstance().set(opt).from(element).save().then(() => {
-        // Kembalikan ke posisi semula
-        element.style.position = oldPos;
-        element.style.left = oldLeft;
-        element.style.top = oldTop;
-        element.style.width = oldWidth;
-        element.style.maxWidth = oldMaxW;
-        
         redirectToWhatsApp();
       });
     } catch (error) {
       console.error('Ekspor PDF gagal:', error);
-      // Kembalikan ke posisi semula jika gagal
-      element.style.position = oldPos;
-      element.style.left = oldLeft;
-      element.style.top = oldTop;
-      element.style.width = oldWidth;
-      element.style.maxWidth = oldMaxW;
       alert('Gagal mengekspor PDF. Harap periksa koneksi internet Anda untuk memuat pustaka ekspor.');
     }
   };
@@ -166,9 +150,6 @@ export default function SuratPerjanjian() {
   const handleExportWord = () => {
     const element = suratRef.current;
     if (!element) return;
-
-    // Paksa ukuran kertas ke A4 (210mm) sesaat untuk mengambil innerHTML yang terformat A4
-    element.style.width = '210mm';
 
     const htmlContent = element.innerHTML;
     const namaAman = pihak2.nama.trim().replace(/\s+/g, '_');
@@ -239,8 +220,6 @@ export default function SuratPerjanjian() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    // Kembalikan ke mode responsif HP/Desktop setelah ekspor selesai
-    element.style.width = '';
     redirectToWhatsApp();
   };
 
@@ -611,7 +590,8 @@ export default function SuratPerjanjian() {
           {/* Kertas A4 responsif yang teksnya membungkus tanpa scrollbar mendatar */}
           <div
             ref={suratRef}
-            className="bg-white text-black text-[10pt] leading-[1.25] p-6 md:p-8 shadow-2xl mx-auto w-full max-w-[210mm] break-words transition-all duration-300 print:shadow-none box-border"
+            id="dokumen-surat"
+            className="bg-white p-6 md:p-8 shadow-2xl mx-auto w-full break-words"
             style={{
               minHeight: '297mm',
               fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
