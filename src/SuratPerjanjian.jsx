@@ -8,15 +8,15 @@ export default function SuratPerjanjian() {
   const [nomorWa, setNomorWa] = useState(''); // Default kosong
 
   const [pihak1, setPihak1] = useState({
-    nama: 'Dr. Mochammad Rizalul Rosyiadi',
-    nik: '3515061703870002',
-    alamat: 'KedungBanteng Tanggulangin Sidoarjo'
+    nama: 'Nama Pemilik (Contoh)',
+    nik: '3500000000000001',
+    alamat: 'Jl. Contoh Alamat Pemilik No. 1, Kota, Provinsi'
   });
 
   const [pihak2, setPihak2] = useState({
-    nama: 'Tri Suhartini',
-    nik: '3216196008790005',
-    alamat: 'Griya Persada Indah Blok C-8 No 11 Kabupaten Bekasi'
+    nama: 'Nama Penyewa (Contoh)',
+    nik: '3500000000000002',
+    alamat: 'Jl. Contoh Alamat Penyewa No. 2, Kota, Provinsi'
   });
 
   const [konten, setKonten] = useState({
