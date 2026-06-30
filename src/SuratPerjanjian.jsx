@@ -45,24 +45,10 @@ export default function SuratPerjanjian() {
 
   // Fungsi Pembantu untuk Redirect ke WhatsApp
   const redirectToWhatsApp = () => {
-    if (!nomorWa) return;
-    
-    // Pembersihan format nomor agar hanya angka
-    let cleanedNum = nomorWa.replace(/\D/g, '');
-    if (cleanedNum.startsWith('0')) {
-      cleanedNum = '62' + cleanedNum.slice(1);
+    if (nomorWa && nomorWa.trim() !== '') {
+      // Hanya membuka ruang obrolan kosong tanpa parameter ?text=
+      window.open(`https://wa.me/${nomorWa.replace(/\D/g, '')}`, '_blank');
     }
-    
-    const pesan = `Halo, berikut surat perjanjian sewa apartemen yang telah selesai dibuat untuk apartemen Suncity Residence.
-
-Judul: ${konten.judul}
-Nomor Kontrak: ${konten.nomorKontrak}
-Penyewa (Pihak Kedua): ${pihak2.nama}
-
-Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
-    
-    const url = `https://wa.me/${cleanedNum}?text=${encodeURIComponent(pesan)}`;
-    window.open(url, '_blank');
   };
 
   // Unggah Logo
@@ -333,16 +319,7 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
                 </select>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nomor WhatsApp Penerima (Opsional)</label>
-                <input
-                  type="text"
-                  placeholder="Masukkan nomor WhatsApp, cth: 628123456789"
-                  value={nomorWa}
-                  onChange={(e) => setNomorWa(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
-                />
-              </div>
+
 
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Unggah Logo Kop</label>
@@ -449,6 +426,16 @@ Silakan cek berkas yang telah dikirimkan. Terima kasih.`;
                   value={pihak2.alamat}
                   onChange={(e) => setPihak2({ ...pihak2, alamat: e.target.value })}
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nomor WhatsApp Tujuan (Opsional)</label>
+                <input
+                  type="text"
+                  placeholder="Masukkan nomor WhatsApp, cth: 628123456789"
+                  value={nomorWa}
+                  onChange={(e) => setNomorWa(e.target.value)}
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
                 />
               </div>
             </div>
