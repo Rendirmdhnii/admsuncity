@@ -1,4 +1,95 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+
+const COMPACTNESS_PRESETS = [
+  {
+    fontSize: '10.2pt',
+    titleSize: '11.2pt',
+    headerSize: '13.2pt',
+    nikSize: '8.7pt',
+    lineHeight: '1.35',
+    marginBottom: '8px',
+    logoHeight: '60px',
+    signatureSpacing: '35px',
+    cellPadding: '3.5px 0'
+  },
+  {
+    fontSize: '9.8pt',
+    titleSize: '10.8pt',
+    headerSize: '12.8pt',
+    nikSize: '8.3pt',
+    lineHeight: '1.28',
+    marginBottom: '6px',
+    logoHeight: '55px',
+    signatureSpacing: '30px',
+    cellPadding: '2.5px 0'
+  },
+  {
+    fontSize: '9.4pt',
+    titleSize: '10.4pt',
+    headerSize: '12.4pt',
+    nikSize: '7.9pt',
+    lineHeight: '1.22',
+    marginBottom: '5px',
+    logoHeight: '50px',
+    signatureSpacing: '25px',
+    cellPadding: '2px 0'
+  },
+  {
+    fontSize: '9.0pt',
+    titleSize: '10.0pt',
+    headerSize: '12.0pt',
+    nikSize: '7.5pt',
+    lineHeight: '1.16',
+    marginBottom: '4.5px',
+    logoHeight: '45px',
+    signatureSpacing: '20px',
+    cellPadding: '1.5px 0'
+  },
+  {
+    fontSize: '8.6pt',
+    titleSize: '9.6pt',
+    headerSize: '11.6pt',
+    nikSize: '7.1pt',
+    lineHeight: '1.12',
+    marginBottom: '3.5px',
+    logoHeight: '42px',
+    signatureSpacing: '16px',
+    cellPadding: '1px 0'
+  },
+  {
+    fontSize: '8.2pt',
+    titleSize: '9.2pt',
+    headerSize: '11.2pt',
+    nikSize: '6.7pt',
+    lineHeight: '1.08',
+    marginBottom: '2.5px',
+    logoHeight: '38px',
+    signatureSpacing: '12px',
+    cellPadding: '0.6px 0'
+  },
+  {
+    fontSize: '7.8pt',
+    titleSize: '8.8pt',
+    headerSize: '10.8pt',
+    nikSize: '6.3pt',
+    lineHeight: '1.04',
+    marginBottom: '1.5px',
+    logoHeight: '34px',
+    signatureSpacing: '8px',
+    cellPadding: '0.2px 0'
+  },
+  {
+    fontSize: '7.4pt',
+    titleSize: '8.4pt',
+    headerSize: '10.4pt',
+    nikSize: '5.9pt',
+    lineHeight: '1.01',
+    marginBottom: '1.0px',
+    logoHeight: '30px',
+    signatureSpacing: '6px',
+    cellPadding: '0.0px 0'
+  }
+];
 
 export default function SuratPerjanjian() {
   // Manajemen State Terpusat
@@ -38,6 +129,40 @@ export default function SuratPerjanjian() {
 
   // Referensi untuk area Pratinjau
   const suratRef = useRef(null);
+
+  const [compactnessLevel, setCompactnessLevel] = useState(0);
+
+  // Reset compactness ke level 0 (font terbesar) setiap kali konten berubah
+  useEffect(() => {
+    setCompactnessLevel(0);
+  }, [
+    pihak1.nama, pihak1.nik, pihak1.alamat,
+    pihak2.nama, pihak2.nik, pihak2.alamat,
+    konten.judul, konten.nomorKontrak, konten.pembuka, konten.kesepakatanUtama, konten.penutup,
+    ketentuanSewa, ketentuanUmum,
+    fontPilihan, logo
+  ]);
+
+  // Pantau tinggi kertas A4 tersembunyi, jika meluap (>1 halaman), kecilkan spasi/font
+  useEffect(() => {
+    const element = suratRef.current;
+    if (!element) return;
+
+    // Ukuran A4 tinggi target 297mm = 1122.5px. Deteksi jika tinggi konten melebihi 1124px
+    const height = element.offsetHeight;
+    if (height > 1124) {
+      if (compactnessLevel < COMPACTNESS_PRESETS.length - 1) {
+        setCompactnessLevel(prev => prev + 1);
+      }
+    }
+  }, [
+    compactnessLevel,
+    pihak1.nama, pihak1.nik, pihak1.alamat,
+    pihak2.nama, pihak2.nik, pihak2.alamat,
+    konten.judul, konten.nomorKontrak, konten.pembuka, konten.kesepakatanUtama, konten.penutup,
+    ketentuanSewa, ketentuanUmum,
+    fontPilihan, logo
+  ]);
 
   // Fungsi Pembantu untuk Redirect ke WhatsApp
   const redirectToWhatsApp = () => {
@@ -96,144 +221,148 @@ export default function SuratPerjanjian() {
   };
 
   // Fungsi Komponen IsiSurat (Tipografi Padat & Profesional)
-  const IsiSurat = () => (
-    <div className="text-[10pt] leading-snug text-black">
-      {/* Header Kop Surat Dinamis */}
-      <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-        {logo ? (
-          <img src={logo} alt="Logo Apartemen" style={{ maxHeight: '60px', width: 'auto', display: 'inline-block' }} />
-        ) : (
-          <h2 style={{ margin: '0', fontSize: '13pt', fontWeight: 'bold', letterSpacing: '0.05em' }}>SUNCITY RESIDENCE APARTEMENT</h2>
-        )}
-        <div style={{ borderBottom: '2.5px solid #000000', marginTop: '6px', marginBottom: '8px' }}></div>
-      </div>
+  const IsiSurat = () => {
+    const preset = COMPACTNESS_PRESETS[compactnessLevel] || COMPACTNESS_PRESETS[0];
 
-      {/* Judul & Nomor Surat Perjanjian */}
-      <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-        <h3 style={{ textDecoration: 'underline', fontWeight: 'bold', fontSize: '11pt', margin: '0 0 2px 0', textTransform: 'uppercase' }}>
-          {konten.judul}
-        </h3>
-        <p style={{ margin: '0', fontSize: '10pt', fontWeight: 'bold' }}>
-          Nomor: {konten.nomorKontrak}
+    return (
+      <div style={{ fontSize: preset.fontSize, lineHeight: preset.lineHeight, color: '#000000', boxSizing: 'border-box', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+        {/* Header Kop Surat Dinamis */}
+        <div style={{ textAlign: 'center', marginBottom: preset.marginBottom }}>
+          {logo ? (
+            <img src={logo} alt="Logo Apartemen" style={{ maxHeight: preset.logoHeight, maxWidth: '100%', width: 'auto', display: 'inline-block', objectFit: 'contain' }} />
+          ) : (
+            <h2 style={{ margin: '0', fontSize: preset.headerSize, fontWeight: 'bold', letterSpacing: '0.05em' }}>SUNCITY RESIDENCE APARTEMENT</h2>
+          )}
+          <div style={{ borderBottom: '2.5px solid #000000', marginTop: '6px', marginBottom: preset.marginBottom }}></div>
+        </div>
+
+        {/* Judul & Nomor Surat Perjanjian */}
+        <div style={{ textAlign: 'center', marginBottom: preset.marginBottom }}>
+          <h3 style={{ textDecoration: 'underline', fontWeight: 'bold', fontSize: preset.titleSize, margin: '0 0 2px 0', textTransform: 'uppercase' }}>
+            {konten.judul}
+          </h3>
+          <p style={{ margin: '0', fontSize: preset.fontSize, fontWeight: 'bold' }}>
+            Nomor: {konten.nomorKontrak}
+          </p>
+        </div>
+
+        {/* Paragraf Pembuka */}
+        <p style={{ textAlign: 'justify', marginBottom: preset.marginBottom, textIndent: '20px' }}>
+          {konten.pembuka}
         </p>
+
+        {/* Tabel Info Pihak Pertama */}
+        <table style={{ width: '100%', tableLayout: 'fixed', wordBreak: 'break-word', marginBottom: preset.marginBottom, borderCollapse: 'collapse', border: 'none' }}>
+          <tbody>
+            <tr>
+              <td style={{ width: '5%', padding: preset.cellPadding }}>I.</td>
+              <td style={{ width: '20%', padding: preset.cellPadding }}>Nama</td>
+              <td style={{ width: '3%', padding: preset.cellPadding }}>:</td>
+              <td style={{ padding: preset.cellPadding, fontWeight: 'bold', wordBreak: 'break-word' }}>{pihak1.nama}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style={{ padding: preset.cellPadding }}>NIK</td>
+              <td style={{ padding: preset.cellPadding }}>:</td>
+              <td style={{ padding: preset.cellPadding, wordBreak: 'break-word' }}>{pihak1.nik}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style={{ padding: preset.cellPadding }}>Alamat</td>
+              <td style={{ padding: preset.cellPadding }}>:</td>
+              <td style={{ padding: preset.cellPadding, textAlign: 'justify', wordBreak: 'break-word' }}>{pihak1.alamat}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style={{ textAlign: 'justify', marginBottom: preset.marginBottom, textIndent: '20px' }}>
+          Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
+        </p>
+
+        {/* Tabel Info Pihak Kedua */}
+        <table style={{ width: '100%', tableLayout: 'fixed', wordBreak: 'break-word', marginBottom: preset.marginBottom, borderCollapse: 'collapse', border: 'none' }}>
+          <tbody>
+            <tr>
+              <td style={{ width: '5%', padding: preset.cellPadding }}>II.</td>
+              <td style={{ width: '20%', padding: preset.cellPadding }}>Nama</td>
+              <td style={{ width: '3%', padding: preset.cellPadding }}>:</td>
+              <td style={{ padding: preset.cellPadding, fontWeight: 'bold', wordBreak: 'break-word' }}>{pihak2.nama}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style={{ padding: preset.cellPadding }}>NIK</td>
+              <td style={{ padding: preset.cellPadding }}>:</td>
+              <td style={{ padding: preset.cellPadding, wordBreak: 'break-word' }}>{pihak2.nik}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style={{ padding: preset.cellPadding }}>Alamat</td>
+              <td style={{ padding: preset.cellPadding }}>:</td>
+              <td style={{ padding: preset.cellPadding, textAlign: 'justify', wordBreak: 'break-word' }}>{pihak2.alamat}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style={{ textAlign: 'justify', marginBottom: preset.marginBottom, textIndent: '20px' }}>
+          Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
+        </p>
+
+        {/* Pernyataan Kesepakatan */}
+        <p style={{ textAlign: 'justify', marginBottom: preset.marginBottom, textIndent: '20px' }}>
+          {konten.kesepakatanUtama}
+        </p>
+
+        {/* Klausul-Klausul Perjanjian */}
+        <ol style={{ paddingLeft: '0', margin: `0 0 ${preset.marginBottom} 0`, listStyleType: 'none' }}>
+          {ketentuanSewa.map((item, index) => (
+            <li key={`sewa-${index}`} style={{ marginBottom: preset.marginBottom, textAlign: 'justify' }}>
+              {item}
+            </li>
+          ))}
+          {ketentuanUmum.map((item, index) => (
+            <li key={`umum-${index}`} style={{ marginBottom: preset.marginBottom, textAlign: 'justify' }}>
+              {item}
+            </li>
+          ))}
+        </ol>
+
+        {/* Paragraf Penutup */}
+        <p style={{ textAlign: 'justify', marginBottom: preset.marginBottom, textIndent: '20px' }}>
+          {konten.penutup}
+        </p>
+
+        {/* Tanda Tangan */}
+        <table style={{ width: '100%', marginTop: '10px', borderCollapse: 'collapse', border: 'none', tableLayout: 'fixed' }}>
+          <tbody>
+            <tr>
+              <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top', wordBreak: 'break-word' }}>
+                <p style={{ marginBottom: preset.signatureSpacing }}>PIHAK PERTAMA,</p>
+              </td>
+              <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top', wordBreak: 'break-word' }}>
+                <p style={{ marginBottom: preset.signatureSpacing }}>PIHAK KEDUA,</p>
+              </td>
+            </tr>
+            <tr>
+              <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0', wordBreak: 'break-word' }}>
+                {pihak1.nama}
+              </td>
+              <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0', wordBreak: 'break-word' }}>
+                {pihak2.nama}
+              </td>
+            </tr>
+            <tr>
+              <td style={{ textAlign: 'center', fontSize: preset.nikSize, color: '#555555', padding: '1px 0', wordBreak: 'break-word' }}>
+                NIK: {pihak1.nik}
+              </td>
+              <td style={{ textAlign: 'center', fontSize: preset.nikSize, color: '#555555', padding: '1px 0', wordBreak: 'break-word' }}>
+                NIK: {pihak2.nik}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-
-      {/* Paragraf Pembuka */}
-      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
-        {konten.pembuka}
-      </p>
-
-      {/* Tabel Info Pihak Pertama */}
-      <table style={{ width: '100%', marginBottom: '4px', borderCollapse: 'collapse', border: 'none' }}>
-        <tbody>
-          <tr>
-            <td style={{ width: '5%', padding: '1px 0' }}>I.</td>
-            <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
-            <td style={{ width: '3%', padding: '1px 0' }}>:</td>
-            <td style={{ padding: '1px 0', fontWeight: 'bold' }}>{pihak1.nama}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td style={{ padding: '1px 0' }}>NIK</td>
-            <td style={{ padding: '1px 0' }}>:</td>
-            <td style={{ padding: '1px 0' }}>{pihak1.nik}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td style={{ padding: '1px 0' }}>Alamat</td>
-            <td style={{ padding: '1px 0' }}>:</td>
-            <td style={{ padding: '1px 0', textAlign: 'justify' }}>{pihak1.alamat}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
-        Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
-      </p>
-
-      {/* Tabel Info Pihak Kedua */}
-      <table style={{ width: '100%', marginBottom: '4px', borderCollapse: 'collapse', border: 'none' }}>
-        <tbody>
-          <tr>
-            <td style={{ width: '5%', padding: '1px 0' }}>II.</td>
-            <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
-            <td style={{ width: '3%', padding: '1px 0' }}>:</td>
-            <td style={{ padding: '1px 0', fontWeight: 'bold' }}>{pihak2.nama}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td style={{ padding: '1px 0' }}>NIK</td>
-            <td style={{ padding: '1px 0' }}>:</td>
-            <td style={{ padding: '1px 0' }}>{pihak2.nik}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td style={{ padding: '1px 0' }}>Alamat</td>
-            <td style={{ padding: '1px 0' }}>:</td>
-            <td style={{ padding: '1px 0', textAlign: 'justify' }}>{pihak2.alamat}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
-        Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
-      </p>
-
-      {/* Pernyataan Kesepakatan */}
-      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
-        {konten.kesepakatanUtama}
-      </p>
-
-      {/* Klausul-Klausul Perjanjian (Dikompres Maksimal 4 Poin Utama) */}
-      <ol style={{ paddingLeft: '0', margin: '0 0 6px 0', listStyleType: 'none' }}>
-        {ketentuanSewa.map((item, index) => (
-          <li key={`sewa-${index}`} style={{ marginBottom: '3px', textAlign: 'justify' }}>
-            {item}
-          </li>
-        ))}
-        {ketentuanUmum.map((item, index) => (
-          <li key={`umum-${index}`} style={{ marginBottom: '3px', textAlign: 'justify' }}>
-            {item}
-          </li>
-        ))}
-      </ol>
-
-      {/* Paragraf Penutup */}
-      <p style={{ textAlign: 'justify', marginBottom: '10px', textIndent: '20px' }}>
-        {konten.penutup}
-      </p>
-
-      {/* Tanda Tangan */}
-      <table style={{ width: '100%', marginTop: '15px', borderCollapse: 'collapse', border: 'none' }}>
-        <tbody>
-          <tr>
-            <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
-              <p style={{ marginBottom: '30px' }}>PIHAK PERTAMA,</p>
-            </td>
-            <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
-              <p style={{ marginBottom: '30px' }}>PIHAK KEDUA,</p>
-            </td>
-          </tr>
-          <tr>
-            <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0' }}>
-              {pihak1.nama}
-            </td>
-            <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0' }}>
-              {pihak2.nama}
-            </td>
-          </tr>
-          <tr>
-            <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
-              NIK: {pihak1.nik}
-            </td>
-            <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
-              NIK: {pihak2.nik}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
+    );
+  };
 
   // Ekspor PDF (Sederhana dengan Hidden Export Node)
   const downloadPDF = async () => {
@@ -258,7 +387,15 @@ export default function SuratPerjanjian() {
         margin:       0,
         filename:     `Surat_Sewa_${pihak2.nama.replace(/\s+/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { scale: 2, useCORS: true },
+        html2canvas:  { 
+          scale: 2, 
+          useCORS: true,
+          logging: false,
+          width: 794,        // Mengunci lebar ke ukuran A4 (96 DPI)
+          windowWidth: 794,  // Mencegah penyesuaian otomatis layout di layar HP
+          scrollX: 0,
+          scrollY: 0
+        },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
@@ -278,6 +415,7 @@ export default function SuratPerjanjian() {
 
     const htmlContent = element.innerHTML;
     const namaAman = pihak2.nama.trim().replace(/\s+/g, '_');
+    const preset = COMPACTNESS_PRESETS[compactnessLevel] || COMPACTNESS_PRESETS[0];
 
     const fullHtml = `
       <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -294,13 +432,13 @@ export default function SuratPerjanjian() {
         <![endif]-->
         <style>
           @page {
-            size: A4;
-            margin: 1cm;
+            size: 21.0cm 29.7cm;
+            margin: 1.5cm;
           }
           body {
             font-family: '${fontPilihan}', 'Times New Roman', Times, serif;
-            font-size: 10pt;
-            line-height: 1.15;
+            font-size: ${preset.fontSize};
+            line-height: ${preset.lineHeight};
             text-align: justify;
             margin: 0;
             padding: 0;
@@ -308,15 +446,15 @@ export default function SuratPerjanjian() {
           }
           h3 {
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: ${preset.marginBottom};
           }
           table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: ${preset.marginBottom};
           }
           td {
-            padding: 2px 4px;
+            padding: ${preset.cellPadding};
             vertical-align: top;
           }
           ol {
@@ -324,7 +462,7 @@ export default function SuratPerjanjian() {
             padding-left: 0;
           }
           li {
-            margin-bottom: 4px;
+            margin-bottom: ${preset.marginBottom};
             text-align: justify;
           }
         </style>
@@ -708,7 +846,7 @@ export default function SuratPerjanjian() {
               Pratinjau Surat Perjanjian (A4 - 1 Halaman)
             </span>
             <span className="text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full font-mono font-semibold">
-              Huruf: {fontPilihan} | Ukuran 10pt (Padat)
+              Huruf: {fontPilihan} | Ukuran: {COMPACTNESS_PRESETS[compactnessLevel].fontSize} {compactnessLevel > 0 ? `(Dikompresi Lvl ${compactnessLevel})` : '(Normal)'}
             </span>
           </div>
 
@@ -749,8 +887,19 @@ export default function SuratPerjanjian() {
       </div>
 
       {/* Kertas 2 (Untuk Ekspor PDF/Word Tersembunyi) */}
-      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
-        <div ref={suratRef} className="bg-white text-black" style={{ width: '210mm', minHeight: '297mm', padding: '15mm', fontFamily: fontPilihan }}>
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '794px', height: '1123px', overflow: 'hidden' }}>
+        <div 
+          ref={suratRef} 
+          className="bg-white text-black" 
+          style={{ 
+            boxSizing: 'border-box',
+            width: '210mm', 
+            minHeight: '297mm', 
+            padding: '15mm', 
+            fontFamily: fontPilihan,
+            position: 'relative'
+          }}
+        >
           <IsiSurat />
         </div>
       </div>
