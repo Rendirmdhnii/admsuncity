@@ -95,7 +95,147 @@ export default function SuratPerjanjian() {
     setKetentuanUmum(ketentuanUmum.filter((_, i) => i !== index));
   };
 
-  // Ekspor PDF (dengan Temporary Export Sizing)
+  // Fungsi Komponen IsiSurat (Tipografi Padat & Profesional)
+  const IsiSurat = () => (
+    <div className="text-[10pt] leading-snug text-black">
+      {/* Header Kop Surat Dinamis */}
+      <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+        {logo ? (
+          <img src={logo} alt="Logo Apartemen" style={{ maxHeight: '60px', width: 'auto', display: 'inline-block' }} />
+        ) : (
+          <h2 style={{ margin: '0', fontSize: '13pt', fontWeight: 'bold', letterSpacing: '0.05em' }}>SUNCITY RESIDENCE APARTEMENT</h2>
+        )}
+        <div style={{ borderBottom: '2.5px solid #000000', marginTop: '6px', marginBottom: '8px' }}></div>
+      </div>
+
+      {/* Judul & Nomor Surat Perjanjian */}
+      <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+        <h3 style={{ textDecoration: 'underline', fontWeight: 'bold', fontSize: '11pt', margin: '0 0 2px 0', textTransform: 'uppercase' }}>
+          {konten.judul}
+        </h3>
+        <p style={{ margin: '0', fontSize: '10pt', fontWeight: 'bold' }}>
+          Nomor: {konten.nomorKontrak}
+        </p>
+      </div>
+
+      {/* Paragraf Pembuka */}
+      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
+        {konten.pembuka}
+      </p>
+
+      {/* Tabel Info Pihak Pertama */}
+      <table style={{ width: '100%', marginBottom: '4px', borderCollapse: 'collapse', border: 'none' }}>
+        <tbody>
+          <tr>
+            <td style={{ width: '5%', padding: '1px 0' }}>I.</td>
+            <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
+            <td style={{ width: '3%', padding: '1px 0' }}>:</td>
+            <td style={{ padding: '1px 0', fontWeight: 'bold' }}>{pihak1.nama}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td style={{ padding: '1px 0' }}>NIK</td>
+            <td style={{ padding: '1px 0' }}>:</td>
+            <td style={{ padding: '1px 0' }}>{pihak1.nik}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td style={{ padding: '1px 0' }}>Alamat</td>
+            <td style={{ padding: '1px 0' }}>:</td>
+            <td style={{ padding: '1px 0', textAlign: 'justify' }}>{pihak1.alamat}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
+        Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
+      </p>
+
+      {/* Tabel Info Pihak Kedua */}
+      <table style={{ width: '100%', marginBottom: '4px', borderCollapse: 'collapse', border: 'none' }}>
+        <tbody>
+          <tr>
+            <td style={{ width: '5%', padding: '1px 0' }}>II.</td>
+            <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
+            <td style={{ width: '3%', padding: '1px 0' }}>:</td>
+            <td style={{ padding: '1px 0', fontWeight: 'bold' }}>{pihak2.nama}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td style={{ padding: '1px 0' }}>NIK</td>
+            <td style={{ padding: '1px 0' }}>:</td>
+            <td style={{ padding: '1px 0' }}>{pihak2.nik}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td style={{ padding: '1px 0' }}>Alamat</td>
+            <td style={{ padding: '1px 0' }}>:</td>
+            <td style={{ padding: '1px 0', textAlign: 'justify' }}>{pihak2.alamat}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
+        Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
+      </p>
+
+      {/* Pernyataan Kesepakatan */}
+      <p style={{ textAlign: 'justify', marginBottom: '4px', textIndent: '20px' }}>
+        {konten.kesepakatanUtama}
+      </p>
+
+      {/* Klausul-Klausul Perjanjian (Dikompres Maksimal 4 Poin Utama) */}
+      <ol style={{ paddingLeft: '0', margin: '0 0 6px 0', listStyleType: 'none' }}>
+        {ketentuanSewa.map((item, index) => (
+          <li key={`sewa-${index}`} style={{ marginBottom: '3px', textAlign: 'justify' }}>
+            {item}
+          </li>
+        ))}
+        {ketentuanUmum.map((item, index) => (
+          <li key={`umum-${index}`} style={{ marginBottom: '3px', textAlign: 'justify' }}>
+            {item}
+          </li>
+        ))}
+      </ol>
+
+      {/* Paragraf Penutup */}
+      <p style={{ textAlign: 'justify', marginBottom: '10px', textIndent: '20px' }}>
+        {konten.penutup}
+      </p>
+
+      {/* Tanda Tangan */}
+      <table style={{ width: '100%', marginTop: '15px', borderCollapse: 'collapse', border: 'none' }}>
+        <tbody>
+          <tr>
+            <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
+              <p style={{ marginBottom: '30px' }}>PIHAK PERTAMA,</p>
+            </td>
+            <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
+              <p style={{ marginBottom: '30px' }}>PIHAK KEDUA,</p>
+            </td>
+          </tr>
+          <tr>
+            <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0' }}>
+              {pihak1.nama}
+            </td>
+            <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0' }}>
+              {pihak2.nama}
+            </td>
+          </tr>
+          <tr>
+            <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
+              NIK: {pihak1.nik}
+            </td>
+            <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
+              NIK: {pihak2.nik}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+
+  // Ekspor PDF (Sederhana dengan Hidden Export Node)
   const downloadPDF = async () => {
     const element = suratRef.current;
     if (!element) return;
@@ -115,22 +255,10 @@ export default function SuratPerjanjian() {
       }
 
       const opt = {
-        margin:       5, // Margin tipis
+        margin:       0,
         filename:     `Surat_Sewa_${pihak2.nama.replace(/\s+/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { 
-          scale: 2, 
-          useCORS: true,
-          windowWidth: 1024, // PAKSA RENDER SEBAGAI LAYAR DESKTOP
-          onclone: (clonedDoc) => {
-            const el = clonedDoc.getElementById('dokumen-surat');
-            if (el) {
-              el.style.width = '210mm'; // Kunci ukuran A4
-              el.style.maxWidth = '210mm';
-              el.style.padding = '15mm'; // Beri ruang margin dalam
-            }
-          }
-        },
+        html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
@@ -143,7 +271,7 @@ export default function SuratPerjanjian() {
     }
   };
 
-  // Ekspor Word (dengan Temporary Export Sizing)
+  // Ekspor Word (Sederhana dengan Hidden Export Node)
   const handleExportWord = () => {
     const element = suratRef.current;
     if (!element) return;
@@ -586,148 +714,13 @@ export default function SuratPerjanjian() {
 
           {/* Kertas A4 responsif yang teksnya membungkus tanpa scrollbar mendatar */}
           <div
-            ref={suratRef}
             id="dokumen-surat"
-            className="bg-white text-[9.5pt] leading-snug p-6 md:p-8 shadow-2xl mx-auto w-full break-words"
+            className="bg-white p-6 md:p-8 shadow-2xl mx-auto w-full break-words"
             style={{
-              minHeight: '297mm',
               fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
             }}
           >
-            {/* Header Kop Surat Dinamis */}
-            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-              {logo ? (
-                <img src={logo} alt="Logo Apartemen" style={{ maxHeight: '70px', width: 'auto', display: 'inline-block' }} />
-              ) : (
-                <h2 style={{ margin: '0', fontSize: '15pt', fontWeight: 'bold', letterSpacing: '0.05em' }}>SUNCITY RESIDENCE APARTEMENT</h2>
-              )}
-              <div style={{ borderBottom: '3px solid #000000', marginTop: '10px', marginBottom: '10px' }}></div>
-            </div>
-
-            {/* Judul & Nomor Surat Perjanjian */}
-            <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-              <h3 style={{ textDecoration: 'underline', fontWeight: 'bold', fontSize: '12pt', margin: '0 0 3px 0', textTransform: 'uppercase' }}>
-                {konten.judul}
-              </h3>
-              <p style={{ margin: '0', fontSize: '9.5pt', fontWeight: 'bold' }}>
-                Nomor: {konten.nomorKontrak}
-              </p>
-            </div>
-
-            {/* Paragraf Pembuka */}
-            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-              {konten.pembuka}
-            </p>
-
-            {/* Tabel Info Pihak Pertama */}
-            <table style={{ width: '100%', marginBottom: '6px', borderCollapse: 'collapse', border: 'none' }}>
-              <tbody>
-                <tr>
-                  <td style={{ width: '5%', padding: '1px 0' }}>I.</td>
-                  <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
-                  <td style={{ width: '3%', padding: '1px 0' }}>:</td>
-                  <td style={{ padding: '1px 0', fontWeight: 'bold' }}>{pihak1.nama}</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td style={{ padding: '1px 0' }}>NIK</td>
-                  <td style={{ padding: '1px 0' }}>:</td>
-                  <td style={{ padding: '1px 0' }}>{pihak1.nik}</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td style={{ padding: '1px 0' }}>Alamat</td>
-                  <td style={{ padding: '1px 0' }}>:</td>
-                  <td style={{ padding: '1px 0', textAlign: 'justify' }}>{pihak1.alamat}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-              Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
-            </p>
-
-            {/* Tabel Info Pihak Kedua */}
-            <table style={{ width: '100%', marginBottom: '6px', borderCollapse: 'collapse', border: 'none' }}>
-              <tbody>
-                <tr>
-                  <td style={{ width: '5%', padding: '1px 0' }}>II.</td>
-                  <td style={{ width: '20%', padding: '1px 0' }}>Nama</td>
-                  <td style={{ width: '3%', padding: '3px 0' }}>:</td>
-                  <td style={{ padding: '3px 0', fontWeight: 'bold' }}>{pihak2.nama}</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td style={{ padding: '3px 0' }}>NIK</td>
-                  <td style={{ padding: '3px 0' }}>:</td>
-                  <td style={{ padding: '3px 0' }}>{pihak2.nik}</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td style={{ padding: '3px 0' }}>Alamat</td>
-                  <td style={{ padding: '3px 0' }}>:</td>
-                  <td style={{ padding: '3px 0', textAlign: 'justify' }}>{pihak2.alamat}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-              Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
-            </p>
-
-            {/* Pernyataan Kesepakatan */}
-            <p style={{ textAlign: 'justify', marginBottom: '6px', textIndent: '25px' }}>
-              {konten.kesepakatanUtama}
-            </p>
-
-            {/* Klausul-Klausul Perjanjian */}
-            <ol style={{ paddingLeft: '0', margin: '0 0 10px 0', listStyleType: 'none' }}>
-              {ketentuanSewa.map((item, index) => (
-                <li key={`sewa-${index}`} style={{ marginBottom: '4px', textAlign: 'justify' }}>
-                  {item}
-                </li>
-              ))}
-              {ketentuanUmum.map((item, index) => (
-                <li key={`umum-${index}`} style={{ marginBottom: '4px', textAlign: 'justify' }}>
-                  {item}
-                </li>
-              ))}
-            </ol>
-
-            {/* Paragraf Penutup */}
-            <p style={{ textAlign: 'justify', marginBottom: '15px', textIndent: '25px' }}>
-              {konten.penutup}
-            </p>
-
-            {/* Tanda Tangan */}
-            <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse', border: 'none' }}>
-              <tbody>
-                <tr>
-                  <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
-                    <p className="mb-12">PIHAK PERTAMA,</p>
-                  </td>
-                  <td style={{ width: '50%', textAlign: 'center', verticalAlign: 'top' }}>
-                    <p className="mb-12">PIHAK KEDUA,</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '1px 0' }}>
-                    {pihak1.nama}
-                  </td>
-                  <td style={{ textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', padding: '2px 0' }}>
-                    {pihak2.nama}
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
-                    NIK: {pihak1.nik}
-                  </td>
-                  <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
-                    NIK: {pihak2.nik}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <IsiSurat />
           </div>
         </section>
 
@@ -753,6 +746,13 @@ export default function SuratPerjanjian() {
           </svg>
           <span>Unduh PDF</span>
         </button>
+      </div>
+
+      {/* Kertas 2 (Untuk Ekspor PDF/Word Tersembunyi) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+        <div ref={suratRef} className="bg-white text-black" style={{ width: '210mm', minHeight: '297mm', padding: '15mm', fontFamily: fontPilihan }}>
+          <IsiSurat />
+        </div>
       </div>
 
     </div>
