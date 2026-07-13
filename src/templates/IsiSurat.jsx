@@ -7,7 +7,7 @@ export default function IsiSurat({ template, pihak1, pihak2, logo }) {
   if (!template) return null;
 
   return (
-    <div className="text-[10pt] leading-snug text-black">
+    <div className="text-[11pt] leading-snug text-black">
       {/* Kop Surat */}
       <div style={{ textAlign: 'center', marginBottom: '8px' }}>
         {logo ? (

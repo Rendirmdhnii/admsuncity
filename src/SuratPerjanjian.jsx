@@ -1,12 +1,11 @@
 /**
- * SuratPerjanjian.jsx — Root orchestrator (~70 lines)
+ * SuratPerjanjian.jsx — Root orchestrator
  *
  * Responsibilities (only):
  *   1. Wrap everything in AppProvider (Context)
  *   2. Render the shared app shell (header + main + bottom nav)
  *   3. Switch between views based on currentView
- *   4. Mount the correct hidden A4 export node
- *   5. Show the SuccessModal when PDF download completes
+ *   4. Show the SuccessModal when PDF download completes
  *
  * All business logic lives in AppContext.
  * All UI lives in views/ and components/.
@@ -22,11 +21,6 @@ import Kontak from './views/Kontak';
 // Shared components
 import BottomNav from './components/BottomNav';
 import SuccessModal from './components/SuccessModal';
-
-// Hidden A4 export nodes (one per document type, mutually exclusive)
-import SuratSewa from './templates/SuratSewa';
-import SerahTerima from './templates/SerahTerima';
-import SuratKomplain from './templates/SuratKomplain';
 
 // ── App Shell ─────────────────────────────────────────────────────────────────
 
@@ -72,11 +66,6 @@ function AppShell() {
 
       {/* ── Bottom Navigation ──────────────────────────────────────────────── */}
       <BottomNav />
-
-      {/* ── Hidden A4 Export Nodes (only the active document type) ────────── */}
-      {jenisSurat === 'sewa' && <SuratSewa />}
-      {jenisSurat === 'serah_terima' && <SerahTerima />}
-      {jenisSurat === 'komplain' && <SuratKomplain />}
 
       {/* ── Success Modal ──────────────────────────────────────────────────── */}
       {showModalSukses && (

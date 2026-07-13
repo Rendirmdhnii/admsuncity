@@ -86,9 +86,9 @@ export default function Editor() {
     unitInfo, setUnitInfo,
     fontPilihan, setFontPilihan,
     logo, handleLogoUpload, handleClearLogo,
-    contacts, saveContact,
+    contacts,
     template,
-    handleDownloadPDF, isExporting,
+    exportRef, handleDownloadPDF, isExporting,
     activeSubTab, setActiveSubTab,
   } = useApp();
 
@@ -266,28 +266,46 @@ export default function Editor() {
           </div>
         )}
 
-        {/* ─── PREVIEW TAB ────────────────────────────────────────────────── */}
-        {activeSubTab === 'preview' && (
-          <div className="p-4 pb-8">
-            <div className="bg-slate-200 rounded-2xl p-4 shadow-inner">
-              <div className="flex items-center justify-between bg-white/80 backdrop-blur-md border border-slate-200/50 px-4 py-2.5 mb-4 rounded-xl shadow-sm">
-                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Pratinjau A4
-                </span>
-                <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-1 rounded-full font-mono">
-                  {fontPilihan}
-                </span>
-              </div>
-              <div
-                className="bg-white shadow-2xl mx-auto w-full break-words p-6"
-                style={{ fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif` }}
+        {/* ─── SINGLE SOURCE OF TRUTH A4 PREVIEW NODE ─────────────────────── */}
+        {/* Rendered normally in viewport when 'preview' is active, and rendered off-screen when 'form' is active */}
+        <div className={activeSubTab === 'preview' ? 'p-4 pb-8' : 'fixed left-[-9999px] top-0 pointer-events-none'}>
+          <div className="bg-slate-200 rounded-2xl p-4 shadow-inner flex justify-center overflow-hidden">
+            <div 
+              style={{ 
+                width: '100%', 
+                overflow: 'hidden', 
+                display: 'flex', 
+                justifyContent: 'center',
+                height: 'calc(297mm * min(1, (100vw - 32px) / 820))'
+              }}
+            >
+              <div 
+                style={{ 
+                  transform: 'scale(min(1, (100vw - 32px) / 820))', 
+                  transformOrigin: 'top center',
+                  width: '210mm',
+                  boxSizing: 'border-box'
+                }}
               >
-                <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} />
+                <div
+                  ref={exportRef}
+                  className="bg-white text-black shadow-2xl"
+                  style={{
+                    width: '210mm',
+                    minHeight: '297mm',
+                    padding: '15mm',
+                    boxSizing: 'border-box',
+                    backgroundColor: 'white',
+                    color: 'black',
+                    fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
+                  }}
+                >
+                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} />
+                </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
       </div>
 
