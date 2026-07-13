@@ -35,10 +35,10 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</span>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm"
+            className="flex items-center gap-1.5 bg-slate-900 hover:bg-black text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm"
           >
-            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
             </svg>
             Pilih Kontak
           </button>
@@ -54,7 +54,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
             value={data.nama}
             onChange={(e) => setData({ ...data, nama: e.target.value })}
             placeholder="Masukkan nama lengkap..."
-            className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
           />
         </div>
 
@@ -69,7 +69,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
             value={data.nik}
             onChange={(e) => setData({ ...data, nik: e.target.value })}
             placeholder="3500XXXXXXXXXXXX"
-            className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm font-mono"
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm font-mono"
           />
         </div>
 
@@ -82,7 +82,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
             value={data.alamat}
             onChange={(e) => setData({ ...data, alamat: e.target.value })}
             placeholder="Jl. Contoh No. 1, Kecamatan, Kota..."
-            className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
           />
         </div>
 
@@ -96,7 +96,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
             value={data.noWa}
             onChange={(e) => setData({ ...data, noWa: e.target.value })}
             placeholder="628123456789"
-            className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all shadow-sm"
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
           />
         </div>
 
@@ -113,15 +113,15 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
         >
           {justSaved ? (
             <>
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+              <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Kontak Tersimpan!
             </>
           ) : (
             <>
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Simpan ke Kontak Baru
             </>

@@ -15,7 +15,7 @@ const JENIS_OPTIONS = [
 function AccordionSection({ id, title, icon, openId, setOpenId, children }) {
   const isOpen = openId === id;
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm transition-all duration-200 overflow-hidden ${isOpen ? 'border-blue-300 shadow-blue-50' : 'border-slate-200'}`}>
+    <div className={`bg-white rounded-2xl border shadow-sm transition-all duration-200 overflow-hidden ${isOpen ? 'border-slate-400 shadow-slate-100' : 'border-slate-200'}`}>
       {/* Header */}
       <button
         onClick={() => setOpenId(isOpen ? null : id)}
@@ -23,17 +23,18 @@ function AccordionSection({ id, title, icon, openId, setOpenId, children }) {
       >
         <div className="flex items-center gap-3">
           <span className="text-slate-500">{icon}</span>
-          <span className={`text-sm font-bold transition-colors ${isOpen ? 'text-blue-700' : 'text-slate-700 group-hover:text-slate-900'}`}>
+          <span className={`text-sm font-semibold transition-colors ${isOpen ? 'text-slate-900' : 'text-slate-700 group-hover:text-slate-900'}`}>
             {title}
           </span>
         </div>
         <svg
-          className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-500' : ''}`}
+          className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-slate-800' : ''}`}
           fill="none"
           stroke="currentColor"
+          strokeWidth="1.5"
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
         </svg>
       </button>
 
@@ -60,9 +61,9 @@ function SegmentedControl({ value, onChange }) {
           key={tab.key}
           onClick={() => onChange(tab.key)}
           className={[
-            'flex-1 py-1.5 text-xs font-semibold rounded-[10px] transition-all cursor-pointer',
+            'flex-1 py-2 text-xs font-semibold rounded-[10px] transition-all cursor-pointer',
             value === tab.key
-              ? 'bg-white text-blue-700 shadow-sm'
+              ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50'
               : 'text-slate-500 hover:text-slate-700',
           ].join(' ')}
         >
@@ -86,7 +87,7 @@ export default function Editor() {
     unitInfo, setUnitInfo,
     fontPilihan, setFontPilihan,
     logo, handleLogoUpload, handleClearLogo,
-    contacts,
+    contacts, saveContact, // saveContact is now correctly destructured here!
     template,
     exportRef, handleDownloadPDF, isExporting,
     activeSubTab, setActiveSubTab,
@@ -99,21 +100,21 @@ export default function Editor() {
   const tanggalAkhir = hitungTanggalAkhir(durasi, satuanDurasi);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-slate-50">
 
       {/* ── Sub-header ──────────────────────────────────────────────── */}
       <div className="bg-white border-b border-slate-100 px-4 py-2 z-20">
         <div className="flex items-center gap-2 mb-2 max-w-lg mx-auto">
-          <svg className="w-5 h-5 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          <svg className="w-5 h-5 text-slate-700 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
           </svg>
-          <span className="text-sm font-bold text-slate-700 flex-1 truncate">{jenisOpt?.title}</span>
+          <span className="text-sm font-semibold text-slate-800 flex-1 truncate">{jenisOpt?.title}</span>
           <button
             onClick={gantiJenis}
             className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 cursor-pointer py-1 px-2 rounded-lg hover:bg-slate-100 transition-colors shrink-0"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
             Ganti
           </button>
@@ -129,10 +130,10 @@ export default function Editor() {
           <div className="flex flex-col gap-3 p-4 max-w-lg mx-auto">
 
             {/* Kalender Pintar banner */}
-            <div className="bg-slate-800 rounded-2xl p-4 text-white">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-white">
               <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-slate-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                 </svg>
                 <div className="flex-1">
                   <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
@@ -141,11 +142,11 @@ export default function Editor() {
                   <p className="font-bold text-sm mt-0.5">{formatTanggalID(today)}</p>
                   {jenisSurat === 'sewa' && (
                     <>
-                      <div className="border-t border-slate-700 my-2" />
+                      <div className="border-t border-slate-800 my-2" />
                       <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                         Tanggal Akhir Sewa — Otomatis
                       </p>
-                      <p className="font-bold text-sm mt-0.5 text-blue-300">
+                      <p className="font-bold text-sm mt-0.5 text-slate-300">
                         {formatTanggalPendek(tanggalAkhir)}
                       </p>
                     </>
@@ -159,8 +160,8 @@ export default function Editor() {
               id="detail"
               title="Detail Surat"
               icon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                 </svg>
               }
               openId={openSection}
@@ -169,21 +170,21 @@ export default function Editor() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nomor Kontrak</label>
                 <input type="text" value={nomorKontrak} onChange={(e) => setNomorKontrak(e.target.value)}
-                  className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none shadow-sm" />
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Info Unit (Tipe / Nomor Unit)</label>
                 <input type="text" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="cth: tipe 2BR unit 12C"
-                  className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none shadow-sm" />
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
               {jenisSurat === 'sewa' && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Durasi Sewa</label>
                   <div className="flex gap-2">
                     <input type="number" min={1} value={durasi} onChange={(e) => setDurasi(e.target.value)}
-                      className="w-24 px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none shadow-sm text-center font-bold" />
+                      className="w-24 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm text-center font-semibold" />
                     <select value={satuanDurasi} onChange={(e) => setSatuanDurasi(e.target.value)}
-                      className="flex-1 px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none shadow-sm">
+                      className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm">
                       <option value="hari">Hari</option>
                       <option value="bulan">Bulan</option>
                       <option value="tahun">Tahun</option>
@@ -194,7 +195,7 @@ export default function Editor() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Jenis Huruf</label>
                 <select value={fontPilihan} onChange={(e) => setFontPilihan(e.target.value)}
-                  className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none shadow-sm">
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm">
                   <option value="Times New Roman">Times New Roman (Formal)</option>
                   <option value="Arial">Arial (Modern)</option>
                   <option value="Calibri">Calibri (Bersih)</option>
@@ -204,9 +205,9 @@ export default function Editor() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Logo Kop Surat</label>
                 {!logo ? (
-                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-blue-400 bg-slate-50 rounded-xl p-5 cursor-pointer transition-all">
-                    <svg className="w-6 h-6 text-slate-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-slate-400 bg-slate-50 rounded-xl p-5 cursor-pointer transition-all">
+                    <svg className="w-6 h-6 text-slate-400 mb-1" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
                     <span className="text-sm text-slate-500 font-medium">Unggah Logo</span>
                     <input id="logo-upload-input" type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
@@ -226,8 +227,8 @@ export default function Editor() {
               id="pihak1"
               title="Data Pihak Pertama (Pemilik)"
               icon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
               }
               openId={openSection}
@@ -247,8 +248,8 @@ export default function Editor() {
               id="pihak2"
               title="Data Pihak Kedua (Penyewa)"
               icon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                 </svg>
               }
               openId={openSection}
@@ -266,8 +267,30 @@ export default function Editor() {
           </div>
         )}
 
+        {/* ─── PREVIEW TAB ────────────────────────────────────────────────── */}
+        {activeSubTab === 'preview' && (
+          <div className="p-4 pb-8">
+            <div className="bg-slate-200 rounded-2xl p-4 shadow-inner">
+              <div className="flex items-center justify-between bg-white/80 backdrop-blur-md border border-slate-200/50 px-4 py-2.5 mb-4 rounded-xl shadow-sm">
+                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-slate-800 animate-pulse" />
+                  Pratinjau A4
+                </span>
+                <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-1 rounded-full font-mono">
+                  {fontPilihan}
+                </span>
+              </div>
+              <div
+                className="bg-white shadow-2xl mx-auto w-full break-words p-6"
+                style={{ fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif` }}
+              >
+                <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ─── SINGLE SOURCE OF TRUTH A4 PREVIEW NODE ─────────────────────── */}
-        {/* Rendered normally in viewport when 'preview' is active, and rendered off-screen when 'form' is active */}
         <div className={activeSubTab === 'preview' ? 'p-4 pb-8' : 'fixed left-[-9999px] top-0 pointer-events-none'}>
           <div className="bg-slate-200 rounded-2xl p-4 shadow-inner flex justify-center overflow-hidden">
             <div 
@@ -319,8 +342,8 @@ export default function Editor() {
               'w-full flex items-center justify-center gap-3 font-bold py-4 rounded-2xl text-base',
               'transition-all cursor-pointer',
               isExporting
-                ? 'bg-blue-400 cursor-wait text-white'
-                : 'bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-lg shadow-blue-200',
+                ? 'bg-slate-400 cursor-wait text-white'
+                : 'bg-slate-900 hover:bg-black active:scale-95 text-white shadow-lg shadow-slate-200',
             ].join(' ')}
           >
             {isExporting ? (
@@ -333,8 +356,8 @@ export default function Editor() {
               </>
             ) : (
               <>
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
                 Pratinjau &amp; Unduh PDF
               </>
