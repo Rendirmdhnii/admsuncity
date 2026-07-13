@@ -3,7 +3,7 @@
  * Used by both the live preview and the hidden export nodes.
  * Receives a `template` object (from templateBuilder) plus party & style data.
  */
-export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti }) {
+export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti, jenisSurat, fotoBukti }) {
   if (!template) return null;
 
   const propertiLabel = (namaProperti || 'Suncity Residence').toUpperCase();
@@ -64,7 +64,7 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
             {propertiLabel}
           </h2>
         )}
-        <div style={{ borderBottom: '2px solid #000000', marginTop: '6px', marginBottom: '12px', width: '100%' }} />
+        <div style={{ borderBottom: '2.5px solid #000000', marginTop: '6px', marginBottom: '12px', width: '100%' }} />
       </div>
 
       {/* Judul & Nomor */}
@@ -164,6 +164,28 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
       <p style={pStyle}>
         {template.penutup}
       </p>
+
+      {/* Foto Bukti Serah Terima Kunci */}
+      {jenisSurat === 'serah_terima' && fotoBukti && (
+        <div style={{ textAlign: 'center', margin: '15px 0' }}>
+          <img
+            src={fotoBukti}
+            alt="Bukti Kondisi Fisik"
+            style={{
+              maxHeight: '250px',
+              maxWidth: '100%',
+              objectFit: 'contain',
+              margin: '15px auto',
+              display: 'block',
+              border: '1px solid #000000',
+              padding: '5px'
+            }}
+          />
+          <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#555555', textAlign: 'center', fontStyle: 'italic' }}>
+            Lampiran: Bukti Kondisi Fisik Unit
+          </p>
+        </div>
+      )}
 
       {/* Tanda Tangan */}
       <table style={signatureStyle}>

@@ -30,8 +30,8 @@ const JENIS_OPTIONS = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
-    title: 'Buat Surat Komplain',
-    desc: 'Surat permohonan perbaikan atau komplain dari penyewa',
+    title: 'Buat Surat Teguran / Tagihan',
+    desc: 'Surat teguran keras atau tagihan dari pemilik kepada penyewa',
   },
 ];
 

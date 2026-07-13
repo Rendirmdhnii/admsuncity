@@ -3,12 +3,11 @@ import { useApp } from '../context/AppContext';
 import KartuPihak from '../components/KartuPihak';
 import IsiSurat from '../templates/IsiSurat';
 import { formatTanggalID, formatTanggalPendek, hitungTanggalAkhir, today } from '../utils/dateHelper';
-import { openWhatsApp } from '../utils/pdfHelper';
 
 const JENIS_OPTIONS = [
   { id: 'sewa', title: 'Perjanjian Sewa' },
   { id: 'serah_terima', title: 'Serah Terima Kunci' },
-  { id: 'komplain', title: 'Surat Komplain' },
+  { id: 'komplain', title: 'Surat Teguran / Tagihan' },
 ];
 
 // ── Accordion Item ─────────────────────────────────────────────────────────────
@@ -93,6 +92,8 @@ export default function Editor() {
     template,
     exportRef, handleDownloadPDF, isExporting,
     activeSubTab, setActiveSubTab,
+    fotoBukti, setFotoBukti,
+    detailKerusakan, setDetailKerusakan,
   } = useApp();
 
   // Accordion: which section is open (null = all collapsed)
@@ -104,6 +105,8 @@ export default function Editor() {
 
   const isFormValid = () => {
     const isSewaValid = jenisSurat === 'sewa' ? (durasi !== null && durasi !== undefined && String(durasi).trim() !== '') : true;
+    const isKomplainValid = jenisSurat === 'komplain' ? (detailKerusakan?.trim() !== '') : true;
+    const isSerahTerimaValid = jenisSurat === 'serah_terima' ? (fotoBukti !== null && fotoBukti !== '') : true;
     return (
       namaProperti?.trim() !== '' &&
       nomorKontrak?.trim() !== '' &&
@@ -114,7 +117,9 @@ export default function Editor() {
       pihak2.nama?.trim() !== '' &&
       pihak2.nik?.trim() !== '' &&
       pihak2.alamat?.trim() !== '' &&
-      isSewaValid
+      isSewaValid &&
+      isKomplainValid &&
+      isSerahTerimaValid
     );
   };
 
@@ -261,6 +266,62 @@ export default function Editor() {
                   </div>
                 </div>
               )}
+
+              {/* Input Detail Pelanggaran / Kerusakan (Khusus Komplain / Teguran) */}
+              {jenisSurat === 'komplain' && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                    Detail Pelanggaran / Kerusakan<span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={detailKerusakan}
+                    onChange={(e) => setDetailKerusakan(e.target.value)}
+                    placeholder="Contoh: Terjadi pelanggaran berupa penempatan barang di koridor umum secara berulang / kerusakan wastafel retak..."
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
+                  />
+                </div>
+              )}
+
+              {/* Input Upload Foto Bukti (Khusus Serah Terima Kunci) */}
+              {jenisSurat === 'serah_terima' && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                    Foto Kondisi Fisik Unit<span className="text-red-500 ml-1">*</span>
+                  </label>
+                  {!fotoBukti ? (
+                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-slate-400 bg-slate-50 rounded-xl p-5 cursor-pointer transition-all">
+                      <svg className="w-6 h-6 text-slate-400 mb-1" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                      </svg>
+                      <span className="text-sm text-slate-500 font-medium">Unggah Foto Bukti</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setFotoBukti(reader.result);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        className="hidden"
+                      />
+                    </label>
+                  ) : (
+                    <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 p-3 rounded-xl">
+                      <img src={fotoBukti} alt="Bukti" className="h-10 w-auto object-contain rounded border border-slate-200 bg-white p-1" />
+                      <p className="flex-1 text-sm text-slate-700 font-semibold">Foto Terunggah</p>
+                      <button onClick={() => setFotoBukti(null)} className="text-sm text-red-500 font-bold hover:text-red-700 cursor-pointer">Hapus</button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Jenis Huruf</label>
                 <select value={fontPilihan} onChange={(e) => setFontPilihan(e.target.value)}
@@ -366,7 +427,7 @@ export default function Editor() {
                     textAlign: 'justify'
                   }}
                 >
-                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
+                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} />
                 </div>
               </div>
             </div>
@@ -413,7 +474,7 @@ export default function Editor() {
               {/* Pembungkus ini memaksa kertas A4 menyusut 50% secara visual di HP, TAPI ukuran aslinya tetap A4 */}
               <div style={{ transform: 'scale(0.45)', transformOrigin: 'top center', width: '210mm' }} className="origin-top">
                 <div id="kertas-surat-final" ref={exportRef} style={{ width: '210mm', minHeight: '297mm', padding: '20mm', background: 'white', color: 'black', fontFamily: '"Times New Roman", serif', fontSize: '11pt', lineHeight: '1.4', textAlign: 'justify' }}>
-                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
+                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} />
                 </div>
               </div>
             </div>
@@ -455,8 +516,6 @@ export default function Editor() {
           </div>
         </div>
       )}
-
-
 
     </div>
   );

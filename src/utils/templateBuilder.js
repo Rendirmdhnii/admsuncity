@@ -4,7 +4,7 @@ import { formatTanggalID, formatTanggalPendek, hitungTanggalAkhir, today } from 
  * Build the template content object for a given document type.
  * Returns: { judul, nomorKontrak, pembuka, kesepakatanUtama, klausul[], penutup }
  */
-export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti }) {
+export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti, detailKerusakan }) {
   const tglMulai = formatTanggalPendek(today);
   const tglAkhir = formatTanggalPendek(hitungTanggalAkhir(durasi, satuanDurasi));
   const durasiLabel = `${durasi} ${satuanDurasi === 'hari' ? 'Hari' : satuanDurasi === 'bulan' ? 'Bulan' : 'Tahun'}`;
@@ -42,18 +42,15 @@ export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nom
     };
   }
 
-  // komplain
+  // komplain / teguran
   return {
-    judul: 'SURAT PERMOHONAN PERBAIKAN / KOMPLAIN',
+    judul: 'SURAT TEGURAN / TAGIHAN',
     nomorKontrak,
-    pembuka: `Pada hari ini, ${formatTanggalID(today)}, Pihak Kedua selaku penghuni unit apartemen ${properti} ${unitInfo} mengajukan permohonan perbaikan/komplain kepada Pihak Pertama selaku pengelola/pemilik dengan perincian sebagai berikut:`,
-    kesepakatanUtama: `Pihak Kedua dengan hormat melaporkan adanya permasalahan/kerusakan pada unit huniannya dengan rincian sebagai berikut:`,
+    pembuka: `Pada hari ini, ${formatTanggalID(today)}, sehubungan dengan unit apartemen ${properti} ${unitInfo} yang disewa oleh Pihak Kedua, Pihak Pertama menyampaikan teguran keras sekaligus tagihan sehubungan dengan ditemukannya pelanggaran tata tertib / kerusakan fasilitas pada unit terkait.`,
+    kesepakatanUtama: `Rincian kejadian / kerusakan fasilitas adalah sebagai berikut:`,
     klausul: [
-      `1. UNIT YANG DILAPORKAN: Unit apartemen ${properti} ${unitInfo} atas nama Pihak Kedua.`,
-      `2. JENIS PERMASALAHAN: [Deskripsikan permasalahan secara detail, misalnya: kebocoran atap, kerusakan AC, masalah listrik, dll.]`,
-      `3. KRONOLOGI: Permasalahan diketahui pertama kali pada tanggal ${tglMulai} dan telah berdampak pada kenyamanan penghunian.`,
-      `4. HARAPAN: Pihak Kedua memohon agar Pihak Pertama segera menindaklanjuti dan melakukan perbaikan dalam waktu yang tidak terlalu lama.`,
+      detailKerusakan || 'Tidak ada rincian.'
     ],
-    penutup: `Demikian surat permohonan perbaikan ini dibuat. Atas perhatian dan tindaklanjut yang diberikan, Pihak Kedua mengucapkan terima kasih.`,
+    penutup: `Pihak Kedua diwajibkan untuk segera melakukan perbaikan atau penyelesaian administrasi selambat-lambatnya 7 (tujuh) hari sejak surat ini diterbitkan. Apabila diabaikan, Pihak Pertama berhak mengambil tindakan tegas sesuai jalur hukum dan memutus kontrak sewa secara sepihak.`,
   };
 }

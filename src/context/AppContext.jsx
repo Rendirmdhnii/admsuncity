@@ -26,6 +26,8 @@ export function AppProvider({ children }) {
   const [unitInfo, setUnitInfo] = useState('');
   const [fontPilihan, setFontPilihan] = useState('Times New Roman');
   const [logo, setLogo] = useState(null);
+  const [fotoBukti, setFotoBukti] = useState(null);
+  const [detailKerusakan, setDetailKerusakan] = useState('');
 
   // ─ Contacts ─
   const [contacts, setContacts] = useState(() => loadContacts());
@@ -41,8 +43,18 @@ export function AppProvider({ children }) {
 
   const template = useMemo(() => {
     if (!jenisSurat) return null;
-    return buildTemplate({ jenis: jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti });
-  }, [jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti]);
+    return buildTemplate({ 
+      jenis: jenisSurat, 
+      pihak1, 
+      pihak2, 
+      durasi, 
+      satuanDurasi, 
+      nomorKontrak, 
+      unitInfo, 
+      namaProperti, 
+      detailKerusakan 
+    });
+  }, [jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti, detailKerusakan]);
 
   // ── Navigation helpers ────────────────────────────────────────────────────
 
@@ -139,6 +151,8 @@ export function AppProvider({ children }) {
     unitInfo, setUnitInfo,
     fontPilihan, setFontPilihan,
     logo, handleLogoUpload, handleClearLogo,
+    fotoBukti, setFotoBukti,
+    detailKerusakan, setDetailKerusakan,
     // contacts
     contacts, saveContact, deleteContact,
     // computed
