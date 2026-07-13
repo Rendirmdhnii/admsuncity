@@ -96,10 +96,11 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
           <input
             type="text"
             inputMode="numeric"
+            maxLength={15}
             value={data.noWa}
             onChange={(e) => {
               const hanyaAngka = e.target.value.replace(/\D/g, '');
-              setData({ ...data, noWa: hanyaAngka });
+              setData({ ...data, noWa: hanyaAngka.slice(0, 15) });
             }}
             placeholder="628123456789"
             className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"

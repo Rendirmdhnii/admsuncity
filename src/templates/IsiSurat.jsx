@@ -184,14 +184,6 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
               {pihak2.nama}
             </td>
           </tr>
-          <tr>
-            <td style={{ textAlign: 'center', fontSize: '11px', color: '#555555', padding: '1px 0' }}>
-              NIK: {pihak1.nik}
-            </td>
-            <td style={{ textAlign: 'center', fontSize: '11px', color: '#555555', padding: '1px 0' }}>
-              NIK: {pihak2.nik}
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
