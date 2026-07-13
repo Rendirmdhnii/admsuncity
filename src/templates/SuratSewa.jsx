@@ -10,7 +10,7 @@ export default function SuratSewa() {
   if (!template || !exportRef) return null;
 
   return (
-    <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, zIndex: -9999, width: '210mm', backgroundColor: 'white', opacity: 0, pointerEvents: 'none' }}>
       <div
         ref={exportRef}
         className="bg-white text-black"
@@ -18,6 +18,8 @@ export default function SuratSewa() {
           width: '210mm',
           minHeight: '297mm',
           padding: '15mm',
+          backgroundColor: 'white',
+          color: 'black',
           fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`,
         }}
       >

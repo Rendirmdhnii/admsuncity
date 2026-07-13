@@ -25,7 +25,13 @@ export async function downloadPDF(element, filename) {
     margin: 0,
     filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`,
     image: { type: 'jpeg', quality: 1 },
-    html2canvas: { scale: 2, useCORS: true },
+    html2canvas: { 
+      scale: 2, 
+      useCORS: true,
+      scrollY: 0,
+      scrollX: 0,
+      windowWidth: 800
+    },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
   };
 
