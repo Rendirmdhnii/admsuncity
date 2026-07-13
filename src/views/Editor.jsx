@@ -101,6 +101,21 @@ export default function Editor() {
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
   const tanggalAkhir = hitungTanggalAkhir(durasi, satuanDurasi);
 
+  const handleOpenPreview = () => {
+    if (
+      !pihak1.nama?.trim() ||
+      !pihak1.nik?.trim() ||
+      !pihak2.nama?.trim() ||
+      !pihak2.nik?.trim() ||
+      !nomorKontrak?.trim() ||
+      !unitInfo?.trim()
+    ) {
+      alert('Mohon lengkapi semua form data Pihak Pertama, Pihak Kedua, dan Detail Surat sebelum melihat pratinjau.');
+      return;
+    }
+    setShowModalPratinjau(true);
+  };
+
   return (
     <div className="flex flex-col h-full bg-slate-50">
 
@@ -323,7 +338,7 @@ export default function Editor() {
       <div className="fixed bottom-[68px] left-0 right-0 z-40 bg-white border-t border-slate-100 px-4 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.08)]">
         <div className="max-w-lg mx-auto">
           <button
-            onClick={() => setShowModalPratinjau(true)}
+            onClick={handleOpenPreview}
             className="w-full flex items-center justify-center gap-3 bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-2xl text-base transition-all active:scale-95 shadow-lg shadow-slate-200 cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
