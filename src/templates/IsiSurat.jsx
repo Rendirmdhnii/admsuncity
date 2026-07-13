@@ -14,7 +14,8 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
     textIndent: '20px',
     marginBottom: '8px',
     color: '#000000',
-    lineHeight: '1.5',
+    lineHeight: '1.6',
+    fontSize: '15px',
   };
 
   const tableStyle = {
@@ -23,7 +24,8 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
     borderCollapse: 'collapse',
     border: 'none',
     color: '#000000',
-    lineHeight: '1.5',
+    lineHeight: '1.6',
+    fontSize: '15px',
   };
 
   const listStyle = {
@@ -31,7 +33,8 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
     marginBottom: '8px',
     listStyleType: 'none',
     color: '#000000',
-    lineHeight: '1.5',
+    lineHeight: '1.6',
+    fontSize: '15px',
   };
 
   const signatureStyle = {
@@ -42,42 +45,44 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
     pageBreakInside: 'avoid',
     breakInside: 'avoid',
     color: '#000000',
-    lineHeight: '1.5',
+    lineHeight: '1.6',
+    fontSize: '15px',
   };
 
   return (
-    <div style={{ fontSize: '11pt', lineHeight: '1.5', color: '#000000' }}>
+    <div style={{ fontSize: '15px', lineHeight: '1.6', color: '#000000', fontFamily: '"Times New Roman", Times, serif' }}>
       {/* Kop Surat */}
-      <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '12px', width: '100%' }}>
         {logo ? (
           <img
             src={logo}
-            alt="Logo Apartemen"
+            alt="Logo Properti"
             style={{ maxHeight: '60px', width: 'auto', display: 'inline-block' }}
           />
         ) : (
-          <h2 style={{ margin: 0, fontSize: '13pt', fontWeight: 'bold', letterSpacing: '0.05em', color: '#000000', textTransform: 'uppercase' }}>
+          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold', letterSpacing: '0.05em', color: '#000000', textTransform: 'uppercase', textAlign: 'center' }}>
             {propertiLabel}
           </h2>
         )}
-        <div style={{ borderBottom: '2.5px solid #000000', marginTop: '6px', marginBottom: '12px' }} />
+        <div style={{ borderBottom: '2px solid #000000', marginTop: '6px', marginBottom: '12px', width: '100%' }} />
       </div>
 
       {/* Judul & Nomor */}
-      <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '12px', width: '100%' }}>
         <h3
           style={{
             textDecoration: 'underline',
             fontWeight: 'bold',
-            fontSize: '11pt',
+            fontSize: '16px',
             margin: '0 0 2px 0',
             textTransform: 'uppercase',
             color: '#000000',
+            textAlign: 'center',
           }}
         >
           {template.judul}
         </h3>
-        <p style={{ margin: 0, fontSize: '10pt', fontWeight: 'bold', color: '#000000' }}>
+        <p style={{ margin: 0, fontSize: '14px', fontWeight: 'bold', color: '#000000', textAlign: 'center' }}>
           Nomor: {template.nomorKontrak}
         </p>
       </div>
@@ -180,10 +185,10 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
             </td>
           </tr>
           <tr>
-            <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
+            <td style={{ textAlign: 'center', fontSize: '11px', color: '#555555', padding: '1px 0' }}>
               NIK: {pihak1.nik}
             </td>
-            <td style={{ textAlign: 'center', fontSize: '8.5pt', color: '#555555', padding: '1px 0' }}>
+            <td style={{ textAlign: 'center', fontSize: '11px', color: '#555555', padding: '1px 0' }}>
               NIK: {pihak2.nik}
             </td>
           </tr>

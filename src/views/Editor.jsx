@@ -292,38 +292,29 @@ export default function Editor() {
         {/* ─── PREVIEW TAB (Visual Only) ──────────────────────────────────── */}
         {activeSubTab === 'preview' && (
           <div className="p-4 pb-8">
-            <div className="bg-slate-200 rounded-2xl p-4 shadow-inner flex justify-center overflow-hidden">
+            <div className="w-full bg-slate-200 rounded-xl p-2 flex justify-center overflow-hidden" style={{ minHeight: '70vh' }}>
+              {/* Origin top-center memastikan kertas mengecil ke tengah, bukan ke kiri */}
               <div 
+                className="origin-top" 
                 style={{ 
-                  width: '100%', 
-                  overflow: 'hidden', 
-                  display: 'flex', 
-                  justifyContent: 'center',
-                  height: 'calc(297mm * min(1, (100vw - 32px) / 820))'
+                  width: '794px', 
+                  /* Kalkulasi: (Lebar Layar Mobile - margin kiri kanan) dibagi Lebar A4 */
+                  transform: 'scale(calc((100vw - 32px) / 794))',
+                  marginBottom: '-100%' /* Mencegah sisa ruang kosong akibat scale down */
                 }}
               >
                 <div 
+                  className="bg-white shadow-xl" 
                   style={{ 
-                    transform: 'scale(min(1, (100vw - 32px) / 820))', 
-                    transformOrigin: 'top center',
-                    width: '210mm',
-                    boxSizing: 'border-box'
+                    width: '794px', 
+                    minHeight: '1123px', 
+                    padding: '75px', // Setara 20mm
+                    boxSizing: 'border-box',
+                    color: '#000000',
+                    fontFamily: '"Times New Roman", Times, serif'
                   }}
                 >
-                  <div
-                    className="bg-white shadow-2xl p-6"
-                    style={{
-                      width: '210mm',
-                      minHeight: '297mm',
-                      padding: '20mm',
-                      boxSizing: 'border-box',
-                      backgroundColor: 'white',
-                      color: 'black',
-                      fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
-                    }}
-                  >
-                    <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
-                  </div>
+                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
                 </div>
               </div>
             </div>
