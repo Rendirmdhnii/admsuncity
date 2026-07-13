@@ -67,7 +67,10 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
             inputMode="numeric"
             maxLength={16}
             value={data.nik}
-            onChange={(e) => setData({ ...data, nik: e.target.value })}
+            onChange={(e) => {
+              const hanyaAngka = e.target.value.replace(/\D/g, '');
+              setData({ ...data, nik: hanyaAngka.slice(0, 16) });
+            }}
             placeholder="3500XXXXXXXXXXXX"
             className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm font-mono"
           />
@@ -91,10 +94,13 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
             Nomor WhatsApp
           </label>
           <input
-            type="tel"
+            type="text"
             inputMode="numeric"
             value={data.noWa}
-            onChange={(e) => setData({ ...data, noWa: e.target.value })}
+            onChange={(e) => {
+              const hanyaAngka = e.target.value.replace(/\D/g, '');
+              setData({ ...data, noWa: hanyaAngka });
+            }}
             placeholder="628123456789"
             className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
           />
