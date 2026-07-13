@@ -79,6 +79,7 @@ function SegmentedControl({ value, onChange }) {
 export default function Editor() {
   const {
     jenisSurat, gantiJenis,
+    namaProperti, setNamaProperti,
     pihak1, setPihak1,
     pihak2, setPihak2,
     durasi, setDurasi,
@@ -87,7 +88,7 @@ export default function Editor() {
     unitInfo, setUnitInfo,
     fontPilihan, setFontPilihan,
     logo, handleLogoUpload, handleClearLogo,
-    contacts, saveContact, // saveContact is now correctly destructured here!
+    contacts, saveContact,
     template,
     exportRef, handleDownloadPDF, isExporting,
     activeSubTab, setActiveSubTab,
@@ -95,6 +96,7 @@ export default function Editor() {
 
   // Accordion: which section is open (null = all collapsed)
   const [openSection, setOpenSection] = useState('detail');
+  const [showModalPratinjau, setShowModalPratinjau] = useState(false);
 
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
   const tanggalAkhir = hitungTanggalAkhir(durasi, satuanDurasi);
@@ -168,13 +170,18 @@ export default function Editor() {
               setOpenId={setOpenSection}
             >
               <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nama Properti / Gedung</label>
+                <input type="text" value={namaProperti} onChange={(e) => setNamaProperti(e.target.value)} placeholder="Contoh: Suncity Residence"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
+              </div>
+              <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nomor Kontrak</label>
-                <input type="text" value={nomorKontrak} onChange={(e) => setNomorKontrak(e.target.value)}
+                <input type="text" value={nomorKontrak} onChange={(e) => setNomorKontrak(e.target.value)} placeholder="Contoh: SUNCITY/SEWA/REG/2026"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Info Unit (Tipe / Nomor Unit)</label>
-                <input type="text" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="cth: tipe 2BR unit 12C"
+                <input type="text" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Contoh: Unit 2 BR 26 A Lantai 21"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
               {jenisSurat === 'sewa' && (
@@ -267,104 +274,175 @@ export default function Editor() {
           </div>
         )}
 
-        {/* ─── PREVIEW TAB ────────────────────────────────────────────────── */}
+        {/* ─── PREVIEW TAB (Visual Only) ──────────────────────────────────── */}
         {activeSubTab === 'preview' && (
           <div className="p-4 pb-8">
-            <div className="bg-slate-200 rounded-2xl p-4 shadow-inner">
-              <div className="flex items-center justify-between bg-white/80 backdrop-blur-md border border-slate-200/50 px-4 py-2.5 mb-4 rounded-xl shadow-sm">
-                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-slate-800 animate-pulse" />
-                  Pratinjau A4
-                </span>
-                <span className="text-[10px] text-slate-500 bg-slate-100 px-2 py-1 rounded-full font-mono">
-                  {fontPilihan}
-                </span>
-              </div>
-              <div
-                className="bg-white shadow-2xl mx-auto w-full break-words p-6"
-                style={{ fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif` }}
+            <div className="bg-slate-200 rounded-2xl p-4 shadow-inner flex justify-center overflow-hidden">
+              <div 
+                style={{ 
+                  width: '100%', 
+                  overflow: 'hidden', 
+                  display: 'flex', 
+                  justifyContent: 'center',
+                  height: 'calc(297mm * min(1, (100vw - 32px) / 820))'
+                }}
               >
-                <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} />
+                <div 
+                  style={{ 
+                    transform: 'scale(min(1, (100vw - 32px) / 820))', 
+                    transformOrigin: 'top center',
+                    width: '210mm',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div
+                    className="bg-white shadow-2xl p-6"
+                    style={{
+                      width: '210mm',
+                      minHeight: '297mm',
+                      padding: '15mm',
+                      boxSizing: 'border-box',
+                      backgroundColor: 'white',
+                      color: 'black',
+                      fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
+                    }}
+                  >
+                    <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* ─── SINGLE SOURCE OF TRUTH A4 PREVIEW NODE ─────────────────────── */}
-        <div className={activeSubTab === 'preview' ? 'p-4 pb-8' : 'fixed left-[-9999px] top-0 pointer-events-none'}>
-          <div className="bg-slate-200 rounded-2xl p-4 shadow-inner flex justify-center overflow-hidden">
-            <div 
-              style={{ 
-                width: '100%', 
-                overflow: 'hidden', 
-                display: 'flex', 
-                justifyContent: 'center',
-                height: 'calc(297mm * min(1, (100vw - 32px) / 820))'
-              }}
-            >
-              <div 
-                style={{ 
-                  transform: 'scale(min(1, (100vw - 32px) / 820))', 
-                  transformOrigin: 'top center',
-                  width: '210mm',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <div
-                  ref={exportRef}
-                  className="bg-white text-black shadow-2xl"
-                  style={{
-                    width: '210mm',
-                    minHeight: '297mm',
-                    padding: '15mm',
-                    boxSizing: 'border-box',
-                    backgroundColor: 'white',
-                    color: 'black',
-                    fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
-                  }}
-                >
-                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} />
-                </div>
-              </div>
-            </div>
+        {/* ─── SINGLE SOURCE OF TRUTH A4 PREVIEW NODE (Always Mounted Off-screen) ─── */}
+        <div style={{ position: 'fixed', top: 0, left: 0, zIndex: -9999, pointerEvents: 'none', opacity: 0 }}>
+          <div
+            id="kertas-surat-final"
+            ref={exportRef}
+            style={{
+              width: '210mm',
+              minHeight: '297mm',
+              padding: '15mm',
+              boxSizing: 'border-box',
+              backgroundColor: 'white',
+              color: 'black',
+              fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
+            }}
+          >
+            <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
           </div>
         </div>
 
       </div>
 
-      {/* ── Sticky PDF CTA — OUTSIDE scroll flow, always visible ─────────── */}
+      {/* ── Sticky CTA: Open Preview Modal ── */}
       <div className="fixed bottom-[68px] left-0 right-0 z-40 bg-white border-t border-slate-100 px-4 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.08)]">
         <div className="max-w-lg mx-auto">
           <button
-            onClick={handleDownloadPDF}
-            disabled={isExporting}
-            className={[
-              'w-full flex items-center justify-center gap-3 font-bold py-4 rounded-2xl text-base',
-              'transition-all cursor-pointer',
-              isExporting
-                ? 'bg-slate-400 cursor-wait text-white'
-                : 'bg-slate-900 hover:bg-black active:scale-95 text-white shadow-lg shadow-slate-200',
-            ].join(' ')}
+            onClick={() => setShowModalPratinjau(true)}
+            className="w-full flex items-center justify-center gap-3 bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-2xl text-base transition-all active:scale-95 shadow-lg shadow-slate-200 cursor-pointer"
           >
-            {isExporting ? (
-              <>
-                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
-                Menyiapkan PDF...
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                </svg>
-                Pratinjau &amp; Unduh PDF
-              </>
-            )}
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.43 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Lihat Pratinjau Surat
           </button>
         </div>
       </div>
+
+      {/* ── Full-Screen Preview Modal (100% WYSIWYG) ── */}
+      {showModalPratinjau && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-slate-900/60 backdrop-blur-md justify-between animate-fade-in">
+          {/* Modal Header */}
+          <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm">
+            <span className="text-sm font-bold text-slate-800">Pratinjau Dokumen Final</span>
+            <button
+              onClick={() => setShowModalPratinjau(false)}
+              className="text-slate-400 hover:text-slate-600 cursor-pointer p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Modal Body (Scaled A4) */}
+          <div className="flex-1 overflow-y-auto p-4 flex justify-center items-start">
+            <div className="bg-slate-200 rounded-2xl p-4 shadow-inner flex justify-center overflow-hidden w-full max-w-lg">
+              <div 
+                style={{ 
+                  width: '100%', 
+                  overflow: 'hidden', 
+                  display: 'flex', 
+                  justifyContent: 'center',
+                  height: 'calc(297mm * min(1, (100vw - 32px) / 820))'
+                }}
+              >
+                <div 
+                  style={{ 
+                    transform: 'scale(min(1, (100vw - 32px) / 820))', 
+                    transformOrigin: 'top center',
+                    width: '210mm',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div
+                    className="bg-white p-6 shadow-2xl"
+                    style={{
+                      width: '210mm',
+                      minHeight: '297mm',
+                      padding: '15mm',
+                      boxSizing: 'border-box',
+                      backgroundColor: 'white',
+                      color: 'black',
+                      fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
+                    }}
+                  >
+                    <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Modal Footer: Action Buttons */}
+          <div className="bg-white border-t border-slate-200 p-4 flex gap-3 z-50">
+            <button
+              onClick={() => setShowModalPratinjau(false)}
+              className="flex-1 py-4 border border-slate-200 text-slate-700 font-bold rounded-2xl text-base hover:bg-slate-50 transition-all cursor-pointer text-center"
+            >
+              Tutup Pratinjau
+            </button>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={isExporting}
+              className={[
+                'flex-1 flex items-center justify-center gap-3 font-bold py-4 rounded-2xl text-base transition-all cursor-pointer',
+                isExporting ? 'bg-slate-400 cursor-wait text-white' : 'bg-slate-900 hover:bg-black text-white shadow-lg shadow-slate-200'
+              ].join(' ')}
+            >
+              {isExporting ? (
+                <>
+                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  Mengunduh...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                  Unduh PDF (Final)
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

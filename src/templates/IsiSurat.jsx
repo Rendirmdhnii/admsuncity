@@ -3,8 +3,10 @@
  * Used by both the live preview and the hidden export nodes.
  * Receives a `template` object (from templateBuilder) plus party & style data.
  */
-export default function IsiSurat({ template, pihak1, pihak2, logo }) {
+export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti }) {
   if (!template) return null;
+
+  const propertiLabel = (namaProperti || 'Suncity Residence').toUpperCase();
 
   return (
     <div className="text-[11pt] leading-snug text-black">
@@ -18,7 +20,7 @@ export default function IsiSurat({ template, pihak1, pihak2, logo }) {
           />
         ) : (
           <h2 style={{ margin: 0, fontSize: '13pt', fontWeight: 'bold', letterSpacing: '0.05em' }}>
-            SUNCITY RESIDENCE APARTEMENT
+            {propertiLabel}
           </h2>
         )}
         <div style={{ borderBottom: '2.5px solid #000', marginTop: '6px', marginBottom: '8px' }} />

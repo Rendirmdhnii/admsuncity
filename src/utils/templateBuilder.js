@@ -4,19 +4,20 @@ import { formatTanggalID, formatTanggalPendek, hitungTanggalAkhir, today } from 
  * Build the template content object for a given document type.
  * Returns: { judul, nomorKontrak, pembuka, kesepakatanUtama, klausul[], penutup }
  */
-export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo }) {
+export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti }) {
   const tglMulai = formatTanggalPendek(today);
   const tglAkhir = formatTanggalPendek(hitungTanggalAkhir(durasi, satuanDurasi));
   const durasiLabel = `${durasi} ${satuanDurasi === 'hari' ? 'Hari' : satuanDurasi === 'bulan' ? 'Bulan' : 'Tahun'}`;
+  const properti = namaProperti || 'Suncity Residence';
 
   if (jenis === 'sewa') {
     return {
       judul: 'SURAT PERJANJIAN SEWA APARTEMEN',
       nomorKontrak,
       pembuka: `Pada hari ini, ${formatTanggalID(today)}, telah dibuat dan ditandatangani surat perjanjian sewa unit apartemen oleh dan di antara pihak-pihak di bawah ini:`,
-      kesepakatanUtama: `Kedua belah pihak dengan ini menerangkan bahwa Pihak Pertama menyewakan kepada Pihak Kedua sebuah unit apartemen Suncity Residence ${unitInfo} dengan ketentuan-ketentuan sebagai berikut:`,
+      kesepakatanUtama: `Kedua belah pihak dengan ini menerangkan bahwa Pihak Pertama menyewakan kepada Pihak Kedua sebuah unit apartemen ${properti} ${unitInfo} dengan ketentuan-ketentuan sebagai berikut:`,
       klausul: [
-        `1. OBJEK & JANGKA WAKTU: Pihak Pertama menyewakan unit apartemen Suncity Residence ${unitInfo} kepada Pihak Kedua selama ${durasiLabel} (${tglMulai} - ${tglAkhir}) untuk tujuan tempat tinggal.`,
+        `1. OBJEK & JANGKA WAKTU: Pihak Pertama menyewakan unit apartemen ${properti} ${unitInfo} kepada Pihak Kedua selama ${durasiLabel} (${tglMulai} - ${tglAkhir}) untuk tujuan tempat tinggal.`,
         `2. LARANGAN: Pihak Kedua dilarang keras mengubah struktur bangunan fisik atau memindahtangankan hak sewa kepada Pihak Ketiga tanpa izin tertulis dari Pihak Pertama.`,
         `3. TATA TERTIB & TANGGUNG JAWAB: Pihak Kedua wajib mematuhi regulasi gedung. Segala kerusakan fasilitas internal akibat kelalaian pemakaian menjadi tanggung jawab Pihak Kedua.`,
         `4. PERSELISIHAN: Penyelesaian perselisihan dilakukan secara kekeluargaan terlebih dahulu sebelum mengajukannya ke jalur hukum yang berlaku.`,
@@ -29,10 +30,10 @@ export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nom
     return {
       judul: 'BERITA ACARA SERAH TERIMA KUNCI',
       nomorKontrak,
-      pembuka: `Pada hari ini, ${formatTanggalID(today)}, bertempat di kantor Suncity Residence, telah dilakukan serah terima kunci unit apartemen oleh dan di antara pihak-pihak di bawah ini:`,
+      pembuka: `Pada hari ini, ${formatTanggalID(today)}, bertempat di kantor ${properti}, telah dilakukan serah terima kunci unit apartemen oleh dan di antara pihak-pihak di bawah ini:`,
       kesepakatanUtama: `Dengan ini menerangkan bahwa Pihak Pertama selaku pengelola/pemilik telah menyerahkan kunci unit apartemen kepada Pihak Kedua selaku penyewa, dengan kondisi dan ketentuan sebagai berikut:`,
       klausul: [
-        `1. OBJEK SERAH TERIMA: Unit apartemen Suncity Residence ${unitInfo} diserahkan dalam kondisi baik dan bersih sesuai inventaris terlampir.`,
+        `1. OBJEK SERAH TERIMA: Unit apartemen ${properti} ${unitInfo} diserahkan dalam kondisi baik dan bersih sesuai inventaris terlampir.`,
         `2. KUNCI YANG DISERAHKAN: 1 (satu) unit kunci pintu utama dan 1 (satu) kartu akses lift/parkir.`,
         `3. KONDISI UNIT: Pihak Kedua menyatakan telah memeriksa kondisi unit dan menerima dalam keadaan baik tanpa keberatan pada tanggal serah terima ini.`,
         `4. TANGGUNG JAWAB: Terhitung sejak tanggal serah terima ini, seluruh tanggung jawab atas kondisi unit beralih kepada Pihak Kedua.`,
@@ -45,10 +46,10 @@ export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nom
   return {
     judul: 'SURAT PERMOHONAN PERBAIKAN / KOMPLAIN',
     nomorKontrak,
-    pembuka: `Pada hari ini, ${formatTanggalID(today)}, Pihak Kedua selaku penghuni unit apartemen Suncity Residence ${unitInfo} mengajukan permohonan perbaikan/komplain kepada Pihak Pertama selaku pengelola/pemilik dengan perincian sebagai berikut:`,
+    pembuka: `Pada hari ini, ${formatTanggalID(today)}, Pihak Kedua selaku penghuni unit apartemen ${properti} ${unitInfo} mengajukan permohonan perbaikan/komplain kepada Pihak Pertama selaku pengelola/pemilik dengan perincian sebagai berikut:`,
     kesepakatanUtama: `Pihak Kedua dengan hormat melaporkan adanya permasalahan/kerusakan pada unit huniannya dengan rincian sebagai berikut:`,
     klausul: [
-      `1. UNIT YANG DILAPORKAN: Unit apartemen Suncity Residence ${unitInfo} atas nama Pihak Kedua.`,
+      `1. UNIT YANG DILAPORKAN: Unit apartemen ${properti} ${unitInfo} atas nama Pihak Kedua.`,
       `2. JENIS PERMASALAHAN: [Deskripsikan permasalahan secara detail, misalnya: kebocoran atap, kerusakan AC, masalah listrik, dll.]`,
       `3. KRONOLOGI: Permasalahan diketahui pertama kali pada tanggal ${tglMulai} dan telah berdampak pada kenyamanan penghunian.`,
       `4. HARAPAN: Pihak Kedua memohon agar Pihak Pertama segera menindaklanjuti dan melakukan perbaikan dalam waktu yang tidak terlalu lama.`,

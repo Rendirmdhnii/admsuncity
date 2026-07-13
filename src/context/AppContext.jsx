@@ -17,6 +17,7 @@ export function AppProvider({ children }) {
   const [activeSubTab, setActiveSubTab] = useState('form');
 
   // ─ Form Data ─
+  const [namaProperti, setNamaProperti] = useState('Suncity Residence');
   const [pihak1, setPihak1] = useState({ nama: '', nik: '', alamat: '', noWa: '' });
   const [pihak2, setPihak2] = useState({ nama: '', nik: '', alamat: '', noWa: '' });
   const [durasi, setDurasi] = useState(1);
@@ -42,8 +43,8 @@ export function AppProvider({ children }) {
 
   const template = useMemo(() => {
     if (!jenisSurat) return null;
-    return buildTemplate({ jenis: jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo });
-  }, [jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo]);
+    return buildTemplate({ jenis: jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti });
+  }, [jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti]);
 
   // ── Navigation helpers ────────────────────────────────────────────────────
 
@@ -119,6 +120,7 @@ export function AppProvider({ children }) {
     jenisSurat, pilihJenis, gantiJenis,
     activeSubTab, setActiveSubTab,
     // form data
+    namaProperti, setNamaProperti,
     pihak1, setPihak1,
     pihak2, setPihak2,
     durasi, setDurasi,

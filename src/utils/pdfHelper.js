@@ -28,9 +28,17 @@ export async function downloadPDF(element, filename) {
     html2canvas: { 
       scale: 2, 
       useCORS: true,
-      scrollY: 0,
-      scrollX: 0,
-      windowWidth: 800
+      windowWidth: 1024,
+      onclone: (clonedDoc) => {
+        const el = clonedDoc.getElementById('kertas-surat-final');
+        if (el) {
+          el.style.transform = 'none';
+          el.style.width = '210mm';
+          el.style.maxWidth = '210mm';
+          el.style.margin = '0';
+          el.style.padding = '15mm';
+        }
+      }
     },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
   };
