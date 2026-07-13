@@ -26,17 +26,24 @@ export async function downloadPDF(element, filename) {
     filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`,
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { 
-      scale: 2, 
+      scale: 3, // Skala 3 untuk resolusi ultra-tajam anti pecah
       useCORS: true,
-      windowWidth: 1024,
+      scrollY: 0,
+      scrollX: 0,
+      windowWidth: 1200, // Paksa render di resolusi desktop lebar
       onclone: (clonedDoc) => {
         const el = clonedDoc.getElementById('kertas-surat-final');
         if (el) {
-          el.style.transform = 'none';
-          el.style.width = '210mm';
-          el.style.maxWidth = '210mm';
-          el.style.margin = '0';
-          el.style.padding = '15mm';
+          // Bersihkan semua class tailwind yang mengganggu
+          el.className = ''; 
+          // Suntikkan style legal absolut
+          el.style.cssText = 'width: 210mm; min-height: 297mm; padding: 20mm; background: white; color: black; font-family: "Times New Roman", Times, serif; font-size: 11pt; line-height: 1.5; position: relative; left: 0; top: 0; transform: none; box-sizing: border-box;';
+          
+          // Pastikan semua paragraf di dalamnya justify
+          const paragraphs = el.getElementsByTagName('p');
+          for(let i = 0; i < paragraphs.length; i++) {
+             paragraphs[i].style.textAlign = 'justify';
+          }
         }
       }
     },

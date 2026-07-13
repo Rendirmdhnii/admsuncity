@@ -300,7 +300,7 @@ export default function Editor() {
                     style={{
                       width: '210mm',
                       minHeight: '297mm',
-                      padding: '15mm',
+                      padding: '20mm',
                       boxSizing: 'border-box',
                       backgroundColor: 'white',
                       color: 'black',
@@ -323,7 +323,7 @@ export default function Editor() {
             style={{
               width: '210mm',
               minHeight: '297mm',
-              padding: '15mm',
+              padding: '20mm',
               boxSizing: 'border-box',
               backgroundColor: 'white',
               color: 'black',
@@ -393,7 +393,7 @@ export default function Editor() {
                     style={{
                       width: '210mm',
                       minHeight: '297mm',
-                      padding: '15mm',
+                      padding: '20mm',
                       boxSizing: 'border-box',
                       backgroundColor: 'white',
                       color: 'black',
