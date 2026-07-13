@@ -68,7 +68,7 @@ export async function downloadPDF(element, filename) {
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
   };
 
-  return window.html2pdf().set(opt).from(element).save();
+  return window.html2pdf().set(opt).from(element).output('blob');
 }
 
 /**

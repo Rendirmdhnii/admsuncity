@@ -50,7 +50,7 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti 
   };
 
   return (
-    <div style={{ fontSize: '15px', lineHeight: '1.6', color: '#000000', fontFamily: '"Times New Roman", Times, serif' }}>
+    <div style={{ fontSize: '15px', lineHeight: '1.6', color: '#000000', fontFamily: '"Times New Roman", Times, serif', maxHeight: '297mm', overflow: 'hidden' }}>
       {/* Kop Surat */}
       <div style={{ textAlign: 'center', marginBottom: '12px', width: '100%' }}>
         {logo ? (

@@ -94,17 +94,29 @@ export function AppProvider({ children }) {
   // ── PDF Export ────────────────────────────────────────────────────────────
 
   const handleDownloadPDF = useCallback(async () => {
-    if (!exportRef.current || !template || isExporting) return;
+    if (!exportRef.current || !template || isExporting) return false;
     setIsExporting(true);
     try {
       const safeName = pihak2.nama
         ? `Surat_${jenisSurat}_${pihak2.nama.replace(/\s+/g, '_')}`
         : `Surat_${jenisSurat}_${today.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
-      await downloadPDF(exportRef.current, safeName);
-      setShowModalSukses(true);
+      
+      const blob = await downloadPDF(exportRef.current, safeName);
+      
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = safeName.endsWith('.pdf') ? safeName : `${safeName}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      return true;
     } catch (err) {
       console.error('PDF export failed:', err);
       alert('Gagal mengekspor PDF. Periksa koneksi internet Anda dan coba lagi.');
+      return false;
     } finally {
       setIsExporting(false);
     }

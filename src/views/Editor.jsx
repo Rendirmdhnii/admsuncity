@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import KartuPihak from '../components/KartuPihak';
 import IsiSurat from '../templates/IsiSurat';
 import { formatTanggalID, formatTanggalPendek, hitungTanggalAkhir, today } from '../utils/dateHelper';
+import { openWhatsApp } from '../utils/pdfHelper';
 
 const JENIS_OPTIONS = [
   { id: 'sewa', title: 'Perjanjian Sewa' },
@@ -97,6 +98,7 @@ export default function Editor() {
   // Accordion: which section is open (null = all collapsed)
   const [openSection, setOpenSection] = useState('detail');
   const [showModalPratinjau, setShowModalPratinjau] = useState(false);
+  const [tampilModalWA, setTampilModalWA] = useState(false);
 
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
   const tanggalAkhir = hitungTanggalAkhir(durasi, satuanDurasi);
@@ -123,6 +125,14 @@ export default function Editor() {
       return;
     }
     setShowModalPratinjau(true);
+  };
+
+  const handleDownloadAndNotify = async () => {
+    const success = await handleDownloadPDF();
+    if (success) {
+      setShowModalPratinjau(false);
+      setTampilModalWA(true);
+    }
   };
 
   return (
@@ -352,8 +362,6 @@ export default function Editor() {
           </div>
         )}
 
-
-
       </div>
 
       {/* ── Sticky CTA: Open Preview Modal ── */}
@@ -409,7 +417,7 @@ export default function Editor() {
               Tutup Pratinjau
             </button>
             <button
-              onClick={handleDownloadPDF}
+              onClick={handleDownloadAndNotify}
               disabled={isExporting}
               className={[
                 'flex-1 flex items-center justify-center gap-3 font-bold py-4 rounded-2xl text-base transition-all cursor-pointer',
@@ -433,6 +441,40 @@ export default function Editor() {
                 </>
               )}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal Sukses WhatsApp (UX Pasca-Unduh) ── */}
+      {tampilModalWA && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center">
+            <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-slate-800 mb-2">PDF Berhasil Diunduh!</h3>
+            <p className="text-xs text-slate-500 leading-relaxed mb-6">
+              File telah tersimpan di folder unduhan HP Anda. Silakan lanjutkan ke WhatsApp untuk mengirimkan file tersebut kepada penyewa.
+            </p>
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  openWhatsApp(pihak2.noWa);
+                  setTampilModalWA(false);
+                }}
+                className="w-full bg-slate-900 hover:bg-black text-white font-bold py-3.5 rounded-xl text-sm transition-all cursor-pointer"
+              >
+                Buka WhatsApp Penyewa
+              </button>
+              <button
+                onClick={() => setTampilModalWA(false)}
+                className="w-full border border-slate-200 text-slate-600 font-semibold py-3 rounded-xl text-sm hover:bg-slate-50 transition-all cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}
