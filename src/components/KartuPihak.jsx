@@ -88,7 +88,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
 
         <div>
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-            Nomor WhatsApp<span className="text-red-500 ml-1">*</span>
+            Nomor WhatsApp
           </label>
           <input
             type="tel"

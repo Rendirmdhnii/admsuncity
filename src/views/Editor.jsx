@@ -110,11 +110,9 @@ export default function Editor() {
       pihak1.nama?.trim() !== '' &&
       pihak1.nik?.trim() !== '' &&
       pihak1.alamat?.trim() !== '' &&
-      pihak1.noWa?.trim() !== '' &&
       pihak2.nama?.trim() !== '' &&
       pihak2.nik?.trim() !== '' &&
       pihak2.alamat?.trim() !== '' &&
-      pihak2.noWa?.trim() !== '' &&
       isSewaValid
     );
   };
@@ -320,26 +318,31 @@ export default function Editor() {
         {/* ─── PREVIEW TAB (Visual Only) ──────────────────────────────────── */}
         {activeSubTab === 'preview' && (
           <div className="p-4 pb-8">
-            <div className="w-full bg-slate-200 rounded-xl p-2 flex justify-center overflow-hidden" style={{ minHeight: '70vh' }}>
-              {/* Origin top-center memastikan kertas mengecil ke tengah, bukan ke kiri */}
+            <div className="w-full bg-slate-300 flex justify-center" style={{ overflow: 'hidden', padding: '10px 0' }}>
+              {/* Pembungkus ajaib: Memaksa elemen 794px (A4) menyusut proporsional mengikuti lebar layar (vw) */}
               <div 
-                className="origin-top" 
                 style={{ 
                   width: '794px', 
-                  /* Kalkulasi: (Lebar Layar Mobile - margin kiri kanan) dibagi Lebar A4 */
-                  transform: 'scale(calc((100vw - 32px) / 794))',
-                  marginBottom: '-100%' /* Mencegah sisa ruang kosong akibat scale down */
+                  minWidth: '794px',
+                  transform: 'scale(calc(100vw / 820))', 
+                  transformOrigin: 'top center',
+                  marginBottom: 'calc(-1123px + (1123px * (100vw / 820)))' // Mencegah ruang kosong berlebih di bawah akibat scale
                 }}
               >
+                {/* Kertas A4 Statis (Jangan gunakan class tailwind responsif di dalam sini) */}
                 <div 
-                  className="bg-white shadow-xl" 
+                  id="kertas-pratinjau"
+                  className="bg-white shadow-2xl mx-auto"
                   style={{ 
                     width: '794px', 
                     minHeight: '1123px', 
-                    padding: '75px', // Setara 20mm
+                    padding: '75px', 
                     boxSizing: 'border-box',
-                    color: '#000000',
-                    fontFamily: '"Times New Roman", Times, serif'
+                    color: 'black',
+                    fontFamily: '"Times New Roman", Times, serif',
+                    fontSize: '15px',
+                    lineHeight: '1.5',
+                    textAlign: 'justify'
                   }}
                 >
                   <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
