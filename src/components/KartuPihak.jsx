@@ -47,7 +47,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
         {/* Fields */}
         <div>
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-            Nama Lengkap
+            Nama Lengkap<span className="text-red-500 ml-1">*</span>
           </label>
           <input
             type="text"
@@ -60,7 +60,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
 
         <div>
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-            NIK (16 digit)
+            NIK (16 digit)<span className="text-red-500 ml-1">*</span>
           </label>
           <input
             type="text"
@@ -75,7 +75,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
 
         <div>
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-            Alamat Domisili
+            Alamat Domisili<span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
             rows={2}
@@ -88,7 +88,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
 
         <div>
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-            Nomor WhatsApp
+            Nomor WhatsApp<span className="text-red-500 ml-1">*</span>
           </label>
           <input
             type="tel"

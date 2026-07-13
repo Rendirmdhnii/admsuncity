@@ -101,16 +101,27 @@ export default function Editor() {
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
   const tanggalAkhir = hitungTanggalAkhir(durasi, satuanDurasi);
 
+  const isFormValid = () => {
+    const isSewaValid = jenisSurat === 'sewa' ? (durasi !== null && durasi !== undefined && String(durasi).trim() !== '') : true;
+    return (
+      namaProperti?.trim() !== '' &&
+      nomorKontrak?.trim() !== '' &&
+      unitInfo?.trim() !== '' &&
+      pihak1.nama?.trim() !== '' &&
+      pihak1.nik?.trim() !== '' &&
+      pihak1.alamat?.trim() !== '' &&
+      pihak1.noWa?.trim() !== '' &&
+      pihak2.nama?.trim() !== '' &&
+      pihak2.nik?.trim() !== '' &&
+      pihak2.alamat?.trim() !== '' &&
+      pihak2.noWa?.trim() !== '' &&
+      isSewaValid
+    );
+  };
+
   const handleOpenPreview = () => {
-    if (
-      !pihak1.nama?.trim() ||
-      !pihak1.nik?.trim() ||
-      !pihak2.nama?.trim() ||
-      !pihak2.nik?.trim() ||
-      !nomorKontrak?.trim() ||
-      !unitInfo?.trim()
-    ) {
-      alert('Mohon lengkapi semua form data Pihak Pertama, Pihak Kedua, dan Detail Surat sebelum melihat pratinjau.');
+    if (!isFormValid()) {
+      alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat melihat atau mengunduh surat.');
       return;
     }
     setShowModalPratinjau(true);
@@ -136,7 +147,16 @@ export default function Editor() {
             Ganti
           </button>
         </div>
-        <SegmentedControl value={activeSubTab} onChange={setActiveSubTab} />
+        <SegmentedControl 
+          value={activeSubTab} 
+          onChange={(newTab) => {
+            if (newTab === 'preview' && !isFormValid()) {
+              alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat melihat atau mengunduh surat.');
+              return;
+            }
+            setActiveSubTab(newTab);
+          }} 
+        />
       </div>
 
       {/* ── Scrollable Content Area ────────────────────────────────────────── */}
@@ -185,23 +205,31 @@ export default function Editor() {
               setOpenId={setOpenSection}
             >
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nama Properti / Gedung</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Nama Properti / Gedung<span className="text-red-500 ml-1">*</span>
+                </label>
                 <input type="text" value={namaProperti} onChange={(e) => setNamaProperti(e.target.value)} placeholder="Contoh: Suncity Residence"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nomor Kontrak</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Nomor Kontrak<span className="text-red-500 ml-1">*</span>
+                </label>
                 <input type="text" value={nomorKontrak} onChange={(e) => setNomorKontrak(e.target.value)} placeholder="Contoh: SUNCITY/SEWA/REG/2026"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Info Unit (Tipe / Nomor Unit)</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Info Unit (Tipe / Nomor Unit)<span className="text-red-500 ml-1">*</span>
+                </label>
                 <input type="text" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Contoh: Unit 2 BR 26 A Lantai 21"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
               {jenisSurat === 'sewa' && (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Durasi Sewa</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                    Durasi Sewa<span className="text-red-500 ml-1">*</span>
+                  </label>
                   <div className="flex gap-2">
                     <input type="number" min={1} value={durasi} onChange={(e) => setDurasi(e.target.value)}
                       className="w-24 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm text-center font-semibold" />

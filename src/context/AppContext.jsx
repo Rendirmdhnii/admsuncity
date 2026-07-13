@@ -17,15 +17,13 @@ export function AppProvider({ children }) {
   const [activeSubTab, setActiveSubTab] = useState('form');
 
   // ─ Form Data ─
-  const [namaProperti, setNamaProperti] = useState('Suncity Residence');
+  const [namaProperti, setNamaProperti] = useState('');
   const [pihak1, setPihak1] = useState({ nama: '', nik: '', alamat: '', noWa: '' });
   const [pihak2, setPihak2] = useState({ nama: '', nik: '', alamat: '', noWa: '' });
-  const [durasi, setDurasi] = useState(1);
+  const [durasi, setDurasi] = useState('');
   const [satuanDurasi, setSatuanDurasi] = useState('tahun');
-  const [nomorKontrak, setNomorKontrak] = useState(
-    `SUNCITY/SEWA/REG/${today.getFullYear()}`
-  );
-  const [unitInfo, setUnitInfo] = useState('tipe 2BR');
+  const [nomorKontrak, setNomorKontrak] = useState('');
+  const [unitInfo, setUnitInfo] = useState('');
   const [fontPilihan, setFontPilihan] = useState('Times New Roman');
   const [logo, setLogo] = useState(null);
 
