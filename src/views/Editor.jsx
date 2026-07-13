@@ -315,24 +315,7 @@ export default function Editor() {
           </div>
         )}
 
-        {/* ─── SINGLE SOURCE OF TRUTH A4 PREVIEW NODE (Always Mounted Off-screen) ─── */}
-        <div style={{ position: 'fixed', top: 0, left: 0, zIndex: -9999, pointerEvents: 'none', opacity: 0 }}>
-          <div
-            id="kertas-surat-final"
-            ref={exportRef}
-            style={{
-              width: '210mm',
-              minHeight: '297mm',
-              padding: '20mm',
-              boxSizing: 'border-box',
-              backgroundColor: 'white',
-              color: 'black',
-              fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
-            }}
-          >
-            <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
-          </div>
-        </div>
+
 
       </div>
 
@@ -370,38 +353,11 @@ export default function Editor() {
 
           {/* Modal Body (Scaled A4) */}
           <div className="flex-1 overflow-y-auto p-4 flex justify-center items-start">
-            <div className="bg-slate-200 rounded-2xl p-4 shadow-inner flex justify-center overflow-hidden w-full max-w-lg">
-              <div 
-                style={{ 
-                  width: '100%', 
-                  overflow: 'hidden', 
-                  display: 'flex', 
-                  justifyContent: 'center',
-                  height: 'calc(297mm * min(1, (100vw - 32px) / 820))'
-                }}
-              >
-                <div 
-                  style={{ 
-                    transform: 'scale(min(1, (100vw - 32px) / 820))', 
-                    transformOrigin: 'top center',
-                    width: '210mm',
-                    boxSizing: 'border-box'
-                  }}
-                >
-                  <div
-                    className="bg-white p-6 shadow-2xl"
-                    style={{
-                      width: '210mm',
-                      minHeight: '297mm',
-                      padding: '20mm',
-                      boxSizing: 'border-box',
-                      backgroundColor: 'white',
-                      color: 'black',
-                      fontFamily: `${fontPilihan}, 'Times New Roman', Times, serif`
-                    }}
-                  >
-                    <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
-                  </div>
+            <div className="w-full flex justify-center bg-gray-600 overflow-hidden py-4" style={{ height: '530px' }}>
+              {/* Pembungkus ini memaksa kertas A4 menyusut 50% secara visual di HP, TAPI ukuran aslinya tetap A4 */}
+              <div style={{ transform: 'scale(0.45)', transformOrigin: 'top center', width: '210mm' }} className="origin-top">
+                <div id="kertas-surat-final" ref={exportRef} style={{ width: '210mm', minHeight: '297mm', padding: '20mm', background: 'white', color: 'black', fontFamily: '"Times New Roman", serif', fontSize: '11pt', lineHeight: '1.4', textAlign: 'justify' }}>
+                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} />
                 </div>
               </div>
             </div>
