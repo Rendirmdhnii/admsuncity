@@ -46,20 +46,21 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
 
         {/* Fields */}
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
             Nama Lengkap<span className="text-red-500 ml-1">*</span>
           </label>
           <input
             type="text"
+            autoCapitalize="words"
             value={data.nama}
             onChange={(e) => setData({ ...data, nama: e.target.value })}
             placeholder="Masukkan nama lengkap..."
-            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
+            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
             NIK (16 digit)<span className="text-red-500 ml-1">*</span>
           </label>
           <input
@@ -72,25 +73,26 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
               setData({ ...data, nik: hanyaAngka.slice(0, 16) });
             }}
             placeholder="3500XXXXXXXXXXXX"
-            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm font-mono"
+            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-mono font-medium"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
             Alamat Domisili<span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
             rows={2}
+            autoCapitalize="sentences"
             value={data.alamat}
             onChange={(e) => setData({ ...data, alamat: e.target.value })}
             placeholder="Jl. Contoh No. 1, Kecamatan, Kota..."
-            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
+            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
             Nomor WhatsApp
           </label>
           <input
@@ -103,7 +105,7 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
               setData({ ...data, noWa: hanyaAngka.slice(0, 15) });
             }}
             placeholder="628123456789"
-            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
+            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
           />
         </div>
 
