@@ -13,18 +13,15 @@ export default function Beranda() {
   const sapaan = getGreeting();
 
   return (
-    <div className="fixed inset-0 h-[100dvh] w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans relative z-0 max-w-lg mx-auto">
+    <div className="fixed inset-0 h-[100dvh] w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none relative z-0">
       
-      {/* A. MESH GRADIENT BLOBS (Dekorasi Latar Belakang) */}
-      <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 pointer-events-none"></div>
-      <div className="absolute top-[20%] right-[-10%] w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] left-[20%] w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 pointer-events-none"></div>
+      {/* Mesh Gradient Dekorasi */}
+      <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
 
-      {/* B. KONTEN UTAMA (Harus menggunakan relative z-10 agar berada di atas blobs) */}
-      <div className="relative z-10 flex flex-col h-full w-full">
-        
-        {/* HEADER NAVBAR (GENERIC WHITE-LABEL) */}
-        <div className="flex-none bg-white/80 backdrop-blur-md px-6 pt-8 pb-4 flex items-center justify-between z-10 border-b border-slate-100">
+      {/* A. HEADER TETAP DI ATAS (Flex-none) */}
+      <div className="flex-none bg-white/80 backdrop-blur-md px-6 pt-6 pb-4 border-b border-slate-100 z-30 shadow-sm max-w-lg w-full mx-auto">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-600 rounded-xl text-white flex items-center justify-center font-bold shadow-md shadow-blue-500/20">
               MP
@@ -35,73 +32,75 @@ export default function Beranda() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* GREETING SECTION */}
-        <div className="flex-none bg-white/80 backdrop-blur-md px-6 pb-6 rounded-b-[2rem] shadow-sm z-0 relative border-b border-slate-100">
-          <p className="text-slate-500 text-xs font-medium tracking-wide">{sapaan},</p>
-          <div className="flex justify-between items-center mt-1">
-            <h2 className="text-xl font-extrabold text-slate-800">Mochammad Febrian</h2>
-            <div className="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center text-sm font-bold shadow-md">MF</div>
+      {/* B. AREA KONTEN TENGAH DENGAN INTERNAL SCROLL HALUS (Flex-1) */}
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-28 max-w-lg w-full mx-auto">
+        
+        {/* GREETING CARD */}
+        <div className="bg-white/80 backdrop-blur-md px-6 py-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
+          <div>
+            <p className="text-slate-500 text-xs font-medium tracking-wide">{sapaan},</p>
+            <h2 className="text-xl font-extrabold text-slate-800 mt-0.5">Mochammad Febrian</h2>
           </div>
+          <div className="w-11 h-11 rounded-full bg-slate-800 text-white flex items-center justify-center text-sm font-bold shadow-md">MF</div>
         </div>
 
-        {/* MENU GRID (FLEX-1 MENGISI RUANG KOSONG SECARA OTOMATIS TANPA SCROLL) */}
-        <div className="flex-1 px-6 py-4 flex flex-col justify-center">
-          <div className="grid grid-cols-2 gap-4 h-full max-h-[340px]">
-            
-            {/* Tombol 1: Perjanjian Sewa */}
-            <button 
-              onClick={() => pilihJenis('sewa')}
-              className="bg-white/70 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all h-full w-full cursor-pointer hover:shadow-lg"
-            >
-              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-3.5 rounded-2xl mb-auto shadow-lg shadow-blue-500/30">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-              </div>
-              <h3 className="font-extrabold text-slate-800 text-sm mt-3 mb-0.5">Perjanjian Sewa</h3>
-              <p className="text-[10px] text-slate-500 font-medium leading-tight">Kontrak resmi apartemen</p>
-            </button>
+        {/* MENU GRID */}
+        <div className="grid grid-cols-2 gap-3.5">
+          
+          {/* Tombol 1: Perjanjian Sewa */}
+          <button 
+            onClick={() => pilihJenis('sewa')}
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+          >
+            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-blue-500/30">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Perjanjian Sewa</h3>
+            <p className="text-[10px] text-slate-500 font-medium leading-tight">Kontrak resmi apartemen</p>
+          </button>
 
-            {/* Tombol 2: Serah Terima */}
-            <button 
-              onClick={() => pilihJenis('serah_terima')}
-              className="bg-white/70 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all h-full w-full cursor-pointer hover:shadow-lg"
-            >
-              <div className="bg-gradient-to-br from-emerald-400 to-teal-500 text-white p-3.5 rounded-2xl mb-auto shadow-lg shadow-emerald-500/30">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-              </div>
-              <h3 className="font-extrabold text-slate-800 text-sm mt-3 mb-0.5">Serah Terima</h3>
-              <p className="text-[10px] text-slate-500 font-medium leading-tight">Berita acara & kunci</p>
-            </button>
+          {/* Tombol 2: Serah Terima */}
+          <button 
+            onClick={() => pilihJenis('serah_terima')}
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+          >
+            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-emerald-500/30">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+            </div>
+            <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Serah Terima</h3>
+            <p className="text-[10px] text-slate-500 font-medium leading-tight">Berita acara & kunci</p>
+          </button>
 
-            {/* Tombol 3: Invoice Sewa */}
-            <button 
-              onClick={() => pilihJenis('invoice_sewa')}
-              className="bg-white/70 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all h-full w-full cursor-pointer hover:shadow-lg"
-            >
-              <div className="bg-gradient-to-br from-amber-400 to-orange-500 text-white p-3.5 rounded-2xl mb-auto shadow-lg shadow-amber-500/30">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"></path></svg>
-              </div>
-              <h3 className="font-extrabold text-slate-800 text-sm mt-3 mb-0.5">Invoice Sewa</h3>
-              <p className="text-[10px] text-slate-500 font-medium leading-tight">Cetak struk tagihan</p>
-            </button>
+          {/* Tombol 3: Invoice Sewa */}
+          <button 
+            onClick={() => pilihJenis('invoice_sewa')}
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+          >
+            <div className="bg-gradient-to-br from-amber-400 to-orange-500 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-amber-500/30">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"></path></svg>
+            </div>
+            <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Invoice Sewa</h3>
+            <p className="text-[10px] text-slate-500 font-medium leading-tight">Cetak struk tagihan</p>
+          </button>
 
-            {/* Tombol 4: Surat Teguran */}
-            <button 
-              onClick={() => pilihJenis('komplain')}
-              className="bg-white/70 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all h-full w-full cursor-pointer hover:shadow-lg"
-            >
-              <div className="bg-gradient-to-br from-rose-500 to-pink-600 text-white p-3.5 rounded-2xl mb-auto shadow-lg shadow-rose-500/30">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-              </div>
-              <h3 className="font-extrabold text-slate-800 text-sm mt-3 mb-0.5">Surat Teguran</h3>
-              <p className="text-[10px] text-slate-500 font-medium leading-tight">Komplain & tagihan rugi</p>
-            </button>
+          {/* Tombol 4: Surat Teguran */}
+          <button 
+            onClick={() => pilihJenis('komplain')}
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+          >
+            <div className="bg-gradient-to-br from-rose-500 to-pink-600 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-rose-500/30">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Surat Teguran</h3>
+            <p className="text-[10px] text-slate-500 font-medium leading-tight">Komplain & tagihan rugi</p>
+          </button>
 
-          </div>
         </div>
 
         {/* MEGA PROMO BANNER - DIRECT WHATSAPP */}
-        <div className="px-5 pb-24 mt-auto z-50 relative">
+        <div className="pt-2">
           <a 
             href="https://wa.me/6289515106561?text=Halo%20Rendi,%20saya%20tertarik%20dengan%20jasa%20pembuatan%20Aplikasi/Sistem/Teknologi%20Anda." 
             target="_blank" 
