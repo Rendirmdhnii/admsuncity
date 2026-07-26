@@ -30,18 +30,20 @@ function AppShell() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
 
-      {/* ── Sticky Header ─────────────────────────────────────────────────── */}
-      <header className="bg-white border-b border-slate-200 px-4 py-3.5 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
-        <div className="bg-blue-600 text-white px-3 py-1.5 rounded-xl font-extrabold text-sm shadow-sm tracking-wider select-none">
-          SR
-        </div>
-        <div>
-          <h1 className="text-base font-extrabold tracking-tight text-slate-900 leading-tight">
-            Suncity Residence
-          </h1>
-          <p className="text-[10px] text-slate-500 font-medium">Sistem Pembuat Surat Digital</p>
-        </div>
-      </header>
+      {/* ── Sticky Header (White-Label) ────────────────────────────────────── */}
+      {currentView !== 'beranda' && (
+        <header className="bg-white border-b border-slate-200 px-4 py-3.5 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
+          <div className="bg-blue-600 text-white px-3 py-1.5 rounded-xl font-extrabold text-sm shadow-sm tracking-wider select-none">
+            MP
+          </div>
+          <div>
+            <h1 className="text-base font-extrabold tracking-tight text-slate-900 leading-tight">
+              Manajemen Properti
+            </h1>
+            <p className="text-[10px] text-slate-500 font-medium">Sistem Administrasi Digital</p>
+          </div>
+        </header>
+      )}
 
       {/* ── Main Content (view routing) ────────────────────────────────────── */}
       <main className="flex-1 overflow-hidden flex flex-col">

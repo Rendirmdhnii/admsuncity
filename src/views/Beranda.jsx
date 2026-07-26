@@ -13,7 +13,7 @@ export default function Beranda() {
   const sapaan = getGreeting();
 
   return (
-    <div className="fixed inset-0 h-[100dvh] w-full bg-slate-50 flex flex-col overflow-hidden font-sans max-w-lg mx-auto">
+    <div className="flex-1 flex flex-col h-full w-full bg-slate-50 relative overflow-hidden font-sans max-w-lg mx-auto">
       
       {/* HEADER NAVBAR (GENERIC WHITE-LABEL) */}
       <div className="flex-none bg-white px-6 pt-8 pb-4 flex items-center justify-between z-10">
@@ -92,21 +92,36 @@ export default function Beranda() {
         </div>
       </div>
 
-      {/* DEVELOPER PROMO BANNER (FLEX-NONE DI BAWAH) */}
-      <div className="flex-none px-6 pb-[90px]">
-        <div className="bg-slate-900 rounded-2xl p-4 text-white shadow-xl relative overflow-hidden flex items-center gap-4">
-          <div className="absolute -right-4 -top-4 w-20 h-20 bg-blue-500 rounded-full opacity-30 blur-2xl"></div>
-          <div className="flex-none bg-emerald-500 p-2.5 rounded-xl shadow-inner z-10">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-          </div>
-          <div className="z-10 w-full">
-            <p className="text-[9px] text-slate-300 leading-snug mb-1">Jika butuh aplikasi, sistem perusahaan, atau teknologi IoT lainnya:</p>
-            <div className="flex justify-between items-center">
-              <p className="text-[11px] font-bold text-emerald-400">Hubungi Rendi</p>
-              <p className="text-[11px] font-bold text-emerald-400 tracking-wider">0895-1510-6561</p>
+      {/* MEGA PROMO BANNER - DIRECT WHATSAPP */}
+      <div className="px-5 pb-24 mt-auto z-50 relative">
+        <a 
+          href="https://wa.me/6289515106561?text=Halo%20Rendi,%20saya%20tertarik%20dengan%20jasa%20pembuatan%20Aplikasi/Sistem/Teknologi%20Anda." 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="block bg-slate-900 rounded-2xl p-4 text-white shadow-2xl relative overflow-hidden active:scale-95 transition-transform cursor-pointer border border-slate-700"
+        >
+          {/* Efek Glow */}
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500 rounded-full opacity-20 blur-2xl"></div>
+          
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="flex-none bg-emerald-500 p-2.5 rounded-xl shadow-inner">
+              {/* Ikon Petir / Teknologi */}
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <div className="w-full">
+              <p className="text-[10px] font-medium text-slate-300 leading-snug mb-1.5">
+                Butuh <strong className="text-white">Aplikasi, Sistem Enterprise, AI, Robotik,</strong> atau <strong className="text-white">IoT</strong>? Kami rancang semuanya dari nol!
+              </p>
+              <div className="flex justify-between items-center mt-1 border-t border-slate-700 pt-1.5">
+                <p className="text-[11px] font-bold text-emerald-400">Hubungi Rendi</p>
+                <div className="flex items-center gap-1 bg-emerald-900/50 px-2 py-0.5 rounded-md">
+                  <span className="text-[11px] font-extrabold text-emerald-400 tracking-wider">0895-1510-6561</span>
+                  <svg className="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
 
     </div>
