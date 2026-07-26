@@ -176,7 +176,9 @@ export default function Editor() {
 
         const pesanWA = `Halo Admin Suncity,\n\nBerikut adalah dokumen administrasi baru yang telah dicetak melalui sistem:\n\nJenis Dokumen: *${amanJenis}*\nNama Penyewa: *${amanPihak2}*\n\nMohon untuk menerima lampiran PDF yang akan saya kirimkan setelah pesan ini untuk diarsipkan.\n\nTerima kasih.`;
 
-        window.location.href = `https://wa.me/6289678449424?text=${encodeURIComponent(pesanWA)}`;
+        // Buka WA di luar PWA agar PWA tetap menyala di memori HP
+        window.open(`https://wa.me/6289678449424?text=${encodeURIComponent(pesanWA)}`, '_blank');
+        setIsProcessing(false);
       }
     } catch (err) {
       console.error('Download error:', err);
