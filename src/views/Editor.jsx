@@ -208,6 +208,7 @@ export default function Editor() {
             teksExclude={teksExclude}
             durasi={durasi}
             satuanDurasi={satuanDurasi}
+            unitInfo={unitInfo}
           />
         </div>
       </div>
@@ -679,6 +680,7 @@ export default function Editor() {
                     teksExclude={teksExclude}
                     durasi={durasi}
                     satuanDurasi={satuanDurasi}
+                    unitInfo={unitInfo}
                   />
                 </div>
               </div>

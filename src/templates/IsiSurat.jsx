@@ -21,11 +21,12 @@ export default function IsiSurat({
   teksInclude,
   teksExclude,
   durasi,
-  satuanDurasi
+  satuanDurasi,
+  unitInfo
 }) {
   if (!template && jenisSurat !== 'invoice_sewa' && jenisSurat !== 'Invoice Pembayaran Sewa') return null;
 
-  const propertiLabel = (namaProperti || 'Suncity Residence').toUpperCase();
+  const propertiLabel = (namaProperti || 'Manajemen Properti').toUpperCase();
   const tanggalPrint = tanggalSurat ? formatTanggalPendek(parseTanggal(tanggalSurat)) : '-';
 
   if (jenisSurat === 'invoice_sewa' || jenisSurat === 'Invoice Pembayaran Sewa') {
@@ -51,7 +52,7 @@ export default function IsiSurat({
                 SEWA UNIT APARTEMEN
               </span>
             </div>
-            <p style={{ fontSize: '14px', letterSpacing: '1px', color: '#cbd5e1', margin: '0' }}>{namaProperti ? namaProperti.toUpperCase() : 'SUNCITY RESIDENCE'} - SIDOARJO</p>
+            <p style={{ fontSize: '14px', letterSpacing: '1px', color: '#cbd5e1', margin: '0' }}>{namaProperti ? namaProperti.toUpperCase() : 'MANAJEMEN PROPERTI'}</p>
           </div>
           <div style={{ flex: 1, textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <p style={{ fontSize: '14px', color: '#94a3b8', margin: '0 0 4px 0' }}>Kepada Yth:</p>
@@ -90,7 +91,7 @@ export default function IsiSurat({
             <tbody>
               <tr>
                 <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', fontSize: '15px', color: '#334155' }}>
-                  <span style={{ fontWeight: '600', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Sewa Unit Apartemen {namaProperti || 'Suncity'}</span>
+                  <span style={{ fontWeight: '600', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Sewa Unit Apartemen {namaProperti || 'Manajemen Properti'}</span>
                   <span style={{ fontSize: '13px', color: '#64748b' }}>Durasi: {durasiSewaVal} {satuanDurasiVal}</span>
                 </td>
                 <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', textAlign: 'right', fontSize: '16px', fontWeight: '600', color: '#0f172a' }}>
@@ -131,7 +132,7 @@ export default function IsiSurat({
           {/* STATUS BLOCK */}
           <div style={{ marginTop: 'auto', backgroundColor: '#ecfdf5', border: '1px solid #10b981', borderRadius: '8px', padding: '20px', textAlign: 'center' }}>
             <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#047857', margin: '0 0 6px 0' }}>✓ {statusPembayaran || 'DP Telah Diterima'}</p>
-            <p style={{ fontSize: '13px', color: '#065f46', margin: '0' }}>Terima kasih telah mempercayakan akomodasi Anda di Suncity Residence.</p>
+            <p style={{ fontSize: '13px', color: '#065f46', margin: '0' }}>Terima kasih telah mempercayakan akomodasi Anda kepada kami.</p>
           </div>
         </div>
 
@@ -146,7 +147,7 @@ export default function IsiSurat({
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ fontSize: '10px', color: '#64748b', margin: '0 0 4px 0', letterSpacing: '1px' }}>LOKASI</p>
-            <p style={{ fontSize: '14px', fontWeight: '500', margin: '0', color: '#f8fafc' }}>Suncity Apartment Sidoarjo</p>
+            <p style={{ fontSize: '14px', fontWeight: '500', margin: '0', color: '#f8fafc' }}>{namaProperti || 'Manajemen Properti'}</p>
           </div>
         </div>
         
@@ -169,15 +170,6 @@ export default function IsiSurat({
     marginBottom: '5px',
     borderCollapse: 'collapse',
     border: 'none',
-    color: '#000000',
-    lineHeight: '1.4',
-    fontSize: '13.5px',
-  };
-
-  const listStyle = {
-    paddingLeft: '0',
-    marginBottom: '5px',
-    listStyleType: 'none',
     color: '#000000',
     lineHeight: '1.4',
     fontSize: '13.5px',
@@ -292,24 +284,50 @@ export default function IsiSurat({
         Dalam hal ini bertindak untuk dan atas nama diri sendiri, yang selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
       </p>
 
-      {/* Kesepakatan */}
-      <p style={pStyle}>
-        {template.kesepakatanUtama}
-      </p>
+      {/* ── 1. SURAT PERJANJIAN SEWA (PASAL-PASAL LEGAL DRAFTING) ── */}
+      {jenisSurat === 'sewa' && (
+        <div style={{ textAlign: 'justify', textJustify: 'inter-word', marginTop: '15px' }}>
+          <p style={{ margin: '0 0 15px 0' }}>Berdasarkan itikad baik, Para Pihak dengan ini sepakat untuk mengikatkan diri dalam Perjanjian Sewa Menyewa Unit Apartemen dengan syarat dan ketentuan yang diatur dalam pasal-pasal berikut:</p>
+          
+          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 1: OBJEK DAN JANGKA WAKTU SEWA</p>
+          <p style={{ margin: '0 0 10px 0', paddingLeft: '15px' }}>PIHAK PERTAMA dengan ini menyewakan kepada PIHAK KEDUA, dan PIHAK KEDUA menyatakan menerima sewa berupa unit apartemen {namaProperti || 'Gedung'} nomor/tipe {unitInfo || 'Unit'} untuk jangka waktu selama {durasi || '1'} {satuanDurasi === 'hari' ? 'Hari' : satuanDurasi === 'bulan' ? 'Bulan' : 'Tahun'} terhitung sejak tanggal kesepakatan ini ditandatangani.</p>
 
-      {/* Klausul */}
-      <ol style={listStyle}>
-        {template.klausul.map((item, i) => (
-          <li key={i} style={{ marginBottom: '4px', textAlign: 'justify', textJustify: 'inter-word' }}>
-            {item}
-          </li>
-        ))}
-      </ol>
+          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 2: HAK DAN KEWAJIBAN</p>
+          <p style={{ margin: '0 0 10px 0', paddingLeft: '15px' }}>PIHAK KEDUA berhak menggunakan unit tersebut semata-mata untuk keperluan hunian. PIHAK KEDUA wajib mematuhi seluruh peraturan (House Rules) yang ditetapkan oleh Badan Pengelola apartemen, serta bertanggung jawab penuh atas segala kerusakan fasilitas internal yang diakibatkan oleh kelalaian PIHAK KEDUA selama masa sewa berlangsung.</p>
 
-      {/* Penutup */}
-      <p style={pStyle}>
-        {template.penutup}
-      </p>
+          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 3: LARANGAN DAN SANKSI (WANPRESTASI)</p>
+          <p style={{ margin: '0 0 10px 0', paddingLeft: '15px' }}>PIHAK KEDUA dilarang keras mengubah struktur fisik bangunan, menjadikan unit sebagai tempat usaha ilegal, maupun memindahtangankan (sub-let) hak sewa kepada Pihak Ketiga tanpa persetujuan tertulis dari PIHAK PERTAMA. Pelanggaran atas pasal ini memberikan hak mutlak bagi PIHAK PERTAMA untuk membatalkan perjanjian secara sepihak tanpa pengembalian dana sewa.</p>
+
+          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 4: PENYELESAIAN PERSELISIHAN</p>
+          <p style={{ margin: '0 0 15px 0', paddingLeft: '15px' }}>Segala perselisihan yang timbul akibat pelaksanaan Perjanjian ini akan diselesaikan secara musyawarah untuk mufakat. Apabila tidak tercapai mufakat, Para Pihak sepakat untuk menyelesaikannya melalui jalur hukum yang berlaku di wilayah Republik Indonesia.</p>
+
+          <p style={{ margin: '0 0 30px 0' }}>Demikian Perjanjian Sewa ini dibuat dalam keadaan sadar, tanpa paksaan dari pihak manapun, dan memiliki kekuatan hukum yang mengikat sejak ditandatangani oleh Para Pihak.</p>
+        </div>
+      )}
+
+      {/* ── 2. BERITA ACARA SERAH TERIMA KUNCI (INSPEKSI LEGAL) ── */}
+      {jenisSurat === 'serah_terima' && (
+        <div style={{ textAlign: 'justify', textJustify: 'inter-word', marginTop: '15px' }}>
+          <p style={{ margin: '0 0 10px 0' }}>Melalui Berita Acara ini, Para Pihak menerangkan hal-hal sebagai berikut:</p>
+          <ol style={{ margin: '0 0 15px 0', paddingLeft: '20px' }}>
+            <li style={{ marginBottom: '8px' }}>PIHAK PERTAMA dengan ini menyerahkan hak akses beserta kunci unit {namaProperti || 'Gedung'} tipe {unitInfo || 'Unit'} kepada PIHAK KEDUA.</li>
+            <li style={{ marginBottom: '8px' }}>PIHAK KEDUA menyatakan telah melakukan inspeksi menyeluruh (Joint Inspection) dan menerima unit tersebut beserta seluruh inventaris di dalamnya dalam kondisi baik, layak huni, dan sesuai dengan spesifikasi yang disepakati dalam Perjanjian Sewa.</li>
+            <li style={{ marginBottom: '8px' }}>Sejak ditandatanganinya Berita Acara ini, segala risiko, tanggung jawab keamanan, dan keutuhan unit beralih sepenuhnya kepada PIHAK KEDUA.</li>
+          </ol>
+          <p style={{ margin: '0 0 30px 0' }}>Demikian Berita Acara Serah Terima ini dibuat dengan sebenar-benarnya untuk dipergunakan sebagaimana mestinya.</p>
+        </div>
+      )}
+
+      {/* ── 3. SURAT TEGURAN (GAYA SOMASI PERINGATAN) ── */}
+      {jenisSurat === 'komplain' && (
+        <div style={{ textAlign: 'justify', textJustify: 'inter-word', marginTop: '15px' }}>
+          <p style={{ margin: '0 0 15px 0' }}>Dengan hormat,</p>
+          <p style={{ margin: '0 0 10px 0' }}>Melalui surat ini, kami selaku Manajemen Properti dengan tegas menyampaikan <strong>PERINGATAN DAN TEGURAN</strong> kepada Saudara/i selaku penyewa unit {unitInfo || 'Unit'} di {namaProperti || 'Gedung'}.</p>
+          <p style={{ margin: '0 0 10px 0' }}>Berdasarkan hasil pemantauan dan laporan yang kami terima, telah ditemukan adanya pelanggaran tata tertib dan/atau kerusakan fasilitas yang menjadi tanggung jawab Saudara/i. (Rincian pelanggaran/tagihan sebagaimana terlampir atau telah disampaikan sebelumnya).</p>
+          <p style={{ margin: '0 0 10px 0' }}>Kami menginstruksikan kepada Saudara/i untuk segera melakukan perbaikan, penghentian pelanggaran, atau pelunasan administrasi selambat-lambatnya <strong>7 (tujuh) hari kerja</strong> sejak diterbitkannya surat ini.</p>
+          <p style={{ margin: '0 0 30px 0' }}>Apabila Saudara/i mengabaikan peringatan ini, Manajemen berhak mengambil tindakan tegas sesuai dengan ketentuan hukum yang berlaku, termasuk namun tidak terbatas pada pemutusan sewa secara sepihak dan pengosongan unit. Atas perhatian dan kerja sama Saudara/i, kami ucapkan terima kasih.</p>
+        </div>
+      )}
 
       {/* Foto Bukti Serah Terima Kunci */}
       {jenisSurat === 'serah_terima' && fotoBukti && (
@@ -362,4 +380,3 @@ export default function IsiSurat({
     </div>
   );
 }
-
