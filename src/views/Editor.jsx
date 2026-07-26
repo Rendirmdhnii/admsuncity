@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import KartuPihak from '../components/KartuPihak';
 import IsiSurat from '../templates/IsiSurat';
-import { formatTanggalID, formatTanggalPendek, hitungTanggalAkhir, today } from '../utils/dateHelper';
+import { formatTanggalPendek, hitungTanggalAkhir, formatRupiah } from '../utils/dateHelper';
 
 const JENIS_OPTIONS = [
   { id: 'sewa', title: 'Perjanjian Sewa' },
   { id: 'serah_terima', title: 'Serah Terima Kunci' },
-  { id: 'komplain', title: 'Surat Teguran / Tagihan' },
+  { id: 'komplain', title: 'Surat Teguran & Invoice Tagihan' },
 ];
 
 // ── Accordion Item ─────────────────────────────────────────────────────────────
@@ -79,6 +79,7 @@ function SegmentedControl({ value, onChange }) {
 export default function Editor() {
   const {
     jenisSurat, gantiJenis,
+    tanggalSurat, setTanggalSurat,
     namaProperti, setNamaProperti,
     pihak1, setPihak1,
     pihak2, setPihak2,
@@ -94,29 +95,43 @@ export default function Editor() {
     activeSubTab, setActiveSubTab,
     fotoBukti, setFotoBukti,
     detailKerusakan, setDetailKerusakan,
+    nominalTagihan, setNominalTagihan,
+    batasWaktuPembayaran, setBatasWaktuPembayaran,
   } = useApp();
 
-  // Accordion: which section is open (null = all collapsed)
   const [openSection, setOpenSection] = useState('detail');
   const [showModalPratinjau, setShowModalPratinjau] = useState(false);
 
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
-  const tanggalAkhir = hitungTanggalAkhir(durasi, satuanDurasi);
+  const tanggalAkhir = hitungTanggalAkhir(tanggalSurat, durasi, satuanDurasi);
 
   const isFormValid = () => {
-    const isSewaValid = jenisSurat === 'sewa' ? (durasi !== null && durasi !== undefined && String(durasi).trim() !== '') : true;
-    const isKomplainValid = jenisSurat === 'komplain' ? (detailKerusakan?.trim() !== '') : true;
-    const isSerahTerimaValid = jenisSurat === 'serah_terima' ? (fotoBukti !== null && fotoBukti !== '') : true;
+    const isTanggalSuratValid = tanggalSurat?.trim() !== '';
+    const isNamaPropertiValid = namaProperti?.trim() !== '';
+    const isNomorKontrakValid = nomorKontrak?.trim() !== '';
+    const isUnitInfoValid = unitInfo?.trim() !== '';
+    const isPihak1Valid = pihak1.nama?.trim() !== '' && pihak1.nik?.trim() !== '' && pihak1.alamat?.trim() !== '';
+    const isPihak2Valid = pihak2.nama?.trim() !== '' && pihak2.nik?.trim() !== '' && pihak2.alamat?.trim() !== '';
+
+    const isSewaValid = jenisSurat === 'sewa' 
+      ? (durasi !== null && durasi !== undefined && String(durasi).trim() !== '') 
+      : true;
+      
+    const isKomplainValid = jenisSurat === 'komplain' 
+      ? (detailKerusakan?.trim() !== '' && nominalTagihan?.trim() !== '' && batasWaktuPembayaran?.trim() !== '') 
+      : true;
+      
+    const isSerahTerimaValid = jenisSurat === 'serah_terima' 
+      ? (fotoBukti !== null && fotoBukti !== '') 
+      : true;
+
     return (
-      namaProperti?.trim() !== '' &&
-      nomorKontrak?.trim() !== '' &&
-      unitInfo?.trim() !== '' &&
-      pihak1.nama?.trim() !== '' &&
-      pihak1.nik?.trim() !== '' &&
-      pihak1.alamat?.trim() !== '' &&
-      pihak2.nama?.trim() !== '' &&
-      pihak2.nik?.trim() !== '' &&
-      pihak2.alamat?.trim() !== '' &&
+      isTanggalSuratValid &&
+      isNamaPropertiValid &&
+      isNomorKontrakValid &&
+      isUnitInfoValid &&
+      isPihak1Valid &&
+      isPihak2Valid &&
       isSewaValid &&
       isKomplainValid &&
       isSerahTerimaValid
@@ -190,32 +205,6 @@ export default function Editor() {
         {activeSubTab === 'form' && (
           <div className="flex flex-col gap-3 p-4 max-w-lg mx-auto">
 
-            {/* Kalender Pintar banner */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-white">
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
-                </svg>
-                <div className="flex-1">
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                    Tanggal Surat — Otomatis
-                  </p>
-                  <p className="font-bold text-sm mt-0.5">{formatTanggalID(today)}</p>
-                  {jenisSurat === 'sewa' && (
-                    <>
-                      <div className="border-t border-slate-800 my-2" />
-                      <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Tanggal Akhir Sewa — Otomatis
-                      </p>
-                      <p className="font-bold text-sm mt-0.5 text-slate-300">
-                        {formatTanggalPendek(tanggalAkhir)}
-                      </p>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
             {/* ── ACCORDION 1: Detail Surat ─────────────────────────────── */}
             <AccordionSection
               id="detail"
@@ -228,6 +217,20 @@ export default function Editor() {
               openId={openSection}
               setOpenId={setOpenSection}
             >
+              {/* Input Tanggal Surat di Paling Atas Detail Surat */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Tanggal Surat<span className="text-red-500 ml-1">*</span>
+                </label>
+                <input 
+                  type="date" 
+                  required 
+                  value={tanggalSurat} 
+                  onChange={(e) => setTanggalSurat(e.target.value)}
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" 
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
                   Nama Properti / Gedung<span className="text-red-500 ml-1">*</span>
@@ -235,6 +238,7 @@ export default function Editor() {
                 <input type="text" value={namaProperti} onChange={(e) => setNamaProperti(e.target.value)} placeholder="Contoh: Suncity Residence"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
                   Nomor Kontrak<span className="text-red-500 ml-1">*</span>
@@ -242,6 +246,7 @@ export default function Editor() {
                 <input type="text" value={nomorKontrak} onChange={(e) => setNomorKontrak(e.target.value)} placeholder="Contoh: SUNCITY/SEWA/REG/2026"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
                   Info Unit (Tipe / Nomor Unit)<span className="text-red-500 ml-1">*</span>
@@ -249,6 +254,7 @@ export default function Editor() {
                 <input type="text" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Contoh: Unit 2 BR 26 A Lantai 21"
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
               </div>
+
               {jenisSurat === 'sewa' && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -264,23 +270,63 @@ export default function Editor() {
                       <option value="tahun">Tahun</option>
                     </select>
                   </div>
+                  {durasi && (
+                    <p className="text-xs text-slate-500 mt-2 font-medium">
+                      Tanggal Akhir Sewa: <span className="font-bold text-slate-700">{formatTanggalPendek(tanggalAkhir)}</span>
+                    </p>
+                  )}
                 </div>
               )}
 
-              {/* Input Detail Pelanggaran / Kerusakan (Khusus Komplain / Teguran) */}
+              {/* Input Tambahan Khusus Surat Teguran & Invoice Tagihan */}
               {jenisSurat === 'komplain' && (
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                    Detail Pelanggaran / Kerusakan<span className="text-red-500 ml-1">*</span>
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={detailKerusakan}
-                    onChange={(e) => setDetailKerusakan(e.target.value)}
-                    placeholder="Contoh: Terjadi pelanggaran berupa penempatan barang di koridor umum secara berulang / kerusakan wastafel retak..."
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
-                  />
-                </div>
+                <>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Detail Pelanggaran / Kerusakan<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={detailKerusakan}
+                      onChange={(e) => setDetailKerusakan(e.target.value)}
+                      placeholder="Contoh: Kerusakan fasiltas AC unit retak dan belum diselesaikan..."
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Nominal Tagihan (Rp)<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold text-base">
+                        Rp
+                      </span>
+                      <input 
+                        type="text" 
+                        required 
+                        inputMode="numeric"
+                        value={nominalTagihan} 
+                        onChange={(e) => setNominalTagihan(formatRupiah(e.target.value))}
+                        placeholder="0"
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm font-semibold" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Batas Waktu Pembayaran / Penyelesaian<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input 
+                      type="date" 
+                      required 
+                      value={batasWaktuPembayaran} 
+                      onChange={(e) => setBatasWaktuPembayaran(e.target.value)}
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" 
+                    />
+                  </div>
+                </>
               )}
 
               {/* Input Upload Foto Bukti (Khusus Serah Terima Kunci) */}
@@ -397,37 +443,20 @@ export default function Editor() {
           </div>
         )}
 
-        {/* ─── PREVIEW TAB (Visual Only) ──────────────────────────────────── */}
+        {/* ─── PREVIEW TAB (Visual Only with Auto-Scaler Wrapper) ─────────────── */}
         {activeSubTab === 'preview' && (
           <div className="p-4 pb-8">
-            <div className="w-full bg-slate-300 flex justify-center" style={{ overflow: 'hidden', padding: '10px 0' }}>
-              {/* Pembungkus ajaib: Memaksa elemen 794px (A4) menyusut proporsional mengikuti lebar layar (vw) */}
+            <div className="w-full bg-slate-200 flex justify-center overflow-hidden" style={{ minHeight: '70vh' }}>
               <div 
+                className="origin-top"
                 style={{ 
                   width: '794px', 
-                  minWidth: '794px',
-                  transform: 'scale(calc(100vw / 820))', 
-                  transformOrigin: 'top center',
-                  marginBottom: 'calc(-1123px + (1123px * (100vw / 820)))' // Mencegah ruang kosong berlebih di bawah akibat scale
+                  transform: 'scale(calc((100vw - 32px) / 794))', 
+                  marginBottom: 'calc(-1123px + (1123px * ((100vw - 32px) / 794)))' 
                 }}
               >
-                {/* Kertas A4 Statis (Jangan gunakan class tailwind responsif di dalam sini) */}
-                <div 
-                  id="kertas-pratinjau"
-                  className="bg-white shadow-2xl mx-auto"
-                  style={{ 
-                    width: '794px', 
-                    minHeight: '1123px', 
-                    padding: '75px', 
-                    boxSizing: 'border-box',
-                    color: 'black',
-                    fontFamily: '"Times New Roman", Times, serif',
-                    fontSize: '15px',
-                    lineHeight: '1.5',
-                    textAlign: 'justify'
-                  }}
-                >
-                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} />
+                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box' }}>
+                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} tanggalSurat={tanggalSurat} />
                 </div>
               </div>
             </div>
@@ -468,13 +497,19 @@ export default function Editor() {
             </button>
           </div>
 
-          {/* Modal Body (Scaled A4) */}
+          {/* Modal Body with Auto-Scaler Wrapper */}
           <div className="flex-1 overflow-y-auto p-4 flex justify-center items-start">
-            <div className="w-full flex justify-center bg-gray-600 overflow-hidden py-4" style={{ height: '530px' }}>
-              {/* Pembungkus ini memaksa kertas A4 menyusut 50% secara visual di HP, TAPI ukuran aslinya tetap A4 */}
-              <div style={{ transform: 'scale(0.45)', transformOrigin: 'top center', width: '210mm' }} className="origin-top">
-                <div id="kertas-surat-final" ref={exportRef} style={{ width: '210mm', minHeight: '297mm', padding: '20mm', background: 'white', color: 'black', fontFamily: '"Times New Roman", serif', fontSize: '11pt', lineHeight: '1.4', textAlign: 'justify' }}>
-                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} />
+            <div className="w-full bg-slate-200 flex justify-center overflow-hidden" style={{ minHeight: '70vh' }}>
+              <div 
+                className="origin-top"
+                style={{ 
+                  width: '794px', 
+                  transform: 'scale(calc((100vw - 32px) / 794))', 
+                  marginBottom: 'calc(-1123px + (1123px * ((100vw - 32px) / 794)))' 
+                }}
+              >
+                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box' }}>
+                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} tanggalSurat={tanggalSurat} />
                 </div>
               </div>
             </div>
@@ -520,3 +555,4 @@ export default function Editor() {
     </div>
   );
 }
+

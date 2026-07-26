@@ -1,20 +1,38 @@
-import { formatTanggalID, formatTanggalPendek, hitungTanggalAkhir, today } from './dateHelper';
+import { formatTanggalID, formatTanggalPendek, hitungTanggalAkhir, parseTanggal, formatRupiah } from './dateHelper';
 
 /**
  * Build the template content object for a given document type.
  * Returns: { judul, nomorKontrak, pembuka, kesepakatanUtama, klausul[], penutup }
  */
-export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti, detailKerusakan }) {
-  const tglMulai = formatTanggalPendek(today);
-  const tglAkhir = formatTanggalPendek(hitungTanggalAkhir(durasi, satuanDurasi));
+export function buildTemplate({ 
+  jenis, 
+  pihak1, 
+  pihak2, 
+  tanggalSurat, 
+  durasi, 
+  satuanDurasi, 
+  nomorKontrak, 
+  unitInfo, 
+  namaProperti, 
+  detailKerusakan,
+  nominalTagihan,
+  batasWaktuPembayaran
+}) {
+  const tglSuratObj = parseTanggal(tanggalSurat);
+  const tglSuratFormatted = formatTanggalID(tglSuratObj);
+  const tglMulai = formatTanggalPendek(tglSuratObj);
+  const tglAkhir = formatTanggalPendek(hitungTanggalAkhir(tanggalSurat, durasi, satuanDurasi));
   const durasiLabel = `${durasi} ${satuanDurasi === 'hari' ? 'Hari' : satuanDurasi === 'bulan' ? 'Bulan' : 'Tahun'}`;
   const properti = namaProperti || 'Suncity Residence';
+  const formattedNominal = formatRupiah(nominalTagihan);
+  const formattedBatasWaktu = batasWaktuPembayaran ? formatTanggalID(parseTanggal(batasWaktuPembayaran)) : '-';
+  const formattedBatasWaktuPendek = batasWaktuPembayaran ? formatTanggalPendek(parseTanggal(batasWaktuPembayaran)) : '-';
 
   if (jenis === 'sewa') {
     return {
       judul: 'SURAT PERJANJIAN SEWA APARTEMEN',
       nomorKontrak,
-      pembuka: `Pada hari ini, ${formatTanggalID(today)}, telah dibuat dan ditandatangani surat perjanjian sewa unit apartemen oleh dan di antara pihak-pihak di bawah ini:`,
+      pembuka: `Pada hari ini, ${tglSuratFormatted}, telah dibuat dan ditandatangani surat perjanjian sewa unit apartemen oleh dan di antara pihak-pihak di bawah ini:`,
       kesepakatanUtama: `Kedua belah pihak dengan ini menerangkan bahwa Pihak Pertama menyewakan kepada Pihak Kedua sebuah unit apartemen ${properti} ${unitInfo} dengan ketentuan-ketentuan sebagai berikut:`,
       klausul: [
         `1. OBJEK & JANGKA WAKTU: Pihak Pertama menyewakan unit apartemen ${properti} ${unitInfo} kepada Pihak Kedua selama ${durasiLabel} (${tglMulai} - ${tglAkhir}) untuk tujuan tempat tinggal.`,
@@ -30,7 +48,7 @@ export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nom
     return {
       judul: 'BERITA ACARA SERAH TERIMA KUNCI',
       nomorKontrak,
-      pembuka: `Pada hari ini, ${formatTanggalID(today)}, bertempat di kantor ${properti}, telah dilakukan serah terima kunci unit apartemen oleh dan di antara pihak-pihak di bawah ini:`,
+      pembuka: `Pada hari ini, ${tglSuratFormatted}, bertempat di kantor ${properti}, telah dilakukan serah terima kunci unit apartemen oleh dan di antara pihak-pihak di bawah ini:`,
       kesepakatanUtama: `Dengan ini menerangkan bahwa Pihak Pertama selaku pengelola/pemilik telah menyerahkan kunci unit apartemen kepada Pihak Kedua selaku penyewa, dengan kondisi dan ketentuan sebagai berikut:`,
       klausul: [
         `1. OBJEK SERAH TERIMA: Unit apartemen ${properti} ${unitInfo} diserahkan dalam kondisi baik dan bersih sesuai inventaris terlampir.`,
@@ -42,15 +60,18 @@ export function buildTemplate({ jenis, pihak1, pihak2, durasi, satuanDurasi, nom
     };
   }
 
-  // komplain / teguran
+  // komplain / teguran & invoice tagihan
   return {
-    judul: 'SURAT TEGURAN / TAGIHAN',
+    judul: 'SURAT TEGURAN & INVOICE TAGIHAN',
     nomorKontrak,
-    pembuka: `Pada hari ini, ${formatTanggalID(today)}, sehubungan dengan unit apartemen ${properti} ${unitInfo} yang disewa oleh Pihak Kedua, Pihak Pertama menyampaikan teguran keras sekaligus tagihan sehubungan dengan ditemukannya pelanggaran tata tertib / kerusakan fasilitas pada unit terkait.`,
-    kesepakatanUtama: `Rincian kejadian / kerusakan fasilitas adalah sebagai berikut:`,
+    pembuka: `Pada hari ini, ${tglSuratFormatted}, sehubungan dengan unit apartemen ${properti} ${unitInfo} yang disewa oleh Pihak Kedua, Pihak Pertama menyampaikan teguran resmi sekaligus rincian tagihan pembayaran/ganti rugi yang wajib diselesaikan oleh Pihak Kedua.`,
+    kesepakatanUtama: `Rincian pelanggaran / kerusakan dan kewajiban tagihan pembayaran adalah sebagai berikut:`,
     klausul: [
-      detailKerusakan || 'Tidak ada rincian.'
+      `1. RINCIAN PELANGGARAN / KERUSAKAN: ${detailKerusakan || 'Tidak ada rincian.'}`,
+      `2. NOMINAL TAGIHAN / KERUGIAN: Rp ${formattedNominal}`,
+      `3. BATAS WAKTU PEMBAYARAN / PENYELESAIAN: ${formattedBatasWaktu}`,
     ],
-    penutup: `Pihak Kedua diwajibkan untuk segera melakukan perbaikan atau penyelesaian administrasi selambat-lambatnya 7 (tujuh) hari sejak surat ini diterbitkan. Apabila diabaikan, Pihak Pertama berhak mengambil tindakan tegas sesuai jalur hukum dan memutus kontrak sewa secara sepihak.`,
+    penutup: `Pihak Kedua diwajibkan untuk melakukan pembayaran/penyelesaian administrasi sejumlah Rp ${formattedNominal} selambat-lambatnya pada ${formattedBatasWaktuPendek}. Apabila pembayaran tidak dilakukan hingga batas waktu tersebut, Pihak Pertama berhak mengambil tindakan hukum yang berlaku serta memutus kontrak sewa secara sepihak.`,
   };
 }
+

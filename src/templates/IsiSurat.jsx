@@ -1,12 +1,16 @@
+import { formatTanggalPendek, parseTanggal } from '../utils/dateHelper';
+
 /**
  * IsiSurat — shared A4 content renderer.
  * Used by both the live preview and the hidden export nodes.
  * Receives a `template` object (from templateBuilder) plus party & style data.
  */
-export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti, jenisSurat, fotoBukti }) {
+export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti, jenisSurat, fotoBukti, tanggalSurat }) {
   if (!template) return null;
 
   const propertiLabel = (namaProperti || 'Suncity Residence').toUpperCase();
+  const tanggalPrint = tanggalSurat ? formatTanggalPendek(parseTanggal(tanggalSurat)) : '-';
+
 
   const pStyle = {
     textAlign: 'justify',
@@ -186,6 +190,11 @@ export default function IsiSurat({ template, pihak1, pihak2, logo, namaProperti,
           </p>
         </div>
       )}
+
+      {/* Tanggal & Lokasi Surat */}
+      <div style={{ textAlign: 'right', marginTop: '20px', marginBottom: '10px', fontSize: '15px', color: '#000000' }}>
+        Sidoarjo, {tanggalPrint}
+      </div>
 
       {/* Tanda Tangan */}
       <table style={signatureStyle}>

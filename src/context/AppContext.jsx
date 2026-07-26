@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useRef, useCallback, useMemo } fro
 import { loadContacts, persistContacts, upsertContact } from '../utils/contactStorage';
 import { buildTemplate } from '../utils/templateBuilder';
 import { downloadPDF } from '../utils/pdfHelper';
-import { today } from '../utils/dateHelper';
+import { today, getTodayFormatted } from '../utils/dateHelper';
 
 // ── Context Definition ────────────────────────────────────────────────────────
 
@@ -17,6 +17,7 @@ export function AppProvider({ children }) {
   const [activeSubTab, setActiveSubTab] = useState('form');
 
   // ─ Form Data ─
+  const [tanggalSurat, setTanggalSurat] = useState(() => getTodayFormatted());
   const [namaProperti, setNamaProperti] = useState('');
   const [pihak1, setPihak1] = useState({ nama: '', nik: '', alamat: '', noWa: '' });
   const [pihak2, setPihak2] = useState({ nama: '', nik: '', alamat: '', noWa: '' });
@@ -28,6 +29,8 @@ export function AppProvider({ children }) {
   const [logo, setLogo] = useState(null);
   const [fotoBukti, setFotoBukti] = useState(null);
   const [detailKerusakan, setDetailKerusakan] = useState('');
+  const [nominalTagihan, setNominalTagihan] = useState('');
+  const [batasWaktuPembayaran, setBatasWaktuPembayaran] = useState('');
 
   // ─ Contacts ─
   const [contacts, setContacts] = useState(() => loadContacts());
@@ -47,14 +50,17 @@ export function AppProvider({ children }) {
       jenis: jenisSurat, 
       pihak1, 
       pihak2, 
+      tanggalSurat,
       durasi, 
       satuanDurasi, 
       nomorKontrak, 
       unitInfo, 
       namaProperti, 
-      detailKerusakan 
+      detailKerusakan,
+      nominalTagihan,
+      batasWaktuPembayaran
     });
-  }, [jenisSurat, pihak1, pihak2, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti, detailKerusakan]);
+  }, [jenisSurat, pihak1, pihak2, tanggalSurat, durasi, satuanDurasi, nomorKontrak, unitInfo, namaProperti, detailKerusakan, nominalTagihan, batasWaktuPembayaran]);
 
   // ── Navigation helpers ────────────────────────────────────────────────────
 
@@ -111,7 +117,7 @@ export function AppProvider({ children }) {
     try {
       const safeName = pihak2.nama
         ? `Surat_${jenisSurat}_${pihak2.nama.replace(/\s+/g, '_')}`
-        : `Surat_${jenisSurat}_${today.toLocaleDateString('id-ID').replace(/\//g, '-')}`;
+        : `Surat_${jenisSurat}_${getTodayFormatted()}`;
       
       const blob = await downloadPDF(exportRef.current, safeName);
       
@@ -142,6 +148,7 @@ export function AppProvider({ children }) {
     jenisSurat, pilihJenis, gantiJenis,
     activeSubTab, setActiveSubTab,
     // form data
+    tanggalSurat, setTanggalSurat,
     namaProperti, setNamaProperti,
     pihak1, setPihak1,
     pihak2, setPihak2,
@@ -153,6 +160,8 @@ export function AppProvider({ children }) {
     logo, handleLogoUpload, handleClearLogo,
     fotoBukti, setFotoBukti,
     detailKerusakan, setDetailKerusakan,
+    nominalTagihan, setNominalTagihan,
+    batasWaktuPembayaran, setBatasWaktuPembayaran,
     // contacts
     contacts, saveContact, deleteContact,
     // computed

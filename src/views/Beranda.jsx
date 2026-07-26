@@ -1,5 +1,4 @@
 import { useApp } from '../context/AppContext';
-import { formatTanggalID, today } from '../utils/dateHelper';
 
 const JENIS_OPTIONS = [
   {
@@ -26,12 +25,12 @@ const JENIS_OPTIONS = [
     id: 'komplain',
     icon: (
       <svg className="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9 3.037c0 1.53 1.157 2.766 2.656 2.898 3.513.31 7.175.31 10.688 0 1.499-.132 2.656-1.368 2.656-2.898V11.25c0-1.53-1.157-2.766-2.656-2.898-3.513-.31-7.175-.31-10.688 0C4.157 8.484 3 9.72 3 11.25v4.537z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15.75h.008v.008H12v-.008z" />
       </svg>
     ),
-    title: 'Buat Surat Teguran / Tagihan',
-    desc: 'Surat teguran keras atau tagihan dari pemilik kepada penyewa',
+    title: 'Buat Surat Teguran & Invoice Tagihan',
+    desc: 'Surat teguran resmi dan invoice tagihan pembayaran ganti rugi',
   },
 ];
 
@@ -43,7 +42,7 @@ export default function Beranda() {
       {/* Greeting */}
       <div className="pt-3">
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">
-          {formatTanggalID(today)}
+          Full Property Administration System
         </p>
         <h2 className="text-2xl font-extrabold text-slate-900 leading-tight">
           Selamat Datang, Admin
@@ -86,21 +85,22 @@ export default function Beranda() {
         ))}
       </div>
 
-      {/* Kalender Pintar Card */}
+      {/* Info System Card */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-white">
         <div className="flex items-center gap-2 mb-2">
           <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-            Kalender Pintar Aktif
+            Sistem Administrasi Properti
           </span>
         </div>
-        <p className="text-sm font-semibold">Tanggal surat otomatis terisi ke hari ini</p>
+        <p className="text-sm font-semibold">Kendali Penuh Atas Seluruh Dokumen</p>
         <p className="text-xs text-slate-400 mt-0.5">
-          Durasi sewa = tanggal akhir otomatis terhitung
+          Tanggal surat dan jangka waktu sewa/tagihan dapat disesuaikan secara bebas oleh admin.
         </p>
       </div>
     </div>
   );
 }
+

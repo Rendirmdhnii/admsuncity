@@ -3,7 +3,7 @@
  *
  * @param {HTMLElement} element  The DOM node to export
  * @param {string}      filename Desired filename (no need for .pdf suffix)
- * @returns {Promise<void>}
+ * @returns {Promise<Blob>}
  */
 export async function downloadPDF(element, filename) {
   if (!element) throw new Error('Export element is not mounted');
@@ -24,43 +24,37 @@ export async function downloadPDF(element, filename) {
   const opt = {
     margin: 0,
     filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`,
-    image: { type: 'jpeg', quality: 1 },
+    image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { 
-      scale: 2, // Ketajaman
+      scale: 2,
       useCORS: true,
-      windowWidth: 794, // Paksa lebar jendela kanvas menjadi A4 pixel
-      width: 794,       // Paksa lebar render menjadi A4 pixel
+      windowWidth: 794,
+      width: 794,
       scrollY: 0,
       scrollX: 0,
       onclone: (clonedDoc) => {
         const el = clonedDoc.getElementById('kertas-surat-final');
         if (el) {
-          // HAPUS SEMUA BATASAN MOBILE DI CLONE DOM
           let parent = el.parentElement;
-          while(parent) {
-             parent.style.overflow = 'visible';
-             parent.style.transform = 'none';
-             parent = parent.parentElement;
+          while (parent) {
+            parent.style.overflow = 'visible';
+            parent.style.transform = 'none';
+            parent = parent.parentElement;
           }
           
-          // KUNCI UKURAN KERTAS DALAM PIXEL MUTLAK (A4)
-          el.style.width = '794px';
-          el.style.minHeight = '1123px';
-          el.style.padding = '75px'; // Setara dengan 20mm
-          el.style.margin = '0';
           el.style.transform = 'none';
           el.style.position = 'absolute';
-          el.style.top = '0';
           el.style.left = '0';
+          el.style.top = '0';
+          el.style.width = '794px';
+          el.style.minHeight = '1123px';
+          el.style.padding = '75px';
           el.style.boxSizing = 'border-box';
           
-          // Paksa font dan spasi agar justify rapi
-          el.style.fontSize = '14.5px'; // Setara 11pt
-          el.style.lineHeight = '1.5';
-          el.style.textAlign = 'justify';
-          const paragraphs = el.getElementsByTagName('p');
-          for(let i=0; i<paragraphs.length; i++) {
-             paragraphs[i].style.textAlign = 'justify';
+          const imgs = el.getElementsByTagName('img');
+          for (let i = 0; i < imgs.length; i++) {
+            imgs[i].style.maxWidth = '100%';
+            imgs[i].style.objectFit = 'contain';
           }
         }
       }
@@ -81,3 +75,4 @@ export function openWhatsApp(rawNumber) {
     window.open(`https://wa.me/${digits}`, '_blank', 'noopener,noreferrer');
   }
 }
+
