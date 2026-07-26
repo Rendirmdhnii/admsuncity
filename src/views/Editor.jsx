@@ -92,7 +92,7 @@ export default function Editor() {
     logo, handleLogoUpload, handleClearLogo,
     contacts, saveContact,
     template,
-    exportRef, handleDownloadPDF, isExporting,
+    exportRef, handleDownloadPDF,
     activeSubTab, setActiveSubTab,
     fotoBukti, setFotoBukti,
     detailKerusakan, setDetailKerusakan,
@@ -107,7 +107,7 @@ export default function Editor() {
   } = useApp();
 
   const [openSection, setOpenSection] = useState('detail');
-  const [showModalPratinjau, setShowModalPratinjau] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
   const tanggalAkhir = hitungTanggalAkhir(tanggalSurat, durasi, satuanDurasi);
@@ -155,36 +155,62 @@ export default function Editor() {
     );
   };
 
-  const handleOpenPreview = () => {
+  const handleUnduhPDF = async () => {
     if (!isFormValid()) {
-      alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat melihat atau mengunduh surat.');
+      alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat mengekspor dan mengirim dokumen.');
       return;
     }
-    setShowModalPratinjau(true);
-  };
 
-  const handleDownloadAndNotify = async () => {
-    const success = await handleDownloadPDF();
-    if (success) {
-      setShowModalPratinjau(false);
-      
-      const amanPihak2 = pihak2.nama ? pihak2.nama.trim() : 'Penyewa';
-      const amanJenis = jenisSurat === 'sewa' 
-        ? 'Perjanjian Sewa' 
-        : jenisSurat === 'serah_terima' 
-        ? 'Serah Terima Kunci' 
-        : jenisSurat === 'komplain'
-        ? 'Surat Teguran dan Invoice Tagihan'
-        : 'Invoice Pembayaran Sewa';
+    setIsProcessing(true);
+    try {
+      const success = await handleDownloadPDF();
+      if (success) {
+        const amanPihak2 = pihak2.nama ? pihak2.nama.trim() : 'Penyewa';
+        const amanJenis = jenisSurat === 'sewa' 
+          ? 'Perjanjian Sewa' 
+          : jenisSurat === 'serah_terima' 
+          ? 'Serah Terima Kunci' 
+          : jenisSurat === 'komplain'
+          ? 'Surat Teguran dan Invoice Tagihan'
+          : 'Invoice Pembayaran Sewa';
 
-      const pesanWA = `Halo Admin Suncity,\n\nBerikut adalah dokumen administrasi baru yang telah dicetak melalui sistem:\n\nJenis Dokumen: *${amanJenis}*\nNama Penyewa: *${amanPihak2}*\n\nMohon untuk menerima lampiran PDF yang akan saya kirimkan setelah pesan ini untuk diarsipkan.\n\nTerima kasih.`;
+        const pesanWA = `Halo Admin Suncity,\n\nBerikut adalah dokumen administrasi baru yang telah dicetak melalui sistem:\n\nJenis Dokumen: *${amanJenis}*\nNama Penyewa: *${amanPihak2}*\n\nMohon untuk menerima lampiran PDF yang akan saya kirimkan setelah pesan ini untuk diarsipkan.\n\nTerima kasih.`;
 
-      window.location.href = `https://wa.me/6289678449424?text=${encodeURIComponent(pesanWA)}`;
+        window.location.href = `https://wa.me/6289678449424?text=${encodeURIComponent(pesanWA)}`;
+      }
+    } catch (err) {
+      console.error('Download error:', err);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   return (
     <div className="flex flex-col h-full bg-slate-100">
+
+      {/* ── Hidden Export Node (Always mounted for PDF Generation) ────── */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', overflow: 'hidden' }}>
+        <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
+          <IsiSurat 
+            template={template} 
+            pihak1={pihak1} 
+            pihak2={pihak2} 
+            logo={logo} 
+            namaProperti={namaProperti} 
+            jenisSurat={jenisSurat} 
+            fotoBukti={fotoBukti} 
+            tanggalSurat={tanggalSurat}
+            tanggalCheckIn={tanggalCheckIn}
+            totalSewa={totalSewa}
+            nominalDP={nominalDP}
+            statusPembayaran={statusPembayaran}
+            teksInclude={teksInclude}
+            teksExclude={teksExclude}
+            durasi={durasi}
+            satuanDurasi={satuanDurasi}
+          />
+        </div>
+      </div>
 
       {/* ── Sub-header ──────────────────────────────────────────────── */}
       <div className="bg-white border-b border-slate-200 px-4 py-3 z-20 shadow-sm">
@@ -244,7 +270,7 @@ export default function Editor() {
                   required 
                   value={tanggalSurat} 
                   onChange={(e) => setTanggalSurat(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium" 
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm font-medium" 
                 />
               </div>
 
@@ -622,19 +648,20 @@ export default function Editor() {
           </div>
         )}
 
-        {/* ─── PREVIEW TAB (Visual Only with Anti-Clipping Auto-Scaler Wrapper) ─── */}
+        {/* ─── PREVIEW TAB (Perfect Fit-to-Screen Anti-Scroll Wrapper) ─── */}
         {activeSubTab === 'preview' && (
-          <div className="p-4 pb-8">
-            <div className="w-full bg-slate-600 overflow-x-auto overflow-y-auto" style={{ height: '75vh', padding: '10px' }}>
+          <div className="p-4">
+            <div className="w-full h-[65vh] bg-slate-200/80 rounded-2xl border border-slate-200 flex justify-center items-start overflow-hidden p-4 mt-2 shadow-inner relative">
               <div 
-                style={{ 
+                className="origin-top shadow-xl transition-all duration-300"
+                style={{
                   width: '794px',
-                  transform: 'scale(calc(min(100vw - 32px, 794px) / 794))', 
-                  transformOrigin: 'top left',
-                  marginBottom: 'calc(-1123px + (1123px * (min(100vw - 32px, 794px) / 794)))' 
+                  height: '1123px',
+                  transform: 'scale(min(calc((100vw - 48px) / 794), calc((65vh - 32px) / 1123)))',
+                  backgroundColor: 'white'
                 }}
               >
-                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
+                <div id="kertas-pratinjau-inline" style={{ width: '100%', height: '100%', boxSizing: 'border-box' }}>
                   <IsiSurat 
                     template={template} 
                     pihak1={pihak1} 
@@ -661,106 +688,32 @@ export default function Editor() {
 
       </div>
 
-      {/* ── GLASSMORPHISM BOTTOM ACTION BAR (iOS Style Ergonomi Mobile) ── */}
-      <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-slate-200 p-4 pb-6 z-50">
+      {/* ── PREMIUM GLASSMORPHISM DIRECT ACTION BUTTON (One-Click PDF & WA) ── */}
+      <div className="fixed bottom-0 left-0 w-full bg-white/85 backdrop-blur-lg border-t border-slate-200 p-4 pb-8 z-50">
         <div className="max-w-lg mx-auto">
           <button 
-            onClick={handleOpenPreview} 
-            className="w-full bg-slate-900 hover:bg-black text-white font-bold text-sm px-6 py-4 rounded-2xl shadow-lg active:scale-95 transition-transform flex justify-center items-center gap-2 cursor-pointer"
+            onClick={handleUnduhPDF}
+            disabled={isProcessing}
+            className="w-full bg-slate-900 text-white font-bold text-sm px-6 py-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(15,23,42,0.4)] active:scale-95 transition-all flex justify-center items-center gap-3 disabled:opacity-80 disabled:scale-100 cursor-pointer"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-            Lihat Pratinjau Surat
+            {isProcessing ? (
+              <>
+                <svg className="animate-spin h-5 w-5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span className="tracking-wide">Menyusun Dokumen...</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span className="tracking-wide">Cetak PDF & Kirim WhatsApp</span>
+                <svg className="w-4 h-4 text-emerald-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              </>
+            )}
           </button>
         </div>
       </div>
-
-      {/* ── Full-Screen Preview Modal (100% WYSIWYG) ── */}
-      {showModalPratinjau && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-slate-900/60 backdrop-blur-md justify-between animate-fade-in">
-          {/* Modal Header */}
-          <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm">
-            <span className="text-sm font-bold text-slate-800">Pratinjau Dokumen Final</span>
-            <button
-              onClick={() => setShowModalPratinjau(false)}
-              className="text-slate-400 hover:text-slate-600 cursor-pointer p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Modal Body with Anti-Clipping Auto-Scaler Wrapper */}
-          <div className="flex-1 overflow-y-auto p-4 flex justify-center items-start">
-            <div className="w-full bg-slate-600 overflow-x-auto overflow-y-auto" style={{ height: '75vh', padding: '10px' }}>
-              <div 
-                style={{ 
-                  width: '794px',
-                  transform: 'scale(calc(min(100vw - 32px, 794px) / 794))', 
-                  transformOrigin: 'top left',
-                  marginBottom: 'calc(-1123px + (1123px * (min(100vw - 32px, 794px) / 794)))' 
-                }}
-              >
-                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
-                  <IsiSurat 
-                    template={template} 
-                    pihak1={pihak1} 
-                    pihak2={pihak2} 
-                    logo={logo} 
-                    namaProperti={namaProperti} 
-                    jenisSurat={jenisSurat} 
-                    fotoBukti={fotoBukti} 
-                    tanggalSurat={tanggalSurat}
-                    tanggalCheckIn={tanggalCheckIn}
-                    totalSewa={totalSewa}
-                    nominalDP={nominalDP}
-                    statusPembayaran={statusPembayaran}
-                    teksInclude={teksInclude}
-                    teksExclude={teksExclude}
-                    durasi={durasi}
-                    satuanDurasi={satuanDurasi}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Modal Footer: Action Buttons */}
-          <div className="bg-white border-t border-slate-200 p-4 flex gap-3 z-50">
-            <button
-              onClick={() => setShowModalPratinjau(false)}
-              className="flex-1 py-4 border border-slate-200 text-slate-700 font-bold rounded-2xl text-base hover:bg-slate-50 transition-all cursor-pointer text-center"
-            >
-              Tutup Pratinjau
-            </button>
-            <button
-              onClick={handleDownloadAndNotify}
-              disabled={isExporting}
-              className={[
-                'flex-1 flex items-center justify-center gap-3 font-bold py-4 rounded-2xl text-base transition-all cursor-pointer',
-                isExporting ? 'bg-slate-400 cursor-wait text-white' : 'bg-slate-900 hover:bg-black text-white shadow-lg shadow-slate-200'
-              ].join(' ')}
-            >
-              {isExporting ? (
-                <>
-                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                  </svg>
-                  Mengunduh...
-                </>
-              ) : (
-                <>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                  </svg>
-                  Unduh PDF (Final)
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      )}
 
     </div>
   );
