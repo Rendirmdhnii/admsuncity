@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -10,13 +9,15 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['logocpt.png', 'icon-192x192.png', 'icon-512x512.png'],
       manifest: {
-        name: 'Manajemen Properti - Sistem Administrasi Digital',
+        name: 'Manajemen Properti',
         short_name: 'Manajemen Properti',
-        description: 'Sistem Administrasi Digital Pembuat Surat & Invoice Properti',
+        description: 'Sistem Administrasi Properti dan Dokumen Digital',
         theme_color: '#0f172a',
         background_color: '#f8fafc',
         display: 'standalone',
         orientation: 'portrait',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
             src: '/icon-192x192.png',
