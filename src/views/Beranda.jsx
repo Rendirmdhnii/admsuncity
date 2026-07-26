@@ -1,116 +1,101 @@
 import { useApp } from '../context/AppContext';
 
-const JENIS_OPTIONS = [
-  {
-    id: 'sewa',
-    icon: (
-      <svg className="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-    title: 'Buat Perjanjian Sewa',
-    desc: 'Kontrak sewa unit apartemen antara pemilik dan penyewa',
-  },
-  {
-    id: 'serah_terima',
-    icon: (
-      <svg className="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m-3-3a3 3 0 00-3 3m3-3a3 3 0 003 3m0 0V16.5a3 3 0 01-3 3h-6a3 3 0 01-3-3V8.25a3 3 0 013-3h3M9 19.5h6m-6-15h6" />
-      </svg>
-    ),
-    title: 'Buat Serah Terima Kunci',
-    desc: 'Berita acara penyerahan kunci unit kepada penyewa',
-  },
-  {
-    id: 'komplain',
-    icon: (
-      <svg className="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9 3.037c0 1.53 1.157 2.766 2.656 2.898 3.513.31 7.175.31 10.688 0 1.499-.132 2.656-1.368 2.656-2.898V11.25c0-1.53-1.157-2.766-2.656-2.898-3.513-.31-7.175-.31-10.688 0C4.157 8.484 3 9.72 3 11.25v4.537z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15.75h.008v.008H12v-.008z" />
-      </svg>
-    ),
-    title: 'Buat Surat Teguran & Invoice Tagihan',
-    desc: 'Surat teguran resmi dan invoice tagihan pembayaran ganti rugi',
-  },
-  {
-    id: 'invoice_sewa',
-    icon: (
-      <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5a1.5 1.5 0 011.5 1.5v10.5a1.5 1.5 0 01-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5V6a1.5 1.5 0 011.5-1.5zm12 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-      </svg>
-    ),
-    title: 'Buat Invoice Pembayaran Sewa',
-    desc: 'Cetak struk / bukti pembayaran sewa apartemen untuk pelanggan',
-  },
-];
-
 export default function Beranda() {
   const { pilihJenis } = useApp();
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 11) return 'Selamat Pagi';
+    if (hour >= 11 && hour < 15) return 'Selamat Siang';
+    if (hour >= 15 && hour < 18) return 'Selamat Sore';
+    return 'Selamat Malam';
+  };
+  const sapaan = getGreeting();
+
   return (
-    <div className="flex flex-col gap-5 p-4 pb-28 max-w-lg mx-auto w-full">
-      {/* Greeting */}
-      <div className="pt-3">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">
-          Full Property Administration System
-        </p>
-        <h2 className="text-2xl font-extrabold text-slate-900 leading-tight">
-          Selamat Datang, Admin
-        </h2>
-        <p className="text-sm text-slate-500 mt-1">
-          Pilih jenis surat yang ingin dibuat hari ini.
-        </p>
-      </div>
-
-      {/* Pilihan Dokumen */}
-      <div className="flex flex-col gap-3">
-        {JENIS_OPTIONS.map((opt) => (
-          <button
-            key={opt.id}
-            onClick={() => pilihJenis(opt.id)}
-            className="flex items-center gap-4 p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-md transition-all cursor-pointer text-left shadow-sm group"
-          >
-            {/* Icon Wrapper */}
-            <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-50 border border-slate-100 flex-shrink-0 group-hover:bg-slate-100 transition-colors">
-              {opt.icon}
-            </div>
-
-            {/* Text */}
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-slate-900 text-base leading-tight">{opt.title}</p>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{opt.desc}</p>
-            </div>
-
-            {/* Chevron */}
-            <svg
-              className="w-5 h-5 text-slate-300 flex-shrink-0 group-hover:text-slate-500 transition-colors"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </button>
-        ))}
-      </div>
-
-      {/* Info System Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-white">
-        <div className="flex items-center gap-2 mb-2">
-          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-            Sistem Administrasi Properti
-          </span>
+    <div className="min-h-screen bg-slate-50 pb-24 font-sans max-w-lg mx-auto w-full">
+      {/* HEADER SECTION (APP STYLE) */}
+      <div className="bg-white px-6 pt-10 pb-8 rounded-b-[2.5rem] shadow-sm mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <p className="text-slate-500 text-sm font-medium tracking-wide">{sapaan},</p>
+            <h1 className="text-2xl font-extrabold text-slate-800 mt-1">Mochammad Febrian</h1>
+          </div>
+          {/* Avatar Placeholder */}
+          <div className="w-12 h-12 rounded-full bg-slate-800 text-white flex items-center justify-center text-lg font-bold shadow-md">
+            MF
+          </div>
         </div>
-        <p className="text-sm font-semibold">Kendali Penuh Atas Seluruh Dokumen</p>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Tanggal surat dan jangka waktu sewa/tagihan dapat disesuaikan secara bebas oleh admin.
-        </p>
+        <p className="text-slate-500 text-sm mt-4">Mau buat dokumen apa hari ini?</p>
+      </div>
+
+      {/* MENU GRID (BENTO STYLE) */}
+      <div className="px-6 grid grid-cols-2 gap-4">
+        
+        {/* Menu 1: Perjanjian Sewa */}
+        <button 
+          onClick={() => pilihJenis('sewa')} 
+          className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-start text-left active:scale-95 transition-transform cursor-pointer hover:shadow-md"
+        >
+          <div className="bg-blue-50 text-blue-600 p-3 rounded-2xl mb-4">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <h3 className="font-bold text-slate-800 text-sm mb-1">Perjanjian Sewa</h3>
+          <p className="text-[10px] text-slate-400 leading-tight">Kontrak resmi apartemen</p>
+        </button>
+
+        {/* Menu 2: Serah Terima */}
+        <button 
+          onClick={() => pilihJenis('serah_terima')} 
+          className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-start text-left active:scale-95 transition-transform cursor-pointer hover:shadow-md"
+        >
+          <div className="bg-emerald-50 text-emerald-600 p-3 rounded-2xl mb-4">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+          </div>
+          <h3 className="font-bold text-slate-800 text-sm mb-1">Serah Terima</h3>
+          <p className="text-[10px] text-slate-400 leading-tight">Berita acara & kunci</p>
+        </button>
+
+        {/* Menu 3: Invoice Pembayaran */}
+        <button 
+          onClick={() => pilihJenis('invoice_sewa')} 
+          className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-start text-left active:scale-95 transition-transform cursor-pointer hover:shadow-md"
+        >
+          <div className="bg-amber-50 text-amber-600 p-3 rounded-2xl mb-4">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"></path></svg>
+          </div>
+          <h3 className="font-bold text-slate-800 text-sm mb-1">Invoice Sewa</h3>
+          <p className="text-[10px] text-slate-400 leading-tight">Cetak struk tagihan</p>
+        </button>
+
+        {/* Menu 4: Surat Teguran */}
+        <button 
+          onClick={() => pilihJenis('komplain')} 
+          className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-start text-left active:scale-95 transition-transform cursor-pointer hover:shadow-md"
+        >
+          <div className="bg-rose-50 text-rose-600 p-3 rounded-2xl mb-4">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          </div>
+          <h3 className="font-bold text-slate-800 text-sm mb-1">Surat Teguran</h3>
+          <p className="text-[10px] text-slate-400 leading-tight">Komplain & tagihan rugi</p>
+        </button>
+
+      </div>
+
+      {/* SYSTEM INFO BANNER */}
+      <div className="px-6 mt-6">
+        <div className="bg-slate-800 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-slate-700 rounded-full opacity-50 blur-xl"></div>
+          <div className="relative z-10">
+            <div className="flex items-center space-x-2 mb-3">
+              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span className="text-xs font-bold tracking-widest text-slate-300">SISTEM AKTIF</span>
+            </div>
+            <h3 className="font-bold text-lg mb-1">Kendali Penuh Administrasi</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">Semua dokumen dicetak dengan standar resolusi tinggi dan terhubung ke WhatsApp.</p>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
