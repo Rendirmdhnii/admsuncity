@@ -24,42 +24,34 @@ export async function downloadPDF(element, filename) {
   const opt = {
     margin: 0,
     filename: filename.endsWith('.pdf') ? filename : `${filename}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
+    image: { type: 'jpeg', quality: 1 },
     html2canvas: { 
-      scale: 2,
+      scale: 2, 
       useCORS: true,
-      windowWidth: 794,
-      width: 794,
+      windowWidth: 1024, // Paksa ukuran window render besar
+      x: 0, // Paksa mulai dari titik X 0 mutlak
+      y: 0, // Paksa mulai dari titik Y 0 mutlak
       scrollY: 0,
       scrollX: 0,
       onclone: (clonedDoc) => {
+        // PERBAIKAN FATAL CLIPPING: Lebarkan body virtual agar sisi kiri tidak terpotong
+        clonedDoc.body.style.width = '1200px'; 
+        clonedDoc.body.style.padding = '0';
+        clonedDoc.body.style.margin = '0';
+        
         const el = clonedDoc.getElementById('kertas-surat-final');
         if (el) {
-          let parent = el.parentElement;
-          while (parent) {
-            parent.style.overflow = 'visible';
-            parent.style.transform = 'none';
-            parent = parent.parentElement;
-          }
-          
-          el.style.transform = 'none';
+          el.style.transform = 'none'; // Matikan efek zoom out
           el.style.position = 'absolute';
           el.style.left = '0';
           el.style.top = '0';
           el.style.width = '794px';
           el.style.minHeight = '1123px';
-          el.style.padding = '75px';
-          el.style.boxSizing = 'border-box';
-          
-          const imgs = el.getElementsByTagName('img');
-          for (let i = 0; i < imgs.length; i++) {
-            imgs[i].style.maxWidth = '100%';
-            imgs[i].style.objectFit = 'contain';
-          }
+          el.style.margin = '0';
         }
       }
     },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
   return window.html2pdf().set(opt).from(element).output('blob');

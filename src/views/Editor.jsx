@@ -150,19 +150,7 @@ export default function Editor() {
     const success = await handleDownloadPDF();
     if (success) {
       setShowModalPratinjau(false);
-      
-      let rawWa = pihak2.noWa || '';
-      let cleanWa = rawWa.replace(/\D/g, ''); 
-
-      if (cleanWa.startsWith('0')) {
-        cleanWa = '62' + cleanWa.substring(1);
-      }
-
-      if (cleanWa.length >= 10 && cleanWa.length <= 14) {
-        window.location.href = `https://wa.me/${cleanWa}`;
-      } else {
-        alert('PDF berhasil diunduh. Nomor WhatsApp tidak diisi atau tidak valid, pengalihan otomatis dibatalkan.');
-      }
+      window.location.href = 'https://wa.me/6289678449424?text=Halo%20Admin,%20berikut%20adalah%20dokumen%20baru%20yang%20telah%20dibuat.';
     }
   };
 
@@ -443,19 +431,19 @@ export default function Editor() {
           </div>
         )}
 
-        {/* ─── PREVIEW TAB (Visual Only with Auto-Scaler Wrapper) ─────────────── */}
+        {/* ─── PREVIEW TAB (Visual Only with Anti-Clipping Auto-Scaler Wrapper) ─── */}
         {activeSubTab === 'preview' && (
           <div className="p-4 pb-8">
-            <div className="w-full bg-slate-200 flex justify-center overflow-hidden" style={{ minHeight: '70vh' }}>
+            <div className="w-full bg-slate-600 overflow-x-auto overflow-y-auto" style={{ height: '75vh', padding: '10px' }}>
               <div 
-                className="origin-top"
                 style={{ 
-                  width: '794px', 
-                  transform: 'scale(calc((100vw - 32px) / 794))', 
-                  marginBottom: 'calc(-1123px + (1123px * ((100vw - 32px) / 794)))' 
+                  width: '794px',
+                  transform: 'scale(calc(min(100vw - 32px, 794px) / 794))', 
+                  transformOrigin: 'top left',
+                  marginBottom: 'calc(-1123px + (1123px * (min(100vw - 32px, 794px) / 794)))' 
                 }}
               >
-                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box' }}>
+                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
                   <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} tanggalSurat={tanggalSurat} />
                 </div>
               </div>
@@ -497,18 +485,18 @@ export default function Editor() {
             </button>
           </div>
 
-          {/* Modal Body with Auto-Scaler Wrapper */}
+          {/* Modal Body with Anti-Clipping Auto-Scaler Wrapper */}
           <div className="flex-1 overflow-y-auto p-4 flex justify-center items-start">
-            <div className="w-full bg-slate-200 flex justify-center overflow-hidden" style={{ minHeight: '70vh' }}>
+            <div className="w-full bg-slate-600 overflow-x-auto overflow-y-auto" style={{ height: '75vh', padding: '10px' }}>
               <div 
-                className="origin-top"
                 style={{ 
-                  width: '794px', 
-                  transform: 'scale(calc((100vw - 32px) / 794))', 
-                  marginBottom: 'calc(-1123px + (1123px * ((100vw - 32px) / 794)))' 
+                  width: '794px',
+                  transform: 'scale(calc(min(100vw - 32px, 794px) / 794))', 
+                  transformOrigin: 'top left',
+                  marginBottom: 'calc(-1123px + (1123px * (min(100vw - 32px, 794px) / 794)))' 
                 }}
               >
-                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box' }}>
+                <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
                   <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} tanggalSurat={tanggalSurat} />
                 </div>
               </div>
@@ -555,4 +543,3 @@ export default function Editor() {
     </div>
   );
 }
-
