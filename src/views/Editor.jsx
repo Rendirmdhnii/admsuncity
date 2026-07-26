@@ -8,6 +8,7 @@ const JENIS_OPTIONS = [
   { id: 'sewa', title: 'Perjanjian Sewa' },
   { id: 'serah_terima', title: 'Serah Terima Kunci' },
   { id: 'komplain', title: 'Surat Teguran & Invoice Tagihan' },
+  { id: 'invoice_sewa', title: 'Invoice Pembayaran Sewa' },
 ];
 
 // ── Accordion Item ─────────────────────────────────────────────────────────────
@@ -97,6 +98,12 @@ export default function Editor() {
     detailKerusakan, setDetailKerusakan,
     nominalTagihan, setNominalTagihan,
     batasWaktuPembayaran, setBatasWaktuPembayaran,
+    tanggalCheckIn, setTanggalCheckIn,
+    totalSewa, setTotalSewa,
+    nominalDP, setNominalDP,
+    statusPembayaran, setStatusPembayaran,
+    teksInclude, setTeksInclude,
+    teksExclude, setTeksExclude,
   } = useApp();
 
   const [openSection, setOpenSection] = useState('detail');
@@ -107,11 +114,21 @@ export default function Editor() {
 
   const isFormValid = () => {
     const isTanggalSuratValid = tanggalSurat?.trim() !== '';
+    const isPihak2Valid = pihak2.nama?.trim() !== '';
+
+    if (jenisSurat === 'invoice_sewa') {
+      return (
+        isTanggalSuratValid &&
+        isPihak2Valid &&
+        tanggalCheckIn?.trim() !== '' &&
+        String(totalSewa).trim() !== ''
+      );
+    }
+
     const isNamaPropertiValid = namaProperti?.trim() !== '';
     const isNomorKontrakValid = nomorKontrak?.trim() !== '';
     const isUnitInfoValid = unitInfo?.trim() !== '';
     const isPihak1Valid = pihak1.nama?.trim() !== '' && pihak1.nik?.trim() !== '' && pihak1.alamat?.trim() !== '';
-    const isPihak2Valid = pihak2.nama?.trim() !== '' && pihak2.nik?.trim() !== '' && pihak2.alamat?.trim() !== '';
 
     const isSewaValid = jenisSurat === 'sewa' 
       ? (durasi !== null && durasi !== undefined && String(durasi).trim() !== '') 
@@ -156,7 +173,9 @@ export default function Editor() {
         ? 'Perjanjian Sewa' 
         : jenisSurat === 'serah_terima' 
         ? 'Serah Terima Kunci' 
-        : 'Surat Teguran dan Invoice Tagihan';
+        : jenisSurat === 'komplain'
+        ? 'Surat Teguran dan Invoice Tagihan'
+        : 'Invoice Pembayaran Sewa';
 
       const pesanWA = `Halo Admin Suncity,\n\nBerikut adalah dokumen administrasi baru yang telah dicetak melalui sistem:\n\nJenis Dokumen: *${amanJenis}*\nNama Penyewa: *${amanPihak2}*\n\nMohon untuk menerima lampiran PDF yang akan saya kirimkan setelah pesan ini untuk diarsipkan.\n\nTerima kasih.`;
 
@@ -229,29 +248,146 @@ export default function Editor() {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Nama Properti / Gedung<span className="text-red-500 ml-1">*</span>
-                </label>
-                <input type="text" value={namaProperti} onChange={(e) => setNamaProperti(e.target.value)} placeholder="Contoh: Suncity Residence"
-                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
-              </div>
+              {jenisSurat !== 'invoice_sewa' && (
+                <>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Nama Properti / Gedung<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input type="text" value={namaProperti} onChange={(e) => setNamaProperti(e.target.value)} placeholder="Contoh: Suncity Residence"
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
+                  </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Nomor Kontrak<span className="text-red-500 ml-1">*</span>
-                </label>
-                <input type="text" value={nomorKontrak} onChange={(e) => setNomorKontrak(e.target.value)} placeholder="Contoh: SUNCITY/SEWA/REG/2026"
-                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
-              </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Nomor Kontrak<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input type="text" value={nomorKontrak} onChange={(e) => setNomorKontrak(e.target.value)} placeholder="Contoh: SUNCITY/SEWA/REG/2026"
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
+                  </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Info Unit (Tipe / Nomor Unit)<span className="text-red-500 ml-1">*</span>
-                </label>
-                <input type="text" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Contoh: Unit 2 BR 26 A Lantai 21"
-                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
-              </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Info Unit (Tipe / Nomor Unit)<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input type="text" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Contoh: Unit 2 BR 26 A Lantai 21"
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" />
+                  </div>
+                </>
+              )}
+
+              {/* Form Input Khusus Invoice Pembayaran Sewa */}
+              {jenisSurat === 'invoice_sewa' && (
+                <>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Tanggal Check-in<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input 
+                      type="date" 
+                      required 
+                      value={tanggalCheckIn} 
+                      onChange={(e) => setTanggalCheckIn(e.target.value)}
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm" 
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Durasi Sewa
+                    </label>
+                    <div className="flex gap-2">
+                      <input type="number" min={1} value={durasi} onChange={(e) => setDurasi(e.target.value)} placeholder="1"
+                        className="w-24 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm text-center font-semibold" />
+                      <select value={satuanDurasi} onChange={(e) => setSatuanDurasi(e.target.value)}
+                        className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm">
+                        <option value="hari">Hari</option>
+                        <option value="bulan">Bulan</option>
+                        <option value="tahun">Tahun</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Total Harga Sewa (Rp)<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold text-base">
+                        Rp
+                      </span>
+                      <input 
+                        type="text" 
+                        required 
+                        inputMode="numeric"
+                        value={formatRupiah(totalSewa)} 
+                        onChange={(e) => setTotalSewa(e.target.value.replace(/\D/g, ''))}
+                        placeholder="0"
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm font-semibold" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Nominal DP Dibayar (Rp)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold text-base">
+                        Rp
+                      </span>
+                      <input 
+                        type="text" 
+                        inputMode="numeric"
+                        value={formatRupiah(nominalDP)} 
+                        onChange={(e) => setNominalDP(e.target.value.replace(/\D/g, ''))}
+                        placeholder="0"
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm font-semibold" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Status Pembayaran
+                    </label>
+                    <select 
+                      value={statusPembayaran} 
+                      onChange={(e) => setStatusPembayaran(e.target.value)}
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm font-semibold"
+                    >
+                      <option value="DP Telah Diterima">DP Telah Diterima</option>
+                      <option value="Lunas">Lunas</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Catatan Include
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={teksInclude}
+                      onChange={(e) => setTeksInclude(e.target.value)}
+                      placeholder="Service Charge"
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Catatan Exclude
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={teksExclude}
+                      onChange={(e) => setTeksExclude(e.target.value)}
+                      placeholder="Air, Token Listrik, Internet / WiFi, Parkir"
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 text-base resize-none focus:ring-2 focus:ring-slate-800/10 focus:border-slate-800 focus:outline-none transition-all shadow-sm"
+                    />
+                  </div>
+                </>
+              )}
 
               {jenisSurat === 'sewa' && (
                 <div>
@@ -397,30 +533,32 @@ export default function Editor() {
             </AccordionSection>
 
             {/* ── ACCORDION 2: Pihak Pertama ────────────────────────────── */}
-            <AccordionSection
-              id="pihak1"
-              title="Data Pihak Pertama (Pemilik)"
-              icon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-              }
-              openId={openSection}
-              setOpenId={setOpenSection}
-            >
-              <KartuPihak
-                label="Pihak Pertama"
-                data={pihak1}
-                setData={setPihak1}
-                contacts={contacts}
-                onSaveContact={saveContact}
-              />
-            </AccordionSection>
+            {jenisSurat !== 'invoice_sewa' && (
+              <AccordionSection
+                id="pihak1"
+                title="Data Pihak Pertama (Pemilik)"
+                icon={
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                }
+                openId={openSection}
+                setOpenId={setOpenSection}
+              >
+                <KartuPihak
+                  label="Pihak Pertama"
+                  data={pihak1}
+                  setData={setPihak1}
+                  contacts={contacts}
+                  onSaveContact={saveContact}
+                />
+              </AccordionSection>
+            )}
 
-            {/* ── ACCORDION 3: Pihak Kedua ──────────────────────────────── */}
+            {/* ── ACCORDION 3: Pihak Kedua / Pelanggan ──────────────────── */}
             <AccordionSection
               id="pihak2"
-              title="Data Pihak Kedua (Penyewa)"
+              title={jenisSurat === 'invoice_sewa' ? 'Data Pelanggan / Penyewa' : 'Data Pihak Kedua (Penyewa)'}
               icon={
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -430,7 +568,7 @@ export default function Editor() {
               setOpenId={setOpenSection}
             >
               <KartuPihak
-                label="Pihak Kedua"
+                label={jenisSurat === 'invoice_sewa' ? 'Pelanggan / Penyewa' : 'Pihak Kedua'}
                 data={pihak2}
                 setData={setPihak2}
                 contacts={contacts}
@@ -454,7 +592,24 @@ export default function Editor() {
                 }}
               >
                 <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
-                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} tanggalSurat={tanggalSurat} />
+                  <IsiSurat 
+                    template={template} 
+                    pihak1={pihak1} 
+                    pihak2={pihak2} 
+                    logo={logo} 
+                    namaProperti={namaProperti} 
+                    jenisSurat={jenisSurat} 
+                    fotoBukti={fotoBukti} 
+                    tanggalSurat={tanggalSurat}
+                    tanggalCheckIn={tanggalCheckIn}
+                    totalSewa={totalSewa}
+                    nominalDP={nominalDP}
+                    statusPembayaran={statusPembayaran}
+                    teksInclude={teksInclude}
+                    teksExclude={teksExclude}
+                    durasi={durasi}
+                    satuanDurasi={satuanDurasi}
+                  />
                 </div>
               </div>
             </div>
@@ -507,7 +662,24 @@ export default function Editor() {
                 }}
               >
                 <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
-                  <IsiSurat template={template} pihak1={pihak1} pihak2={pihak2} logo={logo} namaProperti={namaProperti} jenisSurat={jenisSurat} fotoBukti={fotoBukti} tanggalSurat={tanggalSurat} />
+                  <IsiSurat 
+                    template={template} 
+                    pihak1={pihak1} 
+                    pihak2={pihak2} 
+                    logo={logo} 
+                    namaProperti={namaProperti} 
+                    jenisSurat={jenisSurat} 
+                    fotoBukti={fotoBukti} 
+                    tanggalSurat={tanggalSurat}
+                    tanggalCheckIn={tanggalCheckIn}
+                    totalSewa={totalSewa}
+                    nominalDP={nominalDP}
+                    statusPembayaran={statusPembayaran}
+                    teksInclude={teksInclude}
+                    teksExclude={teksExclude}
+                    durasi={durasi}
+                    satuanDurasi={satuanDurasi}
+                  />
                 </div>
               </div>
             </div>

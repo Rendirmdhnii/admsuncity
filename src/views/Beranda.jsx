@@ -32,6 +32,16 @@ const JENIS_OPTIONS = [
     title: 'Buat Surat Teguran & Invoice Tagihan',
     desc: 'Surat teguran resmi dan invoice tagihan pembayaran ganti rugi',
   },
+  {
+    id: 'invoice_sewa',
+    icon: (
+      <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5a1.5 1.5 0 011.5 1.5v10.5a1.5 1.5 0 01-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5V6a1.5 1.5 0 011.5-1.5zm12 6a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+      </svg>
+    ),
+    title: 'Buat Invoice Pembayaran Sewa',
+    desc: 'Cetak struk / bukti pembayaran sewa apartemen untuk pelanggan',
+  },
 ];
 
 export default function Beranda() {

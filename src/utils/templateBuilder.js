@@ -60,6 +60,17 @@ export function buildTemplate({
     };
   }
 
+  if (jenis === 'invoice_sewa' || jenis === 'Invoice Pembayaran Sewa') {
+    return {
+      judul: 'INVOICE SEWA UNIT APARTEMEN',
+      nomorKontrak,
+      pembuka: '',
+      kesepakatanUtama: '',
+      klausul: [],
+      penutup: '',
+    };
+  }
+
   // komplain / teguran & invoice tagihan
   return {
     judul: 'SURAT TEGURAN & INVOICE TAGIHAN',

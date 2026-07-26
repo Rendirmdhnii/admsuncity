@@ -31,6 +31,13 @@ export function AppProvider({ children }) {
   const [detailKerusakan, setDetailKerusakan] = useState('');
   const [nominalTagihan, setNominalTagihan] = useState('');
   const [batasWaktuPembayaran, setBatasWaktuPembayaran] = useState('');
+  // ─ State Khusus Invoice ─
+  const [tanggalCheckIn, setTanggalCheckIn] = useState(() => getTodayFormatted());
+  const [totalSewa, setTotalSewa] = useState('');
+  const [nominalDP, setNominalDP] = useState('');
+  const [statusPembayaran, setStatusPembayaran] = useState('DP Telah Diterima');
+  const [teksInclude, setTeksInclude] = useState('Service Charge');
+  const [teksExclude, setTeksExclude] = useState('Air, Token Listrik, Internet / WiFi, Parkir');
 
   // ─ Contacts ─
   const [contacts, setContacts] = useState(() => loadContacts());
@@ -120,7 +127,9 @@ export function AppProvider({ children }) {
         ? 'Perjanjian Sewa' 
         : jenisSurat === 'serah_terima' 
         ? 'Serah Terima Kunci' 
-        : 'Surat Teguran dan Invoice Tagihan';
+        : jenisSurat === 'komplain'
+        ? 'Surat Teguran dan Invoice Tagihan'
+        : 'Invoice Pembayaran Sewa';
       const safeName = `Suncity - ${amanJenis} - ${amanPihak2}.pdf`;
       
       const blob = await downloadPDF(exportRef.current, safeName);
@@ -166,6 +175,13 @@ export function AppProvider({ children }) {
     detailKerusakan, setDetailKerusakan,
     nominalTagihan, setNominalTagihan,
     batasWaktuPembayaran, setBatasWaktuPembayaran,
+    // invoice fields
+    tanggalCheckIn, setTanggalCheckIn,
+    totalSewa, setTotalSewa,
+    nominalDP, setNominalDP,
+    statusPembayaran, setStatusPembayaran,
+    teksInclude, setTeksInclude,
+    teksExclude, setTeksExclude,
     // contacts
     contacts, saveContact, deleteContact,
     // computed
