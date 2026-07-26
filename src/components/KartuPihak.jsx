@@ -44,69 +44,71 @@ export default function KartuPihak({ label, data, setData, contacts, onSaveConta
           </button>
         </div>
 
-        {/* Fields */}
-        <div>
-          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
-            Nama Lengkap<span className="text-red-500 ml-1">*</span>
-          </label>
-          <input
-            type="text"
-            autoCapitalize="words"
-            value={data.nama}
-            onChange={(e) => setData({ ...data, nama: e.target.value })}
-            placeholder="Masukkan nama lengkap..."
-            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
-          />
-        </div>
+        {/* Fields Grid 2 Kolom */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
+              Nama Lengkap<span className="text-red-500 ml-1">*</span>
+            </label>
+            <input
+              type="text"
+              autoCapitalize="words"
+              value={data.nama}
+              onChange={(e) => setData({ ...data, nama: e.target.value })}
+              placeholder="Masukkan nama lengkap..."
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
+            />
+          </div>
 
-        <div>
-          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
-            NIK (16 digit)<span className="text-red-500 ml-1">*</span>
-          </label>
-          <input
-            type="text"
-            inputMode="numeric"
-            maxLength={16}
-            value={data.nik}
-            onChange={(e) => {
-              const hanyaAngka = e.target.value.replace(/\D/g, '');
-              setData({ ...data, nik: hanyaAngka.slice(0, 16) });
-            }}
-            placeholder="3500XXXXXXXXXXXX"
-            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-mono font-medium"
-          />
-        </div>
+          <div>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
+              NIK (16 digit)<span className="text-red-500 ml-1">*</span>
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={16}
+              value={data.nik}
+              onChange={(e) => {
+                const hanyaAngka = e.target.value.replace(/\D/g, '');
+                setData({ ...data, nik: hanyaAngka.slice(0, 16) });
+              }}
+              placeholder="3500XXXXXXXXXXXX"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-mono font-medium"
+            />
+          </div>
 
-        <div>
-          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
-            Alamat Domisili<span className="text-red-500 ml-1">*</span>
-          </label>
-          <textarea
-            rows={2}
-            autoCapitalize="sentences"
-            value={data.alamat}
-            onChange={(e) => setData({ ...data, alamat: e.target.value })}
-            placeholder="Jl. Contoh No. 1, Kecamatan, Kota..."
-            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
-          />
-        </div>
+          <div>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
+              Alamat Domisili<span className="text-red-500 ml-1">*</span>
+            </label>
+            <textarea
+              rows={2}
+              autoCapitalize="sentences"
+              value={data.alamat}
+              onChange={(e) => setData({ ...data, alamat: e.target.value })}
+              placeholder="Jl. Contoh No. 1, Kecamatan, Kota..."
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
+            />
+          </div>
 
-        <div>
-          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
-            Nomor WhatsApp
-          </label>
-          <input
-            type="text"
-            inputMode="numeric"
-            maxLength={15}
-            value={data.noWa}
-            onChange={(e) => {
-              const hanyaAngka = e.target.value.replace(/\D/g, '');
-              setData({ ...data, noWa: hanyaAngka.slice(0, 15) });
-            }}
-            placeholder="628123456789"
-            className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
-          />
+          <div>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
+              Nomor WhatsApp
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={15}
+              value={data.noWa}
+              onChange={(e) => {
+                const hanyaAngka = e.target.value.replace(/\D/g, '');
+                setData({ ...data, noWa: hanyaAngka.slice(0, 15) });
+              }}
+              placeholder="628123456789"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder:text-slate-400 font-medium"
+            />
+          </div>
         </div>
 
         {/* Save to contacts */}
