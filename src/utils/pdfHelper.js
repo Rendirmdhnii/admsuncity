@@ -28,30 +28,32 @@ export async function downloadPDF(element, filename) {
     html2canvas: { 
       scale: 2, 
       useCORS: true,
-      windowWidth: 1024, // Paksa ukuran window render besar
-      x: 0, // Paksa mulai dari titik X 0 mutlak
-      y: 0, // Paksa mulai dari titik Y 0 mutlak
+      windowWidth: 794,
+      x: 0,
+      y: 0,
       scrollY: 0,
       scrollX: 0,
       onclone: (clonedDoc) => {
-        // PERBAIKAN FATAL CLIPPING: Lebarkan body virtual agar sisi kiri tidak terpotong
-        clonedDoc.body.style.width = '1200px'; 
-        clonedDoc.body.style.padding = '0';
-        clonedDoc.body.style.margin = '0';
-        
         const el = clonedDoc.getElementById('kertas-surat-final');
         if (el) {
-          el.style.transform = 'none'; // Matikan efek zoom out
-          el.style.position = 'absolute';
-          el.style.left = '0';
-          el.style.top = '0';
+          // Matikan semua pengaruh layar HP
+          el.style.transform = 'none';
           el.style.width = '794px';
           el.style.minHeight = '1123px';
           el.style.margin = '0';
+          el.style.padding = '50px'; // Ruang bernapas yang rapi
+          el.style.position = 'absolute';
+          el.style.top = '0';
+          el.style.left = '0';
+          el.style.boxSizing = 'border-box';
         }
       }
     },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    jsPDF: { 
+      unit: 'mm', 
+      format: 'a4', 
+      orientation: 'portrait'
+    }
   };
 
   return window.html2pdf().set(opt).from(element).output('blob');

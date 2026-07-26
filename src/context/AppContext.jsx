@@ -115,9 +115,13 @@ export function AppProvider({ children }) {
     if (!exportRef.current || !template || isExporting) return false;
     setIsExporting(true);
     try {
-      const safeName = pihak2.nama
-        ? `Surat_${jenisSurat}_${pihak2.nama.replace(/\s+/g, '_')}`
-        : `Surat_${jenisSurat}_${getTodayFormatted()}`;
+      const amanPihak2 = pihak2.nama ? pihak2.nama.trim() : 'Penyewa';
+      const amanJenis = jenisSurat === 'sewa' 
+        ? 'Perjanjian Sewa' 
+        : jenisSurat === 'serah_terima' 
+        ? 'Serah Terima Kunci' 
+        : 'Surat Teguran dan Invoice Tagihan';
+      const safeName = `Suncity - ${amanJenis} - ${amanPihak2}.pdf`;
       
       const blob = await downloadPDF(exportRef.current, safeName);
       

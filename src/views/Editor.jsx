@@ -150,7 +150,17 @@ export default function Editor() {
     const success = await handleDownloadPDF();
     if (success) {
       setShowModalPratinjau(false);
-      window.location.href = 'https://wa.me/6289678449424?text=Halo%20Admin,%20berikut%20adalah%20dokumen%20baru%20yang%20telah%20dibuat.';
+      
+      const amanPihak2 = pihak2.nama ? pihak2.nama.trim() : 'Penyewa';
+      const amanJenis = jenisSurat === 'sewa' 
+        ? 'Perjanjian Sewa' 
+        : jenisSurat === 'serah_terima' 
+        ? 'Serah Terima Kunci' 
+        : 'Surat Teguran dan Invoice Tagihan';
+
+      const pesanWA = `Halo Admin Suncity,\n\nBerikut adalah dokumen administrasi baru yang telah dicetak melalui sistem:\n\nJenis Dokumen: *${amanJenis}*\nNama Penyewa: *${amanPihak2}*\n\nMohon untuk menerima lampiran PDF yang akan saya kirimkan setelah pesan ini untuk diarsipkan.\n\nTerima kasih.`;
+
+      window.location.href = `https://wa.me/6289678449424?text=${encodeURIComponent(pesanWA)}`;
     }
   };
 
