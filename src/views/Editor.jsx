@@ -120,15 +120,15 @@ export default function Editor() {
     setPasalList(newPasal);
   };
 
-  const handleAddPasal = () => {
-    setPasalList([
-      ...pasalList,
-      { judul: '', isi: '' }
-    ]);
+  const tambahPasal = () => {
+    setPasalList([...pasalList, { judul: 'PASAL TAMBAHAN', isi: '' }]);
   };
 
-  const handleRemovePasal = (index) => {
-    setPasalList(pasalList.filter((_, i) => i !== index));
+  const hapusPasal = (index) => {
+    if (pasalList.length === 1) return; // Sisakan minimal 1 pasal
+    const newPasal = [...pasalList];
+    newPasal.splice(index, 1);
+    setPasalList(newPasal);
   };
 
   const [openSection, setOpenSection] = useState('detail');
@@ -696,49 +696,53 @@ export default function Editor() {
                   <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                   Kustomisasi Pasal (Opsional)
                 </h3>
-                <button
-                  type="button"
-                  onClick={handleAddPasal}
-                  className="text-xs text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
-                >
-                  + Tambah Pasal
-                </button>
               </div>
 
               <div className="space-y-4">
                 {pasalList.map((pasal, index) => (
-                  <div key={index} className="bg-slate-50 border border-slate-100 p-3 rounded-xl relative group">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[10px] font-extrabold text-slate-400 bg-white px-2 py-1 rounded-md shadow-sm border border-slate-100">PASAL {index + 1}</span>
-                      <input 
-                        type="text" 
-                        value={pasal.judul} 
-                        onChange={(e) => handlePasalChange(index, 'judul', e.target.value)}
-                        className="flex-1 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 text-xs font-bold text-slate-700 px-1 py-0.5 outline-none transition-colors"
-                        placeholder="Judul Pasal..."
-                      />
+                  <div key={index} className="bg-slate-50 border border-slate-100 p-3 rounded-xl relative group transition-all">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 flex-1 pr-2">
+                        <span className="text-[10px] font-extrabold text-slate-400 bg-white px-2 py-1 rounded-md shadow-sm border border-slate-100">PASAL {index + 1}</span>
+                        <input 
+                          type="text" 
+                          value={pasal.judul} 
+                          onChange={(e) => handlePasalChange(index, 'judul', e.target.value)}
+                          className="flex-1 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 text-xs font-bold text-slate-700 px-1 py-0.5 outline-none transition-colors w-full truncate"
+                          placeholder="Ketik Judul Pasal..."
+                        />
+                      </div>
+                      
+                      {/* Tombol Hapus Pasal (Hanya muncul jika pasal > 1) */}
                       {pasalList.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemovePasal(index)}
-                          className="text-slate-400 hover:text-red-500 text-xs font-bold p-1 rounded transition-colors cursor-pointer"
+                        <button 
+                          onClick={() => hapusPasal(index)}
+                          className="text-slate-300 hover:text-rose-500 bg-white hover:bg-rose-50 p-1.5 rounded-lg shadow-sm border border-slate-100 transition-colors active:scale-95 cursor-pointer"
                           title="Hapus Pasal"
                         >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                       )}
                     </div>
+                    
                     <textarea 
                       value={pasal.isi} 
                       onChange={(e) => handlePasalChange(index, 'isi', e.target.value)}
                       rows="3"
                       className="w-full bg-white border border-slate-200 text-slate-600 text-[11px] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none leading-relaxed"
-                      placeholder="Isi ketentuan pasal..."
+                      placeholder="Ketik isi ketentuan klausa di sini..."
                     />
                   </div>
                 ))}
+
+                {/* Tombol Tambah Pasal Baru */}
+                <button 
+                  onClick={tambahPasal}
+                  className="w-full border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50 text-slate-400 hover:text-blue-600 py-3 rounded-xl text-[11px] font-bold flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                  Tambah Pasal Baru
+                </button>
               </div>
             </div>
 
