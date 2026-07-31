@@ -56,7 +56,7 @@ function AppShell() {
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
 
   return (
-    <div className="h-[100dvh] w-screen bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none">
+    <div className="h-dvh w-screen bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none">
       
       {/* BLOK 1: HEADER (TETAP DI ATAS) */}
       <header className="flex-none bg-white/95 backdrop-blur-md border-b border-slate-200 z-20" style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
