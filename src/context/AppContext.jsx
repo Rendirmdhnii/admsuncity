@@ -44,6 +44,7 @@ export function AppProvider({ children }) {
 
   // ─ UI State ─
   const [showModalSukses, setShowModalSukses] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
   // ─ Refs ─
@@ -198,7 +199,7 @@ export function AppProvider({ children }) {
 
   const handleUnduhPDF = useCallback(async () => {
     if (!isFormValid()) {
-      alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat mengekspor dan mengirim dokumen.');
+      setShowWarning(true);
       return;
     }
 
@@ -260,6 +261,7 @@ export function AppProvider({ children }) {
     exportRef, handleDownloadPDF, isExporting, isFormValid, handleUnduhPDF,
     // modals
     showModalSukses, setShowModalSukses,
+    showWarning, setShowWarning,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

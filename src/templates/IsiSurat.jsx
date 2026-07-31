@@ -49,15 +49,15 @@ export default function IsiSurat({
           <div style={{ flex: 1 }}>
             <h1 style={{ fontSize: '42px', fontWeight: '900', margin: '0', color: '#ffffff', letterSpacing: '2px' }}>INVOICE</h1>
             <div style={{ marginTop: '12px', marginBottom: '15px' }}>
-              <span style={{ fontSize: '14px', backgroundColor: '#f59e0b', color: '#0f172a', padding: '6px 16px', borderRadius: '4px', fontWeight: 'bold', letterSpacing: '1px' }}>
+              <span style={{ fontSize: '10px', backgroundColor: '#f59e0b', color: '#0f172a', padding: '5px 12px', borderRadius: '4px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1.5px' }}>
                 SEWA UNIT APARTEMEN
               </span>
             </div>
             <p style={{ fontSize: '14px', letterSpacing: '1px', color: '#cbd5e1', margin: '0' }}>{namaProperti ? namaProperti.toUpperCase() : 'MANAJEMEN PROPERTI'}</p>
           </div>
           <div style={{ flex: 1, textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <p style={{ fontSize: '14px', color: '#94a3b8', margin: '0 0 4px 0' }}>Kepada Yth:</p>
-            <p style={{ fontSize: '22px', fontWeight: 'bold', margin: '0 0 6px 0', color: '#f59e0b' }}>{pihak2Nama}</p>
+            <p style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 4px 0', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Kepada Yth:</p>
+            <p style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0', color: '#f59e0b' }}>{pihak2Nama}</p>
             <p style={{ fontSize: '14px', color: '#cbd5e1', margin: '0' }}>{pihak2Nik ? `NIK: ${pihak2Nik}` : ''}</p>
           </div>
         </div>
@@ -66,74 +66,78 @@ export default function IsiSurat({
         <div style={{ padding: '40px 50px', flex: 1, display: 'flex', flexDirection: 'column' }}>
           
           {/* INFO GRID */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #f1f5f9', paddingBottom: '25px', marginBottom: '35px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px' }}>
             <div>
-              <p style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b', margin: '0 0 6px 0', letterSpacing: '1px' }}>TANGGAL INVOICE</p>
-              <p style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', margin: '0' }}>{tglSuratVal}</p>
+              <p style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', margin: '0 0 6px 0', letterSpacing: '1px' }}>TANGGAL INVOICE</p>
+              <p style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a', margin: '0' }}>{tglSuratVal}</p>
             </div>
             <div>
-              <p style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b', margin: '0 0 6px 0', letterSpacing: '1px' }}>TANGGAL CHECK-IN</p>
-              <p style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', margin: '0' }}>{tglCheckInVal}</p>
+              <p style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', margin: '0 0 6px 0', letterSpacing: '1px' }}>TANGGAL CHECK-IN</p>
+              <p style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a', margin: '0' }}>{tglCheckInVal}</p>
             </div>
             <div>
-              <p style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b', margin: '0 0 6px 0', letterSpacing: '1px' }}>DURASI SEWA</p>
-              <p style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', margin: '0' }}>{durasiSewaVal} {satuanDurasiVal}</p>
+              <p style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', margin: '0 0 6px 0', letterSpacing: '1px' }}>DURASI SEWA</p>
+              <p style={{ fontSize: '16px', fontWeight: '700', color: '#0f172a', margin: '0' }}>{durasiSewaVal} {satuanDurasiVal}</p>
             </div>
           </div>
 
+          <div style={{ borderBottom: '2px solid #e2e8f0', margin: '20px 0' }}></div>
+
           {/* MINIMALIST TABLE */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '40px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
             <thead>
               <tr>
-                <th style={{ padding: '0 0 15px 0', textAlign: 'left', fontSize: '13px', color: '#64748b', borderBottom: '2px solid #0f172a' }}>RINCIAN PEMBAYARAN</th>
-                <th style={{ padding: '0 0 15px 0', textAlign: 'right', fontSize: '13px', color: '#64748b', borderBottom: '2px solid #0f172a' }}>JUMLAH</th>
+                <th style={{ padding: '0 0 15px 0', textAlign: 'left', fontSize: '12px', fontWeight: '800', color: '#64748b', letterSpacing: '1px', borderBottom: '2px solid #0f172a' }}>RINCIAN PEMBAYARAN</th>
+                <th style={{ padding: '0 0 15px 0', textAlign: 'right', fontSize: '12px', fontWeight: '800', color: '#64748b', letterSpacing: '1px', borderBottom: '2px solid #0f172a' }}>JUMLAH</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', fontSize: '15px', color: '#334155' }}>
-                  <span style={{ fontWeight: '600', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Sewa Unit Apartemen {namaProperti || 'Manajemen Properti'}</span>
+                  <span style={{ fontWeight: '700', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Sewa Unit Apartemen {namaProperti || 'Manajemen Properti'}</span>
                   <span style={{ fontSize: '13px', color: '#64748b' }}>Durasi: {durasiSewaVal} {satuanDurasiVal}</span>
                 </td>
-                <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', textAlign: 'right', fontSize: '16px', fontWeight: '600', color: '#0f172a' }}>
+                <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', textAlign: 'right', fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>
                   Rp {totalHargaSewaNum.toLocaleString('id-ID')}
                 </td>
               </tr>
               <tr>
-                <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', fontSize: '15px', color: '#334155' }}>DP / Telah Dibayarkan</td>
-                <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', textAlign: 'right', fontSize: '16px', fontWeight: '600', color: '#ef4444' }}>
+                <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', fontSize: '15px', color: '#334155', fontWeight: '600' }}>DP / Telah Dibayarkan</td>
+                <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', textAlign: 'right', fontSize: '18px', fontWeight: '800', color: '#ef4444' }}>
                   - Rp {nominalDPNum.toLocaleString('id-ID')}
                 </td>
               </tr>
               <tr>
-                <td style={{ padding: '25px 0 10px 0', fontSize: '14px', fontWeight: 'bold', color: '#64748b' }}>SISA PEMBAYARAN</td>
-                <td style={{ padding: '25px 0 10px 0', textAlign: 'right', fontSize: '24px', fontWeight: 'bold', color: '#0f172a' }}>
+                <td style={{ padding: '25px 0 10px 0', fontSize: '13px', fontWeight: '800', color: '#64748b', letterSpacing: '1px' }}>SISA PEMBAYARAN</td>
+                <td style={{ padding: '25px 0 10px 0', textAlign: 'right', fontSize: '26px', fontWeight: '800', color: '#0f172a' }}>
                   Rp {sisaPembayaranNum.toLocaleString('id-ID')}
                 </td>
               </tr>
             </tbody>
           </table>
 
+          <div style={{ borderBottom: '2px solid #e2e8f0', margin: '20px 0' }}></div>
+
           {/* INCLUDE / EXCLUDE CARDS */}
-          <div style={{ display: 'flex', gap: '25px', marginBottom: '40px' }}>
-            <div style={{ flex: 1, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px' }}>
-              <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginTop: '0', marginBottom: '12px', display: 'flex', alignItems: 'center', letterSpacing: '1px' }}>
-                <span style={{ color: '#10b981', marginRight: '8px', fontSize: '16px' }}>✓</span> INCLUDE
+          <div style={{ display: 'flex', gap: '25px', marginBottom: '30px' }}>
+            <div style={{ flex: 1, backgroundColor: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: '12px', padding: '20px' }}>
+              <h3 style={{ fontSize: '12px', fontWeight: '800', color: '#0f172a', marginTop: '0', marginBottom: '12px', display: 'flex', alignItems: 'center', letterSpacing: '1.5px' }}>
+                <span style={{ color: '#10b981', marginRight: '8px', fontSize: '16px', fontWeight: 'bold' }}>✓</span> INCLUDE
               </h3>
-              <p style={{ whiteSpace: 'pre-wrap', fontSize: '13px', color: '#475569', margin: '0', lineHeight: '1.6' }}>{teksInclude || 'Service Charge'}</p>
+              <p style={{ whiteSpace: 'pre-wrap', fontSize: '13px', color: '#475569', margin: '0', lineHeight: '1.6', fontWeight: '500' }}>{teksInclude || 'Service Charge'}</p>
             </div>
-            <div style={{ flex: 1, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px' }}>
-              <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginTop: '0', marginBottom: '12px', display: 'flex', alignItems: 'center', letterSpacing: '1px' }}>
-                <span style={{ color: '#ef4444', marginRight: '8px', fontSize: '16px' }}>✕</span> EXCLUDE
+            <div style={{ flex: 1, backgroundColor: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: '12px', padding: '20px' }}>
+              <h3 style={{ fontSize: '12px', fontWeight: '800', color: '#0f172a', marginTop: '0', marginBottom: '12px', display: 'flex', alignItems: 'center', letterSpacing: '1.5px' }}>
+                <span style={{ color: '#ef4444', marginRight: '8px', fontSize: '16px', fontWeight: 'bold' }}>✕</span> EXCLUDE
               </h3>
-              <p style={{ whiteSpace: 'pre-wrap', fontSize: '13px', color: '#475569', margin: '0', lineHeight: '1.6' }}>{teksExclude || 'Air\nToken Listrik\nInternet / WiFi\nParkir'}</p>
+              <p style={{ whiteSpace: 'pre-wrap', fontSize: '13px', color: '#475569', margin: '0', lineHeight: '1.6', fontWeight: '500' }}>{teksExclude || 'Air\nToken Listrik\nInternet / WiFi\nParkir'}</p>
             </div>
           </div>
 
           {/* STATUS BLOCK */}
-          <div style={{ marginTop: 'auto', backgroundColor: '#ecfdf5', border: '1px solid #10b981', borderRadius: '8px', padding: '20px', textAlign: 'center' }}>
-            <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#047857', margin: '0 0 6px 0' }}>✓ {statusPembayaran || 'DP Telah Diterima'}</p>
-            <p style={{ fontSize: '13px', color: '#065f46', margin: '0' }}>Terima kasih telah mempercayakan akomodasi Anda kepada kami.</p>
+          <div style={{ marginTop: 'auto', backgroundColor: '#ecfdf5', border: '1px solid #10b981', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
+            <p style={{ fontSize: '16px', fontWeight: '800', color: '#047857', margin: '0 0 6px 0' }}>✓ {statusPembayaran || 'DP Telah Diterima'}</p>
+            <p style={{ fontSize: '13px', color: '#065f46', margin: '0', fontWeight: '500' }}>Terima kasih telah mempercayakan akomodasi Anda kepada kami.</p>
           </div>
         </div>
 

@@ -104,6 +104,7 @@ export default function Editor() {
     statusPembayaran, setStatusPembayaran,
     teksInclude, setTeksInclude,
     teksExclude, setTeksExclude,
+    showWarning, setShowWarning,
   } = useApp();
 
   const defaultPasal = [
@@ -182,7 +183,7 @@ export default function Editor() {
 
   const handleUnduhPDF = async () => {
     if (!isFormValid()) {
-      alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat mengekspor dan mengirim dokumen.');
+      setShowWarning(true);
       return;
     }
 
@@ -743,6 +744,33 @@ export default function Editor() {
             </div>
           </div>
         )}
+
+      {/* Enterprise Warning Modal */}
+      {showWarning && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center px-5 bg-slate-900/40 backdrop-blur-sm transition-all animate-in fade-in duration-200">
+          <div className="bg-white rounded-[24px] p-6 w-full max-w-sm shadow-2xl transform scale-100 animate-in zoom-in-95 duration-200">
+            
+            {/* Icon Peringatan Elegan */}
+            <div className="w-16 h-16 rounded-full bg-amber-50 border-[6px] border-white shadow-[0_0_15px_rgba(251,191,36,0.2)] flex items-center justify-center mx-auto mb-4 relative -mt-10">
+              <svg className="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            
+            {/* Copywriting Profesional */}
+            <h3 className="text-lg font-extrabold text-slate-800 text-center mb-2 tracking-tight">Data Belum Lengkap</h3>
+            <p className="text-[12px] text-slate-500 text-center mb-6 leading-relaxed font-medium">
+              Mohon lengkapi seluruh kolom formulir yang wajib diisi (ditandai dengan bintang merah <span className="text-rose-500 font-bold">*</span>) sebelum melanjutkan proses pratinjau atau cetak dokumen.
+            </p>
+            
+            {/* Tombol Aksi */}
+            <button
+              onClick={() => setShowWarning(false)}
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[13px] py-3.5 rounded-xl transition-all active:scale-95 shadow-lg shadow-slate-900/20 cursor-pointer"
+            >
+              Mengerti, Lanjutkan
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
