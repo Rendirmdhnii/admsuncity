@@ -791,7 +791,7 @@ export default function Editor() {
       </div>
 
       {/* C. BOTTOM ACTION BAR TETAP DI BAWAH (Flex-none / Fixed) */}
-      <div className="fixed left-0 w-full px-4 py-3 z-50 bg-gradient-to-t from-[#f8fafc] via-[#f8fafc]/90 to-transparent" style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px))' }}>
+      <div className="fixed left-0 w-full px-4 py-3 z-50 bg-linear-to-t from-[#f8fafc] via-[#f8fafc]/90 to-transparent" style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px))' }}>
         <div className="max-w-4xl mx-auto px-2 pb-safe">
           <button 
             onClick={handleUnduhPDF}
