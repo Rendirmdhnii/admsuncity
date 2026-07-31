@@ -246,7 +246,8 @@ export default function Editor() {
       </div>
 
       {/* A. HEADER TETAP DI ATAS (Flex-none) */}
-      <div className="flex-none bg-white/80 backdrop-blur-xl border-b border-slate-200/80 px-4 py-3 z-30 shadow-sm max-w-4xl w-full mx-auto">
+      <div className="flex-none bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 pb-3 safe-pt z-50 shadow-sm sticky top-0">
+        <div className="max-w-4xl w-full mx-auto">
         {/* Smart Document Header */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2.5">
@@ -267,17 +268,17 @@ export default function Editor() {
           </button>
         </div>
 
-        {/* Tab Switcher */}
-        <SegmentedControl 
-          value={activeSubTab} 
-          onChange={(newTab) => {
-            if (newTab === 'preview' && !isFormValid()) {
-              alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat melihat atau mengunduh surat.');
-              return;
-            }
-            setActiveSubTab(newTab);
-          }} 
-        />
+          <SegmentedControl 
+            value={activeSubTab} 
+            onChange={(newTab) => {
+              if (newTab === 'preview' && !isFormValid()) {
+                alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat melihat atau mengunduh surat.');
+                return;
+              }
+              setActiveSubTab(newTab);
+            }} 
+          />
+        </div>
       </div>
 
       {/* B. AREA KONTEN TENGAH DENGAN INTERNAL SCROLL HALUS (Flex-1) */}
@@ -790,7 +791,7 @@ export default function Editor() {
       </div>
 
       {/* C. BOTTOM ACTION BAR TETAP DI BAWAH (Flex-none / Fixed) */}
-      <div className="fixed bottom-14.5 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 p-3 shadow-lg">
+      <div className="fixed left-0 w-full px-4 py-3 z-50 bg-gradient-to-t from-[#f8fafc] via-[#f8fafc]/90 to-transparent" style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px))' }}>
         <div className="max-w-4xl mx-auto px-2 pb-safe">
           <button 
             onClick={handleUnduhPDF}

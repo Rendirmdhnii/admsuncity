@@ -19,3 +19,13 @@ html, body {
   flex-direction: column;
   overflow: hidden;
 }
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-pt { padding-top: max(1rem, env(safe-area-inset-top)) !important; }
+  .safe-pb { padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important; }
+}
+/* Fallback jika env() tidak didukung */
+@supports not (padding-top: env(safe-area-inset-top)) {
+  .safe-pt { padding-top: 1.25rem !important; }
+  .safe-pb { padding-bottom: 1.25rem !important; }
+}
