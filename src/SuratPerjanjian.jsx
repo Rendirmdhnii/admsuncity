@@ -136,7 +136,7 @@ function AppShell() {
       </main>
 
       {/* 3. DOCK BAWAH ABSOLUT (GOJEK STYLE) */}
-      <div className="absolute bottom-0 left-0 w-full z-50 bg-gradient-to-t from-white via-white/95 to-transparent pt-8 pb-8 px-5 flex flex-col gap-3 pointer-events-none">
+      <div className="absolute bottom-0 left-0 w-full z-50 bg-linear-to-t from-white via-white/95 to-transparent pt-8 pb-8 px-5 flex flex-col gap-3 pointer-events-none">
         <div className="max-w-4xl mx-auto w-full flex flex-col gap-3">
           
           {/* Tombol Cetak (Hanya muncul di view Editor) */}
