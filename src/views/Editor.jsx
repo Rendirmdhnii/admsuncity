@@ -243,7 +243,7 @@ export default function Editor() {
 
       {/* ─── FORM TAB ───────────────────────────────────────────────────── */}
         {activeSubTab === 'form' && (
-          <div className="space-y-3">
+          <div key={jenisSurat} className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
 
             {/* ── ACCORDION 1: Detail Surat ─────────────────────────────── */}
             <AccordionSection
