@@ -47,7 +47,8 @@ function AppShell() {
   const { 
     currentView, setCurrentView, 
     jenisSurat, gantiJenis,
-    showModalSukses, setShowModalSukses, 
+    showModalSukses, setShowModalSukses,
+    showWarning, setShowWarning, 
     pihak2, contacts,
     handleUnduhPDF, isExporting,
     activeSubTab, setActiveSubTab, isFormValid
