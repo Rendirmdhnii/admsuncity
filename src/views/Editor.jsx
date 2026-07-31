@@ -791,12 +791,12 @@ export default function Editor() {
       </div>
 
       {/* C. BOTTOM ACTION BAR TETAP DI BAWAH (Flex-none / Fixed) */}
-      <div className="fixed left-0 w-full px-4 py-3 z-50 bg-linear-to-t from-[#f8fafc] via-[#f8fafc]/90 to-transparent" style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px))' }}>
-        <div className="max-w-4xl mx-auto px-2 pb-safe">
+      <div className="fixed left-0 w-full px-5 py-2 z-50 pointer-events-none" style={{ bottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}>
+        <div className="max-w-4xl mx-auto">
           <button 
             onClick={handleUnduhPDF}
             disabled={isProcessing}
-            className="w-full bg-slate-900 hover:bg-black text-white font-bold text-sm px-6 py-3.5 rounded-2xl shadow-[0_10px_25px_-5px_rgba(15,23,42,0.4)] active:scale-95 transition-all flex justify-center items-center gap-3 disabled:opacity-80 disabled:scale-100 cursor-pointer"
+            className="w-full bg-slate-900 text-white font-extrabold text-sm px-6 py-4 rounded-2xl shadow-xl pointer-events-auto active:scale-95 transition-all flex justify-center items-center gap-2 cursor-pointer disabled:opacity-80 disabled:scale-100"
           >
             {isProcessing ? (
               <>
