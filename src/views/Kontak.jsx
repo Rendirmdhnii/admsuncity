@@ -12,7 +12,7 @@ export default function Kontak() {
   );
 
   return (
-    <div className="fixed inset-0 h-[100dvh] w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none relative z-0">
+    <div className="fixed inset-0 h-dvh w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none z-0">
       
       {/* Mesh Gradient Dekorasi */}
       <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
@@ -83,7 +83,7 @@ export default function Kontak() {
                 className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm flex gap-3 items-center"
               >
                 {/* Avatar */}
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-base flex-shrink-0 shadow-md shadow-blue-500/20">
+                <div className="w-11 h-11 rounded-full bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-base shrink-0 shadow-md shadow-blue-500/20">
                   {c.nama.charAt(0).toUpperCase()}
                 </div>
 

@@ -22,7 +22,8 @@ export default function IsiSurat({
   teksExclude,
   durasi,
   satuanDurasi,
-  unitInfo
+  unitInfo,
+  pasalList
 }) {
   if (!template && jenisSurat !== 'invoice_sewa' && jenisSurat !== 'Invoice Pembayaran Sewa') return null;
 
@@ -289,19 +290,16 @@ export default function IsiSurat({
         <div style={{ textAlign: 'justify', textJustify: 'inter-word', marginTop: '15px' }}>
           <p style={{ margin: '0 0 15px 0' }}>Berdasarkan itikad baik, Para Pihak dengan ini sepakat untuk mengikatkan diri dalam Perjanjian Sewa Menyewa Unit Apartemen dengan syarat dan ketentuan yang diatur dalam pasal-pasal berikut:</p>
           
-          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 1: OBJEK DAN JANGKA WAKTU SEWA</p>
-          <p style={{ margin: '0 0 10px 0', paddingLeft: '15px' }}>PIHAK PERTAMA dengan ini menyewakan kepada PIHAK KEDUA, dan PIHAK KEDUA menyatakan menerima sewa berupa unit apartemen {namaProperti || 'Gedung'} nomor/tipe {unitInfo || 'Unit'} untuk jangka waktu selama {durasi || '1'} {satuanDurasi === 'hari' ? 'Hari' : satuanDurasi === 'bulan' ? 'Bulan' : 'Tahun'} terhitung sejak tanggal kesepakatan ini ditandatangani.</p>
+          {(pasalList || []).map((pasal, index) => (
+            <div key={index} style={{ marginBottom: '10px' }}>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 'bold', fontSize: '11pt' }}>PASAL {index + 1}: {pasal.judul}</p>
+              <p style={{ margin: '0', paddingLeft: '15px', textAlign: 'justify', fontSize: '11pt', lineHeight: '1.5' }}>
+                {pasal.isi}
+              </p>
+            </div>
+          ))}
 
-          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 2: HAK DAN KEWAJIBAN</p>
-          <p style={{ margin: '0 0 10px 0', paddingLeft: '15px' }}>PIHAK KEDUA berhak menggunakan unit tersebut semata-mata untuk keperluan hunian. PIHAK KEDUA wajib mematuhi seluruh peraturan (House Rules) yang ditetapkan oleh Badan Pengelola apartemen, serta bertanggung jawab penuh atas segala kerusakan fasilitas internal yang diakibatkan oleh kelalaian PIHAK KEDUA selama masa sewa berlangsung.</p>
-
-          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 3: LARANGAN DAN SANKSI (WANPRESTASI)</p>
-          <p style={{ margin: '0 0 10px 0', paddingLeft: '15px' }}>PIHAK KEDUA dilarang keras mengubah struktur fisik bangunan, menjadikan unit sebagai tempat usaha ilegal, maupun memindahtangankan (sub-let) hak sewa kepada Pihak Ketiga tanpa persetujuan tertulis dari PIHAK PERTAMA. Pelanggaran atas pasal ini memberikan hak mutlak bagi PIHAK PERTAMA untuk membatalkan perjanjian secara sepihak tanpa pengembalian dana sewa.</p>
-
-          <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>PASAL 4: PENYELESAIAN PERSELISIHAN</p>
-          <p style={{ margin: '0 0 15px 0', paddingLeft: '15px' }}>Segala perselisihan yang timbul akibat pelaksanaan Perjanjian ini akan diselesaikan secara musyawarah untuk mufakat. Apabila tidak tercapai mufakat, Para Pihak sepakat untuk menyelesaikannya melalui jalur hukum yang berlaku di wilayah Republik Indonesia.</p>
-
-          <p style={{ margin: '0 0 30px 0' }}>Demikian Perjanjian Sewa ini dibuat dalam keadaan sadar, tanpa paksaan dari pihak manapun, dan memiliki kekuatan hukum yang mengikat sejak ditandatangani oleh Para Pihak.</p>
+          <p style={{ margin: '15px 0 30px 0' }}>Demikian Perjanjian Sewa ini dibuat dalam keadaan sadar, tanpa paksaan dari pihak manapun, dan memiliki kekuatan hukum yang mengikat sejak ditandatangani oleh Para Pihak.</p>
         </div>
       )}
 

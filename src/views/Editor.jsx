@@ -106,6 +106,31 @@ export default function Editor() {
     teksExclude, setTeksExclude,
   } = useApp();
 
+  const defaultPasal = [
+    { judul: 'OBJEK DAN JANGKA WAKTU SEWA', isi: 'PIHAK PERTAMA menyewakan kepada PIHAK KEDUA, dan PIHAK KEDUA menerima sewa unit apartemen untuk jangka waktu yang telah disepakati bersama.' },
+    { judul: 'HAK DAN KEWAJIBAN', isi: 'PIHAK KEDUA berhak menggunakan unit untuk hunian dan wajib mematuhi seluruh peraturan (House Rules) gedung. Segala kerusakan internal akibat kelalaian menjadi tanggung jawab PIHAK KEDUA.' },
+    { judul: 'LARANGAN DAN SANKSI (WANPRESTASI)', isi: 'PIHAK KEDUA dilarang mengubah struktur fisik atau memindahtangankan hak sewa. Pelanggaran memberikan hak bagi PIHAK PERTAMA membatalkan perjanjian sepihak.' },
+    { judul: 'PENYELESAIAN PERSELISIHAN', isi: 'Perselisihan diselesaikan secara musyawarah mufakat. Apabila gagal, diselesaikan melalui jalur hukum di wilayah Republik Indonesia.' }
+  ];
+  const [pasalList, setPasalList] = useState(defaultPasal);
+
+  const handlePasalChange = (index, field, value) => {
+    const newPasal = [...pasalList];
+    newPasal[index][field] = value;
+    setPasalList(newPasal);
+  };
+
+  const handleAddPasal = () => {
+    setPasalList([
+      ...pasalList,
+      { judul: '', isi: '' }
+    ]);
+  };
+
+  const handleRemovePasal = (index) => {
+    setPasalList(pasalList.filter((_, i) => i !== index));
+  };
+
   const [openSection, setOpenSection] = useState('detail');
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -188,7 +213,7 @@ export default function Editor() {
   };
 
   return (
-    <div className="fixed inset-0 h-[100dvh] w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none relative z-0">
+    <div className="fixed inset-0 h-dvh w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none z-0">
 
       {/* Mesh Gradient Dekorasi */}
       <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
@@ -215,6 +240,7 @@ export default function Editor() {
             durasi={durasi}
             satuanDurasi={satuanDurasi}
             unitInfo={unitInfo}
+            pasalList={pasalList}
           />
         </div>
       </div>
@@ -663,6 +689,59 @@ export default function Editor() {
               />
             </AccordionSection>
 
+            {/* ── Kustomisasi Pasal (Dynamic Clause Editor) ─────────────── */}
+            <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/80 p-4 mb-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-slate-800 text-xs flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                  Kustomisasi Pasal (Opsional)
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleAddPasal}
+                  className="text-xs text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                >
+                  + Tambah Pasal
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {pasalList.map((pasal, index) => (
+                  <div key={index} className="bg-slate-50 border border-slate-100 p-3 rounded-xl relative group">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[10px] font-extrabold text-slate-400 bg-white px-2 py-1 rounded-md shadow-sm border border-slate-100">PASAL {index + 1}</span>
+                      <input 
+                        type="text" 
+                        value={pasal.judul} 
+                        onChange={(e) => handlePasalChange(index, 'judul', e.target.value)}
+                        className="flex-1 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 text-xs font-bold text-slate-700 px-1 py-0.5 outline-none transition-colors"
+                        placeholder="Judul Pasal..."
+                      />
+                      {pasalList.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemovePasal(index)}
+                          className="text-slate-400 hover:text-red-500 text-xs font-bold p-1 rounded transition-colors cursor-pointer"
+                          title="Hapus Pasal"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    <textarea 
+                      value={pasal.isi} 
+                      onChange={(e) => handlePasalChange(index, 'isi', e.target.value)}
+                      rows="3"
+                      className="w-full bg-white border border-slate-200 text-slate-600 text-[11px] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none leading-relaxed"
+                      placeholder="Isi ketentuan pasal..."
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
 
@@ -697,6 +776,7 @@ export default function Editor() {
                   durasi={durasi}
                   satuanDurasi={satuanDurasi}
                   unitInfo={unitInfo}
+                  pasalList={pasalList}
                 />
               </div>
             </div>
@@ -706,7 +786,7 @@ export default function Editor() {
       </div>
 
       {/* C. BOTTOM ACTION BAR TETAP DI BAWAH (Flex-none / Fixed) */}
-      <div className="fixed bottom-[58px] left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 p-3 shadow-lg">
+      <div className="fixed bottom-14.5 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 p-3 shadow-lg">
         <div className="max-w-4xl mx-auto px-2 pb-safe">
           <button 
             onClick={handleUnduhPDF}

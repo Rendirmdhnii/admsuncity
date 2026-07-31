@@ -13,7 +13,7 @@ export default function Beranda() {
   const sapaan = getGreeting();
 
   return (
-    <div className="fixed inset-0 h-[100dvh] w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none relative z-0">
+    <div className="fixed inset-0 h-dvh w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none z-0">
       
       {/* Mesh Gradient Dekorasi */}
       <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
@@ -52,9 +52,9 @@ export default function Beranda() {
           {/* Tombol 1: Perjanjian Sewa */}
           <button 
             onClick={() => pilihJenis('sewa')}
-            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-4xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
           >
-            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-blue-500/30">
+            <div className="bg-linear-to-br from-blue-500 to-indigo-600 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-blue-500/30">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             </div>
             <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Perjanjian Sewa</h3>
@@ -64,9 +64,9 @@ export default function Beranda() {
           {/* Tombol 2: Serah Terima */}
           <button 
             onClick={() => pilihJenis('serah_terima')}
-            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-4xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
           >
-            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-emerald-500/30">
+            <div className="bg-linear-to-br from-emerald-400 to-teal-500 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-emerald-500/30">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
             </div>
             <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Serah Terima</h3>
@@ -76,9 +76,9 @@ export default function Beranda() {
           {/* Tombol 3: Invoice Sewa */}
           <button 
             onClick={() => pilihJenis('invoice_sewa')}
-            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-4xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
           >
-            <div className="bg-gradient-to-br from-amber-400 to-orange-500 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-amber-500/30">
+            <div className="bg-linear-to-br from-amber-400 to-orange-500 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-amber-500/30">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"></path></svg>
             </div>
             <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Invoice Sewa</h3>
@@ -88,9 +88,9 @@ export default function Beranda() {
           {/* Tombol 4: Surat Teguran */}
           <button 
             onClick={() => pilihJenis('komplain')}
-            className="bg-white/80 backdrop-blur-xl p-4 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
+            className="bg-white/80 backdrop-blur-xl p-4 rounded-4xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 flex flex-col justify-center items-start text-left active:scale-95 transition-all w-full cursor-pointer hover:shadow-lg"
           >
-            <div className="bg-gradient-to-br from-rose-500 to-pink-600 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-rose-500/30">
+            <div className="bg-linear-to-br from-rose-500 to-pink-600 text-white p-3.5 rounded-2xl mb-3 shadow-lg shadow-rose-500/30">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
             <h3 className="font-extrabold text-slate-800 text-sm mb-0.5">Surat Teguran</h3>
