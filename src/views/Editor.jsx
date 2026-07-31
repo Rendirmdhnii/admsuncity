@@ -747,8 +747,8 @@ export default function Editor() {
 
       {/* Enterprise Warning Modal */}
       {showWarning && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center px-5 bg-slate-900/40 backdrop-blur-sm transition-all animate-in fade-in duration-200">
-          <div className="bg-white rounded-[24px] p-6 w-full max-w-sm shadow-2xl transform scale-100 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-99999 flex items-center justify-center px-5 bg-slate-900/40 backdrop-blur-sm transition-all animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl transform scale-100 animate-in zoom-in-95 duration-200">
             
             {/* Icon Peringatan Elegan */}
             <div className="w-16 h-16 rounded-full bg-amber-50 border-[6px] border-white shadow-[0_0_15px_rgba(251,191,36,0.2)] flex items-center justify-center mx-auto mb-4 relative -mt-10">
