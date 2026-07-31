@@ -1,5 +1,5 @@
 /**
- * SuratPerjanjian.jsx — Root orchestrator with Strict Flexbox Column Mobile Shell
+ * SuratPerjanjian.jsx — Root orchestrator with Absolute Straitjacket Layout
  */
 
 import { useApp, AppProvider } from './context/AppContext';
@@ -56,11 +56,12 @@ function AppShell() {
   const jenisOpt = JENIS_OPTIONS.find((o) => o.id === jenisSurat);
 
   return (
-    <div className="h-dvh w-screen bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none">
+    /* PEMBUNGKUS ABSOLUT: Mengunci ke 4 sudut layar fisik HP */
+    <div className="fixed inset-0 w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none">
       
-      {/* BLOK 1: HEADER (TETAP DI ATAS) */}
-      <header className="flex-none bg-white/95 backdrop-blur-md border-b border-slate-200 z-20" style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
-        <div className="px-4 pb-3 max-w-4xl mx-auto w-full">
+      {/* 1. HEADER (DIPAKSA TURUN 48px AGAR AMAN DARI NOTCH/JAM iOS) */}
+      <header className="flex-none bg-white/95 backdrop-blur-md border-b border-slate-200 z-40 pt-12 pb-3 px-4 shadow-sm">
+        <div className="max-w-4xl mx-auto w-full">
           {currentView === 'beranda' && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -125,25 +126,25 @@ function AppShell() {
         </div>
       </header>
 
-      {/* BLOK 2: AREA SCROLL KONTEN (MENGISI RUANG KOSONG) */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 relative z-10">
-        <div className="pb-8 max-w-4xl mx-auto">
+      {/* 2. AREA SCROLL KONTEN TENGAH */}
+      <main className="flex-1 overflow-y-auto w-full relative z-10 px-4 pt-4 pb-48">
+        <div className="max-w-4xl mx-auto">
           {currentView === 'beranda' && <Beranda />}
           {currentView === 'editor_surat' && jenisSurat && <Editor />}
           {currentView === 'buku_kontak' && <Kontak />}
         </div>
       </main>
 
-      {/* BLOK 3: WADAH BAWAH TERPADU (TOMBOL CETAK + NAVIGASI BAWAH) */}
-      <footer className="flex-none bg-white rounded-t-3xl shadow-[0_-15px_40px_rgba(0,0,0,0.08)] z-30 border-t border-slate-100 max-w-4xl w-full mx-auto" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
-        
-        {/* Render Tombol Aksi HANYA jika sedang di halaman Editor */}
-        {currentView === 'editor_surat' && (
-          <div className="px-5 pt-4 pb-2">
+      {/* 3. DOCK BAWAH ABSOLUT (GOJEK STYLE) */}
+      <div className="absolute bottom-0 left-0 w-full z-50 bg-gradient-to-t from-white via-white/95 to-transparent pt-8 pb-8 px-5 flex flex-col gap-3 pointer-events-none">
+        <div className="max-w-4xl mx-auto w-full flex flex-col gap-3">
+          
+          {/* Tombol Cetak (Hanya muncul di view Editor) */}
+          {currentView === 'editor_surat' && (
             <button 
               onClick={handleUnduhPDF} 
               disabled={isExporting}
-              className="w-full bg-slate-900 text-white font-extrabold text-sm px-6 py-4 rounded-2xl shadow-xl active:scale-95 transition-transform flex justify-center items-center gap-2 cursor-pointer disabled:opacity-80 disabled:scale-100"
+              className="w-full bg-slate-900 text-white font-extrabold text-sm px-6 py-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-95 transition-transform flex justify-center items-center gap-2 pointer-events-auto cursor-pointer disabled:opacity-80 disabled:scale-100"
             >
               {isExporting ? (
                 <>
@@ -160,37 +161,37 @@ function AppShell() {
                 </>
               )}
             </button>
-          </div>
-        )}
+          )}
 
-        {/* Navigasi Bawah (Beranda, Editor, Kontak) */}
-        <nav className="flex justify-around items-center px-2 py-2">
-          <button 
-            onClick={() => setCurrentView('beranda')} 
-            className={`flex flex-col items-center p-2 rounded-2xl transition-all cursor-pointer ${currentView === 'beranda' ? 'text-slate-900 scale-110' : 'text-slate-400'}`}
-          >
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span className="text-[10px] font-extrabold">Beranda</span>
-          </button>
-          
-          <button 
-            onClick={() => { if (jenisSurat) setCurrentView('editor_surat'); }} 
-            disabled={!jenisSurat}
-            className={`flex flex-col items-center p-2 rounded-2xl transition-all ${!jenisSurat ? 'opacity-30 cursor-not-allowed text-slate-400' : 'cursor-pointer'} ${currentView === 'editor_surat' ? 'text-slate-900 scale-110' : 'text-slate-400'}`}
-          >
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            <span className="text-[10px] font-extrabold">Editor</span>
-          </button>
+          {/* Floating Pill Navigation */}
+          <nav className="w-full bg-white border border-slate-200 shadow-xl rounded-full flex justify-around items-center p-1.5 pointer-events-auto">
+            <button 
+              onClick={() => setCurrentView('beranda')} 
+              className={`flex flex-col items-center py-2 px-4 rounded-full transition-all cursor-pointer ${currentView === 'beranda' ? 'bg-slate-900 text-white' : 'text-slate-400 hover:text-slate-900'}`}
+            >
+              <svg className="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+              <span className="text-[10px] font-bold tracking-wide">Beranda</span>
+            </button>
+            
+            <button 
+              onClick={() => { if (jenisSurat) setCurrentView('editor_surat'); }} 
+              disabled={!jenisSurat}
+              className={`flex flex-col items-center py-2 px-4 rounded-full transition-all ${!jenisSurat ? 'opacity-30 cursor-not-allowed text-slate-400' : 'cursor-pointer'} ${currentView === 'editor_surat' ? 'bg-slate-900 text-white' : 'text-slate-400 hover:text-slate-900'}`}
+            >
+              <svg className="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span className="text-[10px] font-bold tracking-wide">Editor</span>
+            </button>
 
-          <button 
-            onClick={() => setCurrentView('buku_kontak')} 
-            className={`flex flex-col items-center p-2 rounded-2xl transition-all cursor-pointer ${currentView === 'buku_kontak' ? 'text-slate-900 scale-110' : 'text-slate-400'}`}
-          >
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
-            <span className="text-[10px] font-extrabold">Kontak</span>
-          </button>
-        </nav>
-      </footer>
+            <button 
+              onClick={() => setCurrentView('buku_kontak')} 
+              className={`flex flex-col items-center py-2 px-4 rounded-full transition-all cursor-pointer ${currentView === 'buku_kontak' ? 'bg-slate-900 text-white' : 'text-slate-400 hover:text-slate-900'}`}
+            >
+              <svg className="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+              <span className="text-[10px] font-bold tracking-wide">Kontak</span>
+            </button>
+          </nav>
+        </div>
+      </div>
 
       {/* Success Modal */}
       {showModalSukses && (
