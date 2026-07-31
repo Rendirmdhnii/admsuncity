@@ -153,6 +153,76 @@ export function AppProvider({ children }) {
     }
   }, [exportRef, template, isExporting, pihak2.nama, jenisSurat]);
 
+  const isFormValid = useCallback(() => {
+    const isTanggalSuratValid = tanggalSurat?.trim() !== '';
+    const isPihak2Valid = pihak2.nama?.trim() !== '';
+
+    if (jenisSurat === 'invoice_sewa') {
+      return (
+        isTanggalSuratValid &&
+        isPihak2Valid &&
+        tanggalCheckIn?.trim() !== '' &&
+        String(totalSewa).trim() !== ''
+      );
+    }
+
+    const isNamaPropertiValid = namaProperti?.trim() !== '';
+    const isNomorKontrakValid = nomorKontrak?.trim() !== '';
+    const isUnitInfoValid = unitInfo?.trim() !== '';
+    const isPihak1Valid = pihak1.nama?.trim() !== '' && pihak1.nik?.trim() !== '' && pihak1.alamat?.trim() !== '';
+
+    const isSewaValid = jenisSurat === 'sewa' 
+      ? (durasi !== null && durasi !== undefined && String(durasi).trim() !== '') 
+      : true;
+      
+    const isKomplainValid = jenisSurat === 'komplain' 
+      ? (detailKerusakan?.trim() !== '' && nominalTagihan?.trim() !== '' && batasWaktuPembayaran?.trim() !== '') 
+      : true;
+      
+    const isSerahTerimaValid = jenisSurat === 'serah_terima' 
+      ? (fotoBukti !== null && fotoBukti !== '') 
+      : true;
+
+    return (
+      isTanggalSuratValid &&
+      isNamaPropertiValid &&
+      isNomorKontrakValid &&
+      isUnitInfoValid &&
+      isPihak1Valid &&
+      isPihak2Valid &&
+      isSewaValid &&
+      isKomplainValid &&
+      isSerahTerimaValid
+    );
+  }, [jenisSurat, tanggalSurat, pihak1, pihak2, namaProperti, nomorKontrak, unitInfo, durasi, detailKerusakan, nominalTagihan, batasWaktuPembayaran, fotoBukti, tanggalCheckIn, totalSewa]);
+
+  const handleUnduhPDF = useCallback(async () => {
+    if (!isFormValid()) {
+      alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat mengekspor dan mengirim dokumen.');
+      return;
+    }
+
+    try {
+      const success = await handleDownloadPDF();
+      if (success) {
+        const amanPihak2 = pihak2.nama ? pihak2.nama.trim() : 'Penyewa';
+        const amanJenis = jenisSurat === 'sewa' 
+          ? 'Perjanjian Sewa' 
+          : jenisSurat === 'serah_terima' 
+          ? 'Serah Terima Kunci' 
+          : jenisSurat === 'komplain'
+          ? 'Surat Teguran dan Invoice Tagihan'
+          : 'Invoice Pembayaran Sewa';
+
+        const pesanWA = `Halo Admin Suncity,\n\nBerikut adalah dokumen administrasi baru yang telah dicetak melalui sistem:\n\nJenis Dokumen: *${amanJenis}*\nNama Penyewa: *${amanPihak2}*\n\nMohon untuk menerima lampiran PDF yang akan saya kirimkan setelah pesan ini untuk diarsipkan.\n\nTerima kasih.`;
+
+        window.open(`https://wa.me/6289678449424?text=${encodeURIComponent(pesanWA)}`, '_blank');
+      }
+    } catch (err) {
+      console.error('Download error:', err);
+    }
+  }, [isFormValid, handleDownloadPDF, pihak2.nama, jenisSurat]);
+
   // ── Context Value ─────────────────────────────────────────────────────────
 
   const value = {
@@ -186,8 +256,8 @@ export function AppProvider({ children }) {
     contacts, saveContact, deleteContact,
     // computed
     template,
-    // export
-    exportRef, handleDownloadPDF, isExporting,
+    // export & validation
+    exportRef, handleDownloadPDF, isExporting, isFormValid, handleUnduhPDF,
     // modals
     showModalSukses, setShowModalSukses,
   };

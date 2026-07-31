@@ -13,29 +13,7 @@ export default function Beranda() {
   const sapaan = getGreeting();
 
   return (
-    <div className="fixed inset-0 h-dvh w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none z-0">
-      
-      {/* Mesh Gradient Dekorasi */}
-      <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
-
-      {/* A. HEADER TETAP DI ATAS (Flex-none) */}
-      <div className="flex-none bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 pb-3 safe-pt z-50 shadow-sm sticky top-0">
-        <div className="flex items-center justify-between max-w-lg mx-auto">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl text-white flex items-center justify-center font-bold shadow-md shadow-blue-500/20">
-              MP
-            </div>
-            <div>
-              <h1 className="font-bold text-slate-800 leading-none text-lg">Manajemen Properti</h1>
-              <p className="text-[10px] text-slate-500 mt-1 font-medium">Sistem Administrasi Digital</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* B. AREA KONTEN TENGAH DENGAN INTERNAL SCROLL HALUS (Flex-1) */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-28 max-w-lg w-full mx-auto">
+    <div className="space-y-4 max-w-lg mx-auto">
         
         {/* GREETING CARD */}
         <div className="bg-white/80 backdrop-blur-md px-6 py-5 rounded-3xl shadow-sm border border-slate-100 flex justify-between items-center">
@@ -130,8 +108,6 @@ export default function Beranda() {
             </div>
           </a>
         </div>
-
-      </div>
 
     </div>
   );

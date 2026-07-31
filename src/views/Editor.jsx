@@ -213,12 +213,7 @@ export default function Editor() {
   };
 
   return (
-    <div className="fixed inset-0 h-dvh w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans select-none z-0">
-
-      {/* Mesh Gradient Dekorasi */}
-      <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-[80px] opacity-30 pointer-events-none"></div>
-
+    <div className="space-y-4 max-w-4xl mx-auto">
       {/* Hidden Export Node (Always mounted for PDF Generation) */}
       <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', overflow: 'hidden' }}>
         <div id="kertas-surat-final" ref={exportRef} style={{ width: '794px', minHeight: '1123px', padding: '75px', background: 'white', boxSizing: 'border-box', color: 'black', fontFamily: '"Times New Roman", Times, serif', fontSize: '15px', lineHeight: '1.5', textAlign: 'justify' }}>
@@ -245,46 +240,7 @@ export default function Editor() {
         </div>
       </div>
 
-      {/* A. HEADER TETAP DI ATAS (Flex-none) */}
-      <div className="flex-none bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 pb-3 safe-pt z-50 shadow-sm sticky top-0">
-        <div className="max-w-4xl w-full mx-auto">
-        {/* Smart Document Header */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold shadow-inner shrink-0">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            </div>
-            <div className="min-w-0">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-slate-400">Dokumen Aktif</p>
-              <h2 className="text-xs font-extrabold text-slate-800 truncate">{jenisOpt?.title || 'Perjanjian Sewa'}</h2>
-            </div>
-          </div>
-          <button 
-            onClick={gantiJenis}
-            className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-[11px] flex items-center gap-1.5 transition-all active:scale-95 border border-slate-200 shadow-sm shrink-0 cursor-pointer"
-          >
-            <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-            <span>Ganti Dokumen</span>
-          </button>
-        </div>
-
-          <SegmentedControl 
-            value={activeSubTab} 
-            onChange={(newTab) => {
-              if (newTab === 'preview' && !isFormValid()) {
-                alert('Akses Ditolak: Seluruh kolom formulir yang bertanda bintang merah wajib diisi sebelum Anda dapat melihat atau mengunduh surat.');
-                return;
-              }
-              setActiveSubTab(newTab);
-            }} 
-          />
-        </div>
-      </div>
-
-      {/* B. AREA KONTEN TENGAH DENGAN INTERNAL SCROLL HALUS (Flex-1) */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-36 max-w-4xl w-full mx-auto relative z-10">
-
-        {/* ─── FORM TAB ───────────────────────────────────────────────────── */}
+      {/* ─── FORM TAB ───────────────────────────────────────────────────── */}
         {activeSubTab === 'form' && (
           <div className="space-y-3">
 
@@ -787,36 +743,6 @@ export default function Editor() {
             </div>
           </div>
         )}
-
-      </div>
-
-      {/* C. BOTTOM ACTION BAR TETAP DI BAWAH (Flex-none / Fixed) */}
-      <div className="fixed left-0 w-full px-5 py-2 z-50 pointer-events-none" style={{ bottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}>
-        <div className="max-w-4xl mx-auto">
-          <button 
-            onClick={handleUnduhPDF}
-            disabled={isProcessing}
-            className="w-full bg-slate-900 text-white font-extrabold text-sm px-6 py-4 rounded-2xl shadow-xl pointer-events-auto active:scale-95 transition-all flex justify-center items-center gap-2 cursor-pointer disabled:opacity-80 disabled:scale-100"
-          >
-            {isProcessing ? (
-              <>
-                <svg className="animate-spin h-5 w-5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span className="tracking-wide">Menyusun Dokumen...</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span className="tracking-wide">Cetak PDF & Kirim WhatsApp</span>
-                <svg className="w-4 h-4 text-emerald-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
     </div>
   );
 }
