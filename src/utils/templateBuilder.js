@@ -23,7 +23,7 @@ export function buildTemplate({
   const tglMulai = formatTanggalPendek(tglSuratObj);
   const tglAkhir = formatTanggalPendek(hitungTanggalAkhir(tanggalSurat, durasi, satuanDurasi));
   const durasiLabel = `${durasi} ${satuanDurasi === 'hari' ? 'Hari' : satuanDurasi === 'bulan' ? 'Bulan' : 'Tahun'}`;
-  const properti = namaProperti || 'Suncity Residence';
+  const properti = namaProperti || 'Properti';
   const formattedNominal = formatRupiah(nominalTagihan);
   const formattedBatasWaktu = batasWaktuPembayaran ? formatTanggalID(parseTanggal(batasWaktuPembayaran)) : '-';
   const formattedBatasWaktuPendek = batasWaktuPembayaran ? formatTanggalPendek(parseTanggal(batasWaktuPembayaran)) : '-';

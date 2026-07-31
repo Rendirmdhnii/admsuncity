@@ -27,7 +27,7 @@ export default function IsiSurat({
 }) {
   if (!template && jenisSurat !== 'invoice_sewa' && jenisSurat !== 'Invoice Pembayaran Sewa') return null;
 
-  const propertiLabel = (namaProperti || 'Manajemen Properti').toUpperCase();
+  const propertiLabel = (namaProperti || 'PROPERTI / GEDUNG').toUpperCase();
   const tanggalPrint = tanggalSurat ? formatTanggalPendek(parseTanggal(tanggalSurat)) : '-';
 
   if (jenisSurat === 'invoice_sewa' || jenisSurat === 'Invoice Pembayaran Sewa') {
@@ -53,7 +53,7 @@ export default function IsiSurat({
                 SEWA UNIT APARTEMEN
               </span>
             </div>
-            <p style={{ fontSize: '14px', letterSpacing: '1px', color: '#cbd5e1', margin: '0' }}>{namaProperti ? namaProperti.toUpperCase() : 'MANAJEMEN PROPERTI'}</p>
+            <p style={{ fontSize: '14px', letterSpacing: '1px', color: '#cbd5e1', margin: '0', textTransform: 'uppercase' }}>{namaProperti || 'NAMA PROPERTI / GEDUNG'}</p>
           </div>
           <div style={{ flex: 1, textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <p style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 4px 0', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Kepada Yth:</p>
@@ -94,7 +94,7 @@ export default function IsiSurat({
             <tbody>
               <tr>
                 <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', fontSize: '15px', color: '#334155' }}>
-                  <span style={{ fontWeight: '700', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Sewa Unit Apartemen {namaProperti || 'Manajemen Properti'}</span>
+                  <span style={{ fontWeight: '700', color: '#0f172a', display: 'block', marginBottom: '4px' }}>Sewa Unit Apartemen {namaProperti || 'Unit'}</span>
                   <span style={{ fontSize: '13px', color: '#64748b' }}>Durasi: {durasiSewaVal} {satuanDurasiVal}</span>
                 </td>
                 <td style={{ padding: '20px 0', borderBottom: '1px solid #e2e8f0', textAlign: 'right', fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>
@@ -152,7 +152,7 @@ export default function IsiSurat({
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ fontSize: '10px', color: '#64748b', margin: '0 0 4px 0', letterSpacing: '1px' }}>LOKASI</p>
-            <p style={{ fontSize: '14px', fontWeight: '500', margin: '0', color: '#f8fafc' }}>{namaProperti || 'Manajemen Properti'}</p>
+            <p style={{ fontSize: '14px', fontWeight: '500', margin: '0', color: '#f8fafc', textTransform: 'capitalize' }}>{namaProperti || '-'}</p>
           </div>
         </div>
         
@@ -324,10 +324,10 @@ export default function IsiSurat({
       {jenisSurat === 'komplain' && (
         <div style={{ textAlign: 'justify', textJustify: 'inter-word', marginTop: '15px' }}>
           <p style={{ margin: '0 0 15px 0' }}>Dengan hormat,</p>
-          <p style={{ margin: '0 0 10px 0' }}>Melalui surat ini, kami selaku Manajemen Properti dengan tegas menyampaikan <strong>PERINGATAN DAN TEGURAN</strong> kepada Saudara/i selaku penyewa unit {unitInfo || 'Unit'} di {namaProperti || 'Gedung'}.</p>
+          <p style={{ margin: '0 0 10px 0' }}>Melalui surat ini, kami selaku Pihak Pertama dengan tegas menyampaikan <strong>PERINGATAN DAN TEGURAN</strong> kepada Saudara/i selaku penyewa unit {unitInfo || 'Unit'} di {namaProperti || 'Gedung'}.</p>
           <p style={{ margin: '0 0 10px 0' }}>Berdasarkan hasil pemantauan dan laporan yang kami terima, telah ditemukan adanya pelanggaran tata tertib dan/atau kerusakan fasilitas yang menjadi tanggung jawab Saudara/i. (Rincian pelanggaran/tagihan sebagaimana terlampir atau telah disampaikan sebelumnya).</p>
           <p style={{ margin: '0 0 10px 0' }}>Kami menginstruksikan kepada Saudara/i untuk segera melakukan perbaikan, penghentian pelanggaran, atau pelunasan administrasi selambat-lambatnya <strong>7 (tujuh) hari kerja</strong> sejak diterbitkannya surat ini.</p>
-          <p style={{ margin: '0 0 30px 0' }}>Apabila Saudara/i mengabaikan peringatan ini, Manajemen berhak mengambil tindakan tegas sesuai dengan ketentuan hukum yang berlaku, termasuk namun tidak terbatas pada pemutusan sewa secara sepihak dan pengosongan unit. Atas perhatian dan kerja sama Saudara/i, kami ucapkan terima kasih.</p>
+          <p style={{ margin: '0 0 30px 0' }}>Apabila Saudara/i mengabaikan peringatan ini, Pihak Pertama berhak mengambil tindakan tegas sesuai dengan ketentuan hukum yang berlaku, termasuk namun tidak terbatas pada pemutusan sewa secara sepihak dan pengosongan unit. Atas perhatian dan kerja sama Saudara/i, kami ucapkan terima kasih.</p>
         </div>
       )}
 
